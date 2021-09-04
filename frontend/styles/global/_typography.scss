@@ -12,10 +12,46 @@
     url('/public/fonts/roboto-v27-latin-regular.svg#Roboto') format('svg'); /* Legacy iOS */
 }
 
-@mixin H1Desktop {
-  color: #000;
+@mixin H1 {
+  color: $purple-primary;
   font-family: Roboto, sans-serif;
   font-size: 48px;
-  font-weight: 400;
+  font-weight: bold;
   line-height: 1;
+  letter-spacing: normal;
+  font-stretch: normal;
+  font-style: normal;
+}
+
+@mixin H2 {
+  color: $purple-primary;
+  font-family: Roboto, sans-serif;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: normal;
+  font-stretch: normal;
+  font-style: normal;
+}
+
+@mixin H3 {
+  color: $purple-secondary;
+  font-family: Roboto, sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+  letter-spacing: normal;
+  font-stretch: normal;
+  font-style: normal;
+}
+
+@mixin Paragraph {
+  color: $purple-secondary;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1;
+  letter-spacing: normal;
+  font-stretch: normal;
+  font-style: normal;
 }
