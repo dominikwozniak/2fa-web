@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  db:
+    container_name: db-container
+    image: postgres:9.6
+    ports:
+      - ${DATABASE_PORT}:5432
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+  backend:
+    container_name: backend-container
+    restart: always
+    build: ./backend
+    ports:
+      - "4000:4000"
+  frontend:
+    container_name: frontend-container
+    restart: always
+    build: ./frontend
+    ports:
+      - "3000:3000"
+
+volumes:
+  pgdata:

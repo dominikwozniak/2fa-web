@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/node,react
 # Edit at https://www.toptal.com/developers/gitignore?templates=node,react
 
+### Postgres ###
+pgdata
+
 ### Node ###
 # Logs
 logs
@@ -138,3 +141,5 @@ sketch
 # End of https://www.toptal.com/developers/gitignore/api/node,react
 
 /.idea
+/frontend/.idea
+/backend/.idea
