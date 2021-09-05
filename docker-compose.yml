@@ -12,17 +12,33 @@ services:
     volumes:
       - ./pgdata:/var/lib/postgresql/data
   backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     container_name: backend-container
     restart: always
-    build: ./backend
     ports:
-      - "4000:4000"
+      - '4000:4000'
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    environment:
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      BACKEND_PORT: ${BACKEND_PORT}
   frontend:
-    container_name: frontend-container
-    restart: always
-    build: ./frontend
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    container_name: frontend
     ports:
-      - "3000:3000"
+      - '3000:3000'
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      BACKEND_PORT: ${BACKEND_PORT}
 
 volumes:
   pgdata:

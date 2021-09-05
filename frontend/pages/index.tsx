@@ -1,6 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
 
+export async function getStaticProps() {
+  console.log('PROCESS ENV >> ', process.env.FRONTEND_PORT);
+  return {
+    props: {}
+  }
+}
+
 export default function Home() {
   return (
     <div>
@@ -11,7 +18,11 @@ export default function Home() {
       </Head>
       <main>
         <a className="button is-primary">
-          Button
+          Button1
+        </a>
+
+        <a className="button is-primary">
+          Button2
         </a>
       </main>
     </div>
