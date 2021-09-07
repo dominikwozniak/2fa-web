@@ -8,7 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
 
   const options = new DocumentBuilder()
-    .setTitle('Blog API')
+    .setTitle('Auth API')
     .setDescription('API description')
     .setVersion('1.0.0')
     .addBearerAuth(
