@@ -1,28 +1,14 @@
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { createDocument } from './swagger/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
-  const options = new DocumentBuilder()
-    .setTitle('Auth API')
-    .setDescription('API description')
-    .setVersion('1.0.0')
-    .addBearerAuth(
-      {
-        type: 'http',
-        scheme: 'bearer',
-        bearerFormat: 'Token',
-      },
-      'access-token',
-    )
-    .build();
-  const document = SwaggerModule.createDocument(app, options);
-
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/', app, createDocument(app));
 
   await app.listen(process.env.BACKEND_PORT || 4000);
 }
