@@ -143,3 +143,8 @@ sketch
 /.idea
 /frontend/.idea
 /backend/.idea
+
+/frontend/node_modules
+/backend/node_modules
+
+/frontend/.next
