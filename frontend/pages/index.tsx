@@ -1,13 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
 
-export async function getStaticProps() {
-  console.log('PROCESS ENV >> ', process.env.FRONTEND_PORT);
-  return {
-    props: {}
-  }
-}
-
 export default function Home() {
   return (
     <div>
