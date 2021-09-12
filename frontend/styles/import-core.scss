@@ -1,6 +1,11 @@
+@import 'global/colors';
 @import '~bulma/bulma';
 
 @import 'global/global-styles.scss';
-@import 'global/colors';
 @import 'global/variables';
 @import 'global/typography';
+
+@import 'mixins/container';
+@import 'mixins/box-shadow';
+
+@import 'pages/signup';

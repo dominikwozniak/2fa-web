@@ -1,0 +1,39 @@
+.signup {
+  @include container();
+
+  &__header {
+    h1 {
+      @include H1();
+    }
+
+    h3 {
+      @include H3();
+      margin: 0 auto;
+      max-width: 16.3rem;
+    }
+  }
+
+  &__form {
+    max-width: 27.5rem;
+
+    input {
+      @include input-box-shadow();
+      height: 4rem;
+      margin-bottom: 1.5rem;
+      background: $gray;
+      border: none;
+
+      &.half-width {
+        width: calc(50% - 5px);
+      }
+    }
+
+    button {
+
+    }
+  }
+
+  &__already-signed {
+
+  }
+}
