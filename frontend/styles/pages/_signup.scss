@@ -17,20 +17,15 @@
   &__form {
     max-width: 30rem;
 
-    .column {
+    .column, .half-column {
       position: relative;
+    }
 
-      label {
-        position: absolute;
-        top: 1rem;
-        right: 0.5rem;
-        z-index: 100;
-        cursor: default;
-        background-color: $red-primary;
+    .half-column {
+      width: calc(50% - 0.5rem);
 
-        &:hover {
-          background-color: $red-primary;
-        }
+      @media (min-width: $sm-screen) {
+        //width: 100%;
       }
     }
 
@@ -41,10 +36,6 @@
       background: $gray-primary;
       border: none;
       font-size: 1.4rem;
-
-      &.half-width {
-        width: calc(50% - 5px);
-      }
     }
 
     button {
