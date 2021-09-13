@@ -30,7 +30,7 @@ const Signup = () => {
         <h3>I’m glad that you are joing the group of users</h3>
       </div>
       <form
-        className="columns mt-4 mb-0 mx-auto signup__form"
+        className="columns mt-4 mb-0 mx-auto is-flex is-flex-direction-column signup__form"
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className="column p-0">
