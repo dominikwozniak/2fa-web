@@ -38,6 +38,7 @@ const Signup = () => {
           <input
             className="input is-primary"
             type="email"
+            aria-invalid={errors.email ? "true" : "false"}
             placeholder="E-mail"
             {...register('email', {
               required: true,
@@ -54,6 +55,7 @@ const Signup = () => {
             <input
               className="input is-primary"
               type="text"
+              aria-invalid={errors.firstName ? "true" : "false"}
               placeholder="First name"
               {...register('firstName', {
                 required: true,
@@ -67,6 +69,7 @@ const Signup = () => {
             <input
               className="input is-primary"
               type="text"
+              aria-invalid={errors.secondName ? "true" : "false"}
               placeholder="Second name"
               {...register('secondName', {
                 required: true,
@@ -81,6 +84,7 @@ const Signup = () => {
           <input
             className="input is-primary"
             type="text"
+            aria-invalid={errors.username ? "true" : "false"}
             placeholder="Username"
             {...register('username', {
               required: true,
@@ -94,6 +98,7 @@ const Signup = () => {
           <input
             className="input is-primary"
             type="password"
+            aria-invalid={errors.password ? "true" : "false"}
             placeholder="Password"
             {...register('password', {
               required: true,
