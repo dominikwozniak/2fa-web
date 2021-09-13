@@ -21,6 +21,7 @@
   letter-spacing: normal;
   font-stretch: normal;
   font-style: normal;
+  text-align: center;
 }
 
 @mixin H2 {
@@ -32,25 +33,27 @@
   letter-spacing: normal;
   font-stretch: normal;
   font-style: normal;
+  text-align: center;
 }
 
 @mixin H3 {
   color: $purple-secondary;
   font-family: Roboto, sans-serif;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: bold;
   line-height: 1;
   letter-spacing: normal;
   font-stretch: normal;
   font-style: normal;
+  text-align: center;
 }
 
 @mixin Paragraph {
   color: $purple-secondary;
   font-family: Roboto, sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: normal;
-  line-height: 1;
+  line-height: 14px;
   letter-spacing: normal;
   font-stretch: normal;
   font-style: normal;

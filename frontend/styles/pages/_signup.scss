@@ -1,0 +1,59 @@
+.signup {
+  @include container();
+
+  &__header {
+    h1 {
+      @include H1();
+      margin-bottom: 0.5rem;
+    }
+
+    h3 {
+      @include H3();
+      margin: 0 auto;
+      max-width: 16.3rem;
+    }
+  }
+
+  &__form {
+    max-width: 30rem;
+
+    .column, .half-column {
+      position: relative;
+    }
+
+    .half-column {
+      width: calc(50% - 0.5rem);
+
+      @media (min-width: $sm-screen) {
+        //width: 100%;
+      }
+    }
+
+    input {
+      @include input-box-shadow();
+      height: 4rem;
+      margin-bottom: 1.5rem;
+      background: $gray-primary;
+      border: none;
+      font-size: 1.4rem;
+    }
+
+    button {
+      @include input-box-shadow();
+      @include H3();
+      width: 28rem;
+      height: 4rem;
+      border-radius: 1rem;
+      color: $white-primary !important;
+    }
+
+    a {
+      @include Paragraph();
+      text-decoration: underline;
+    }
+
+    span {
+      @include Paragraph();
+    }
+  }
+}
