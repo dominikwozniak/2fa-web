@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from 'next/link'
 
 const Signup = () => {
   const onSubmit = () => {
@@ -6,13 +7,13 @@ const Signup = () => {
   };
 
   return (
-    <div className="signup">
+    <div className="is-flex is-flex-direction-column is-justify-content-center signup">
       <div className="signup__header">
         <h1>Sign up</h1>
         <h3>I’m glad that you are joing the group of users</h3>
       </div>
       <form
-        className="columns my-0 mx-auto signup__form"
+        className="columns mt-4 mb-0 mx-auto signup__form"
         onSubmit={onSubmit}
       >
         <input
@@ -23,40 +24,41 @@ const Signup = () => {
         <div className="is-flex is-justify-content-space-between">
           <input
             className="input half-width"
-            type="email"
-            placeholder="E-mail"
+            type="text"
+            placeholder="First name"
           />
           <input
             className="input half-width"
-            type="email"
-            placeholder="E-mail"
+            type="text"
+            placeholder="Second name"
           />
         </div>
         <input
           className="input"
-          type="email"
+          type="text"
           placeholder="E-mail"
         />
         <input
           className="input"
-          type="email"
-          placeholder="E-mail"
+          type="password"
+          placeholder="Password"
         />
-        <a
-          className="is-flex is-flex-direction-row is-justify-content-flex-end"
-          href="#"
-        >Forgot password?</a>
+        <Link href="#">
+          <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
+            Forgot password?
+          </a>
+        </Link>
         <button
-          className="column button is-primary is-fullwidth is-flex"
+          className="column button is-primary is-flex mx-auto mt-3"
           type="submit"
         >
           Create account!
         </button>
+        <div className="mt-3 signup__form-already-signed">
+          <span>Do you have an account? </span>
+          <Link href="#">Let's sign in</Link>
+        </div>
       </form>
-      <div className="signup__already-signed">
-        <span>Do you have an account?</span>
-        <a href="#">Let's sign in</a>
-      </div>
     </div>
   );
 };

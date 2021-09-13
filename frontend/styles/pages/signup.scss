@@ -4,6 +4,7 @@
   &__header {
     h1 {
       @include H1();
+      margin-bottom: 0.5rem;
     }
 
     h3 {
@@ -14,14 +15,15 @@
   }
 
   &__form {
-    max-width: 27.5rem;
+    max-width: 30rem;
 
     input {
       @include input-box-shadow();
       height: 4rem;
       margin-bottom: 1.5rem;
-      background: $gray;
+      background: $gray-primary;
       border: none;
+      font-size: 1.4rem;
 
       &.half-width {
         width: calc(50% - 5px);
@@ -29,11 +31,21 @@
     }
 
     button {
-
+      @include input-box-shadow();
+      @include H3();
+      width: 28rem;
+      height: 4rem;
+      border-radius: 1rem;
+      color: $white-primary !important;
     }
-  }
 
-  &__already-signed {
+    a {
+      @include Paragraph();
+      text-decoration: underline;
+    }
 
+    span {
+      @include Paragraph();
+    }
   }
 }
