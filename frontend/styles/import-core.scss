@@ -8,6 +8,12 @@
 @import 'mixins/container';
 @import 'mixins/box-shadow';
 
+@import 'mixins/form/form-input';
+@import 'mixins/form/form-link';
+@import 'mixins/form/form-submit-button';
+@import 'mixins/form/form-text';
+
 @import 'pages/signup';
+@import 'pages/signin';
 
 @import 'components/error-input';

@@ -36,7 +36,6 @@ const Signup = () => {
         <div className="column p-0">
           {errors.email && <ErrorInputIcon />}
           <input
-            className="input is-primary"
             type="email"
             aria-invalid={errors.email ? "true" : "false"}
             placeholder="E-mail"
@@ -53,7 +52,6 @@ const Signup = () => {
           <div className="half-column">
             {errors.firstName && <ErrorInputIcon />}
             <input
-              className="input is-primary"
               type="text"
               aria-invalid={errors.firstName ? "true" : "false"}
               placeholder="First name"
@@ -67,7 +65,6 @@ const Signup = () => {
           <div className="half-column">
             {errors.secondName && <ErrorInputIcon />}
             <input
-              className="input is-primary"
               type="text"
               aria-invalid={errors.secondName ? "true" : "false"}
               placeholder="Second name"
@@ -82,7 +79,6 @@ const Signup = () => {
         <div className="column p-0">
           {errors.username && <ErrorInputIcon />}
           <input
-            className="input is-primary"
             type="text"
             aria-invalid={errors.username ? "true" : "false"}
             placeholder="Username"
@@ -96,7 +92,6 @@ const Signup = () => {
         <div className="column p-0">
           {errors.password && <ErrorInputIcon />}
           <input
-            className="input is-primary"
             type="password"
             aria-invalid={errors.password ? "true" : "false"}
             placeholder="Password"
@@ -107,20 +102,15 @@ const Signup = () => {
             })}
           />
         </div>
-        <Link href="#">
-          <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
-            Forgot password?
-          </a>
-        </Link>
         <button
           className="column button is-primary is-flex mx-auto mt-3"
           type="submit"
         >
           Create account!
         </button>
-        <div className="mt-3 signup__form-already-signed">
+        <div className="mt-3">
           <span>Do you have an account? </span>
-          <Link href="#">Let's sign in</Link>
+          <Link href="/signin">Let's sign in</Link>
         </div>
       </form>
     </div>
