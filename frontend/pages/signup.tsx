@@ -3,6 +3,8 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { UserSignUpPayload } from '../types/user.types';
 import ErrorInputIcon from '../components/ErrorInputIcon';
+import img from '@/public/assets/phone_data.svg';
+import Image from 'next/image';
 
 const Signup = () => {
   const {
@@ -24,8 +26,9 @@ const Signup = () => {
   );
 
   return (
-    <div className="is-flex is-flex-direction-column is-justify-content-center signup">
-      <div className="signup__header">
+    <div className="is-flex is-flex-direction-column signup">
+      <div className="is-flex is-flex-direction-column is-justify-content-center signup__header">
+        <Image src={img} alt={'Signup banner image'} width={250} />
         <h1>Sign up</h1>
         <h3>I’m glad that you are joing the group of users</h3>
       </div>
@@ -37,7 +40,7 @@ const Signup = () => {
           {errors.email && <ErrorInputIcon />}
           <input
             type="email"
-            aria-invalid={errors.email ? "true" : "false"}
+            aria-invalid={errors.email ? 'true' : 'false'}
             placeholder="E-mail"
             {...register('email', {
               required: true,
@@ -53,7 +56,7 @@ const Signup = () => {
             {errors.firstName && <ErrorInputIcon />}
             <input
               type="text"
-              aria-invalid={errors.firstName ? "true" : "false"}
+              aria-invalid={errors.firstName ? 'true' : 'false'}
               placeholder="First name"
               {...register('firstName', {
                 required: true,
@@ -66,7 +69,7 @@ const Signup = () => {
             {errors.secondName && <ErrorInputIcon />}
             <input
               type="text"
-              aria-invalid={errors.secondName ? "true" : "false"}
+              aria-invalid={errors.secondName ? 'true' : 'false'}
               placeholder="Second name"
               {...register('secondName', {
                 required: true,
@@ -80,7 +83,7 @@ const Signup = () => {
           {errors.username && <ErrorInputIcon />}
           <input
             type="text"
-            aria-invalid={errors.username ? "true" : "false"}
+            aria-invalid={errors.username ? 'true' : 'false'}
             placeholder="Username"
             {...register('username', {
               required: true,
@@ -93,7 +96,7 @@ const Signup = () => {
           {errors.password && <ErrorInputIcon />}
           <input
             type="password"
-            aria-invalid={errors.password ? "true" : "false"}
+            aria-invalid={errors.password ? 'true' : 'false'}
             placeholder="Password"
             {...register('password', {
               required: true,

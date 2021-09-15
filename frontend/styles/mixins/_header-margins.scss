@@ -1,0 +1,11 @@
+@mixin HeaderMargins {
+  margin-top: 1rem;
+
+  @media (min-width: $sm-screen) {
+    margin-top: 5rem;
+  }
+
+  @media (min-width: $md-screen) {
+    margin-top: 7rem;
+  }
+}

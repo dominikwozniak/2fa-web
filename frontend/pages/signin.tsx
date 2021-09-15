@@ -3,8 +3,10 @@ import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { UserSignInPayload } from '../types/user.types';
 import ErrorInputIcon from '../components/ErrorInputIcon';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '../utils/popup-notification';
+import img from '@/public/assets/team_building.svg';
+import Image from 'next/image';
 
 const Signin = () => {
   const {
@@ -32,8 +34,9 @@ const Signin = () => {
   }, [errors]);
 
   return (
-    <div className="is-flex is-flex-direction-column is-justify-content-center signin">
-      <div className="signin__header">
+    <div className="is-flex is-flex-direction-column signin">
+      <div className="is-flex is-flex-direction-column is-justify-content-center signin__header">
+        <Image src={img} alt={'Signin banner image'} width={250} />
         <h1>Sign in</h1>
         <h3>Welcome back! Let's go log in to the website</h3>
       </div>
