@@ -1,0 +1,6 @@
+.Toastify__toast-body {
+  div {
+    @include Paragraph();
+    font-weight: bold;
+  }
+}
