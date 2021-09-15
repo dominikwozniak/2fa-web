@@ -1,8 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { UserSignInPayload } from '../types/user.types';
 import ErrorInputIcon from '../components/ErrorInputIcon';
+import { ToastContainer, toast } from 'react-toastify';
+import { popupNotification } from '../utils/popup-notification';
 
 const Signin = () => {
   const {
@@ -23,6 +25,12 @@ const Signin = () => {
     [reset],
   );
 
+  useEffect(() => {
+    if (Object.keys(errors).length) {
+      popupNotification('Error!');
+    }
+  }, [errors]);
+
   return (
     <div className="is-flex is-flex-direction-column is-justify-content-center signin">
       <div className="signin__header">
@@ -37,7 +45,7 @@ const Signin = () => {
           {errors.email && <ErrorInputIcon />}
           <input
             type="email"
-            aria-invalid={errors.email ? "true" : "false"}
+            aria-invalid={errors.email ? 'true' : 'false'}
             placeholder="E-mail"
             {...register('email', {
               required: true,
@@ -52,7 +60,7 @@ const Signin = () => {
           {errors.password && <ErrorInputIcon />}
           <input
             type="password"
-            aria-invalid={errors.password ? "true" : "false"}
+            aria-invalid={errors.password ? 'true' : 'false'}
             placeholder="Password"
             {...register('password', {
               required: true,
@@ -77,6 +85,7 @@ const Signin = () => {
           <Link href="/signup">Let's sign up</Link>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

@@ -1,5 +1,6 @@
 @import 'global/colors';
 @import '~bulma/bulma';
+@import '~react-toastify/dist/ReactToastify.min.css';
 
 @import 'global/global-styles.scss';
 @import 'global/variables';
@@ -17,3 +18,4 @@
 @import 'pages/signin';
 
 @import 'components/error-input';
+@import 'components/toast';
