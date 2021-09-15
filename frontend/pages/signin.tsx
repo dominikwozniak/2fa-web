@@ -83,7 +83,7 @@ const Signin = () => {
         >
           Log in!
         </button>
-        <div className="mt-3">
+        <div className="my-3">
           <span>Don't you have an accountt? </span>
           <Link href="/signup">Let's sign up</Link>
         </div>

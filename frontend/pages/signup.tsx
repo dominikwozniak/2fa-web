@@ -111,7 +111,7 @@ const Signup = () => {
         >
           Create account!
         </button>
-        <div className="mt-3">
+        <div className="my-3">
           <span>Do you have an account? </span>
           <Link href="/signin">Let's sign in</Link>
         </div>
