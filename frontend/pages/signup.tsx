@@ -30,7 +30,7 @@ const Signup = () => {
       <div className="is-flex is-flex-direction-column is-justify-content-center signup__header">
         <Image src={img} alt={'Signup banner image'} width={250} />
         <h1>Sign up</h1>
-        <h3>I’m glad that you are joing the group of users</h3>
+        <h4>I’m glad that you are joing the group of users</h4>
       </div>
       <form
         className="columns mt-4 mb-0 mx-auto is-flex is-flex-direction-column signup__form"

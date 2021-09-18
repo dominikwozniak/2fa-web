@@ -24,19 +24,46 @@
   text-align: center;
 }
 
+@mixin H1-white {
+  @include H1();
+  color: $gray-primary;
+}
+
 @mixin H2 {
   color: $purple-primary;
   font-family: Roboto, sans-serif;
-  font-size: 32px;
+  font-size: 20px;
   font-weight: bold;
-  line-height: 1;
+  line-height: 23px;
   letter-spacing: normal;
   font-stretch: normal;
   font-style: normal;
   text-align: center;
 }
 
+@mixin H2-white {
+  @include H2();
+  color: $gray-primary;
+}
+
 @mixin H3 {
+  color: $purple-secondary;
+  font-family: Roboto, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 21px;
+  letter-spacing: normal;
+  font-stretch: normal;
+  font-style: normal;
+  text-align: center;
+}
+
+@mixin H3-white {
+  @include H3();
+  color: $gray-primary;
+}
+
+@mixin H4 {
   color: $purple-secondary;
   font-family: Roboto, sans-serif;
   font-size: 14px;
@@ -46,6 +73,11 @@
   font-stretch: normal;
   font-style: normal;
   text-align: center;
+}
+
+@mixin H4-white {
+  @include H4();
+  color: $gray-primary;
 }
 
 @mixin Paragraph {

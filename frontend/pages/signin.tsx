@@ -38,7 +38,7 @@ const Signin = () => {
       <div className="is-flex is-flex-direction-column is-justify-content-center signin__header">
         <Image src={img} alt={'Signin banner image'} width={250} />
         <h1>Sign in</h1>
-        <h3>Welcome back! Let's go log in to the website</h3>
+        <h4>Welcome back! Let's go log in to the website</h4>
       </div>
       <form
         className="columns mt-4 mb-0 mx-auto is-flex is-flex-direction-column signin__form"

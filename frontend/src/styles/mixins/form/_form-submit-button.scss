@@ -1,6 +1,6 @@
 @mixin FormSubmitButton {
   @include input-box-shadow();
-  @include H3();
+  @include H4();
   width: calc(100% - 2rem);
   height: 4rem;
   border-radius: 1rem;
