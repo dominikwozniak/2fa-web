@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { UserSignInPayload } from '../types/user.types';
-import ErrorInputIcon from '../components/ErrorInputIcon';
-import { ToastContainer } from 'react-toastify';
-import { popupNotification } from '../utils/popup-notification';
-import img from '@/public/assets/team_building.svg';
 import Image from 'next/image';
+import { useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import img from '@/public/assets/team_building.svg';
+import { UserSignInPayload } from '@/types/user.types';
+import ErrorInputIcon from '@/components/ErrorInputIcon';
+import { popupNotification } from '@/utils/popup-notification';
 
 const Signin = () => {
   const {
