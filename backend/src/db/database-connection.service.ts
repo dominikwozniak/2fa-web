@@ -15,7 +15,7 @@ export class DatabaseConnectionService implements TypeOrmOptionsFactory {
       synchronize: process.env.MODE === 'PROD',
       dropSchema: true,
       logging: true,
-      entities: ['dist/**/*.entity.{.ts,.js}'],
+      entities: ['dist/**/*.model.{.ts,.js}'],
       migrations: ['dist/migrations/*{.ts,.js}'],
       migrationsTableName: 'migrations_typeorm',
       migrationsRun: true,
