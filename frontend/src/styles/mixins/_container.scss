@@ -1,6 +1,8 @@
 @mixin container {
-  @extend .container, .px-4;
+  @extend .container;
 
   background-color: $white-primary;
   min-height: 100vh;
+  padding-left: 2rem;
+  padding-right: 2rem;
 }

@@ -1,0 +1,36 @@
+.home {
+  @include container();
+
+  &__header {
+    @include full-width-background($green-primary);
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+
+    @media (min-width: $sm-screen) {
+      height: 50vh;
+    }
+
+    h1 {
+      @include H1-white();
+    }
+
+    h2 {
+      @include H2-white();
+      max-width: 33rem;
+    }
+  }
+
+  &__content {
+    margin-top: 3rem;
+
+    h3 {
+      @include H3();
+      max-width: 33rem;
+      margin-bottom: 2rem;
+    }
+
+    button {
+      @include PrimaryButton();
+    }
+  }
+}
