@@ -1,0 +1,8 @@
+@mixin PrimaryButton {
+  @include input-box-shadow();
+  @include H4();
+  width: 26rem;
+  height: 4rem;
+  border-radius: 1rem;
+  color: $white-primary !important;
+}
