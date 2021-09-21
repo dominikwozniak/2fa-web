@@ -7,18 +7,20 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggingInterceptor } from './shared/logging.interceptor';
 import { HttpErrorFilter } from './shared/http-error.filter';
-import { DatabaseConnectionService } from './db/database-connection.service';
 import { AuthModule } from './auth/auth.module';
+import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      useClass: DatabaseConnectionService,
-    }),
+    MongooseModule.forRoot(
+      'mongodb+srv://dominik:dominik@cluster0.cssvo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+      {
+        useCreateIndex: true,
+        useNewUrlParser: true,
+      },
+    ),
     GraphQLModule.forRoot({
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      debug: true,
-      playground: true,
+      autoSchemaFile: 'src/schema.gql',
     }),
     AuthModule,
   ],
