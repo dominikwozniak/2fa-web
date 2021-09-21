@@ -1,17 +1,17 @@
-import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
-import { Module, ValidationPipe } from '@nestjs/common';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { Module } from '@nestjs/common';
+import { MongooseModule } from "@nestjs/mongoose";
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggingInterceptor } from './shared/logging.interceptor';
 import { HttpErrorFilter } from './shared/http-error.filter';
 import { AuthModule } from './auth/auth.module';
-import { MongooseModule } from "@nestjs/mongoose";
 
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://dominik:dominik@cluster0.cssvo.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+      process.env.MONGO_URI,
       {
         useCreateIndex: true,
         useNewUrlParser: true,

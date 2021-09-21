@@ -16,7 +16,7 @@ import { GqlAuthGuard } from './guards/gql-auth.guard';
       },
     ]),
     JwtModule.register({
-      secret: 'SECRET_TO_HASH',
+      secret: process.env.JWT_SECRET,
       signOptions: {
         expiresIn: '3600s',
       },
