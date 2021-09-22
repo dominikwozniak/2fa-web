@@ -7,8 +7,8 @@ type User {
   email: String!
   firstName: String
   lastName: String
-  confirm: Boolean!
   bio: String!
+  confirm: Boolean!
 }
 
 type UserToken {

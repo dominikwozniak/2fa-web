@@ -26,6 +26,10 @@ export class User {
   @Field({ nullable: true })
   lastName: string;
 
+  @Prop({ required: false, default: '' })
+  @Field()
+  bio: string;
+
   @Prop({ minlength: 5, required: [true, 'Password is required'] })
   password: string;
 
@@ -37,8 +41,7 @@ export class User {
   confirmToken: string;
 
   @Prop({ required: false, default: '' })
-  @Field()
-  bio: string;
+  changePasswordToken: string;
 }
 
 export type UserDocument = User & Document;
