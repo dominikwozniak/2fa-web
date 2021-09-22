@@ -7,9 +7,7 @@ type User {
   email: String!
   firstName: String
   lastName: String
-  password: String!
   confirm: Boolean!
-  confirmToken: String!
   bio: String!
 }
 

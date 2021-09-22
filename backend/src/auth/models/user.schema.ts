@@ -27,7 +27,6 @@ export class User {
   lastName: string;
 
   @Prop({ minlength: 5, required: [true, 'Password is required'] })
-  @Field()
   password: string;
 
   @Prop({ required: true, default: false })
@@ -35,7 +34,6 @@ export class User {
   confirm: boolean;
 
   @Prop({ required: false, default: '' })
-  @Field()
   confirmToken: string;
 
   @Prop({ required: false, default: '' })
