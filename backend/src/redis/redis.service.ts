@@ -3,21 +3,17 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
-  redis;
+  private redis;
 
   constructor() {
     this.redis = new Redis();
   }
 
-  checkAlive() {
-    console.log('HELLO >>>')
-  }
-
-  async getValue(key: string) {
+  async getValue(key: string): Promise<any> {
     return this.redis.get(key);
   }
 
-  async setValue(key: string, value: string) {
+  async setValue(key: string, value: string): Promise<string> {
     return this.redis.set(key, value, 'ex', 60 * 60 * 24);
   }
 }
