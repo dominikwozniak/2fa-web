@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { nanoid } from 'nanoid';
 import { User, UserDocument } from './models/user.schema';
 import { Model } from 'mongoose';
@@ -12,16 +13,17 @@ import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
 import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
-import { JwtService } from '@nestjs/jwt';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
-import { sendEmail } from "../shared/sendEmail";
+import { sendEmail } from '../shared/sendEmail';
+import { RedisService } from '../redis/redis.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
 
   public async login(input: AuthLoginInput): Promise<UserToken> {
@@ -64,6 +66,8 @@ export class AuthService {
     const hashedPassword = await AuthHelper.hashPassword(input.password);
     const token = nanoid(32);
 
+    await this.redisService.setValue('13', '23')
+
     const created = await this.userModel.create({
       ...input,
       password: hashedPassword,
@@ -71,8 +75,8 @@ export class AuthService {
     });
 
     if (created) {
-      const url = AuthHelper.createConfirmationUrl(token)
-      await sendEmail(created.email, url)
+      const url = AuthHelper.createConfirmationUrl(token);
+      await sendEmail(created.email, url);
     }
 
     return {

@@ -1,25 +1,24 @@
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
-import { MongooseModule } from "@nestjs/mongoose";
+import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { LoggingInterceptor } from './shared/logging.interceptor';
 import { AuthModule } from './auth/auth.module';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_URI,
-      {
-        useCreateIndex: true,
-        useNewUrlParser: true,
-      },
-    ),
+    MongooseModule.forRoot(process.env.MONGO_URI, {
+      useCreateIndex: true,
+      useNewUrlParser: true,
+    }),
     GraphQLModule.forRoot({
       autoSchemaFile: 'src/schema.gql',
     }),
     AuthModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
