@@ -16,4 +16,8 @@ export class AuthHelper {
   static hashPassword(password: string): Promise<string> {
     return hash(password, 10);
   }
+
+  static createConfirmationUrl(token: string) {
+    return `http://localhost:3000/confirm-account?t=${token}`
+  }
 }

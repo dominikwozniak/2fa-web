@@ -37,11 +37,11 @@ export class User {
   @Field()
   confirm: boolean;
 
-  @Prop({ required: false, default: '' })
-  confirmToken: string;
+  @Prop({ required: false, default: null })
+  confirmToken: string | null;
 
-  @Prop({ required: false, default: '' })
-  changePasswordToken: string;
+  @Prop({ required: false, default: null })
+  changePasswordToken: string | null;
 }
 
 export type UserDocument = User & Document;

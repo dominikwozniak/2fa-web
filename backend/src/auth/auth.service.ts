@@ -15,6 +15,7 @@ import { AuthHelper } from './auth.helper';
 import { JwtService } from '@nestjs/jwt';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
+import { sendEmail } from "../shared/sendEmail";
 
 @Injectable()
 export class AuthService {
@@ -62,11 +63,17 @@ export class AuthService {
 
     const hashedPassword = await AuthHelper.hashPassword(input.password);
     const token = nanoid(32);
+
     const created = await this.userModel.create({
       ...input,
       password: hashedPassword,
       confirmToken: token,
     });
+
+    if (created) {
+      const url = AuthHelper.createConfirmationUrl(token)
+      await sendEmail(created.email, url)
+    }
 
     return {
       user: created,
@@ -88,6 +95,10 @@ export class AuthService {
 
     return user;
   }
+
+  // public async changePassword(input: AuthChangePasswordInput): Promise<User> {
+  //
+  // }
 
   public signToken(id: number) {
     const payload: JwtDto = { userId: id };
