@@ -17,6 +17,8 @@ import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { sendEmail } from '../shared/sendEmail';
 import { RedisService } from '../redis/redis.service';
+import { AuthForgotPasswordInput } from "./dto/auth-forgot-password.input";
+import { confirmUserPrefix, forgotPasswordPrefix } from "../shared/consts/redisPrefixed.const";
 
 @Injectable()
 export class AuthService {
@@ -64,7 +66,7 @@ export class AuthService {
     }
 
     const hashedPassword = await AuthHelper.hashPassword(input.password);
-    const token = nanoid(32);
+    const token = confirmUserPrefix + nanoid(32);
 
     const created = await this.userModel.create({
       ...input,
@@ -72,7 +74,7 @@ export class AuthService {
     });
 
     if (created) {
-      const url = AuthHelper.createConfirmationUrl(token);
+      const url = AuthHelper.createConfirmUserUrl(token);
       await sendEmail(created.email, url);
       await this.redisService.setValue(token, created._id);
     }
@@ -98,9 +100,19 @@ export class AuthService {
     return true;
   }
 
-  // public async changePassword(input: AuthChangePasswordInput): Promise<User> {
-  //
-  // }
+  public async forgotPassword(input: AuthForgotPasswordInput): Promise<Boolean> {
+    const user = await this.userModel.findOne({ email: input.email });
+
+    if (!user) {
+      return false;
+    }
+
+    const token = forgotPasswordPrefix + nanoid(32);
+    const url = AuthHelper.createForgotPasswordUrl(token);
+    await sendEmail(user.email, url)
+
+    return true;
+  }
 
   public signToken(id: number) {
     const payload: JwtDto = { userId: id };

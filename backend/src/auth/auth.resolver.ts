@@ -7,6 +7,7 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { User } from './models/user.schema';
+import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 
 @Resolver()
 export class AuthResolver {
@@ -39,5 +40,13 @@ export class AuthResolver {
     input: AuthRegisterInput,
   ) {
     return this.authService.register(input);
+  }
+
+  @Mutation(() => Boolean)
+  forgotPassword(
+    @Args({ name: 'input', type: () => AuthForgotPasswordInput })
+    input: AuthForgotPasswordInput,
+  ) {
+    return this.authService.forgotPassword(input);
   }
 }
