@@ -66,17 +66,15 @@ export class AuthService {
     const hashedPassword = await AuthHelper.hashPassword(input.password);
     const token = nanoid(32);
 
-    await this.redisService.setValue('13', '23')
-
     const created = await this.userModel.create({
       ...input,
       password: hashedPassword,
-      confirmToken: token,
     });
 
     if (created) {
       const url = AuthHelper.createConfirmationUrl(token);
       await sendEmail(created.email, url);
+      await this.redisService.setValue(token, created._id);
     }
 
     return {
@@ -85,19 +83,19 @@ export class AuthService {
     };
   }
 
-  public async confirmAccount(input: AuthConfirmInput): Promise<User> {
-    const user = await this.userModel.findOne({ email: input.email });
+  public async confirmAccount(input: AuthConfirmInput): Promise<Boolean> {
+    const userId = await this.redisService.getValue(input.confirmToken);
+    const user = await this.userModel.findOne({ _id: userId });
 
-    if (!user || input.confirmToken !== user.confirmToken) {
-      throw new BadRequestException(
-        `Cannot confirm user with email ${input.email}`,
-      );
+    if (!user) {
+      return false;
     }
 
     user.confirm = true;
     await user.save();
+    await this.redisService.delete(input.confirmToken);
 
-    return user;
+    return true;
   }
 
   // public async changePassword(input: AuthChangePasswordInput): Promise<User> {

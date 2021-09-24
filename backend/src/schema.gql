@@ -22,7 +22,7 @@ type Query {
 
 type Mutation {
   login(input: AuthLoginInput!): UserToken!
-  confirmAccount(input: AuthConfirmInput!): User!
+  confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
 }
 
@@ -32,7 +32,6 @@ input AuthLoginInput {
 }
 
 input AuthConfirmInput {
-  email: String!
   confirmToken: String!
 }
 

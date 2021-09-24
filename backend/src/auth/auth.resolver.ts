@@ -25,7 +25,7 @@ export class AuthResolver {
     return this.authService.login(input);
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   confirmAccount(
     @Args({ name: 'input', type: () => AuthConfirmInput })
     input: AuthConfirmInput,

@@ -36,12 +36,6 @@ export class User {
   @Prop({ required: true, default: false })
   @Field()
   confirm: boolean;
-
-  @Prop({ required: false, default: null })
-  confirmToken: string | null;
-
-  @Prop({ required: false, default: null })
-  changePasswordToken: string | null;
 }
 
 export type UserDocument = User & Document;
