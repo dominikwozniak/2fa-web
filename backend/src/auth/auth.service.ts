@@ -19,6 +19,7 @@ import { sendEmail } from '../shared/sendEmail';
 import { RedisService } from '../redis/redis.service';
 import { AuthForgotPasswordInput } from "./dto/auth-forgot-password.input";
 import { confirmUserPrefix, forgotPasswordPrefix } from "../shared/consts/redisPrefixed.const";
+import { AuthChangePasswordInput } from "./dto/auth-change-password.input";
 
 @Injectable()
 export class AuthService {
@@ -66,7 +67,6 @@ export class AuthService {
     }
 
     const hashedPassword = await AuthHelper.hashPassword(input.password);
-    const token = confirmUserPrefix + nanoid(32);
 
     const created = await this.userModel.create({
       ...input,
@@ -74,9 +74,11 @@ export class AuthService {
     });
 
     if (created) {
+      const token = nanoid(32);
+      const saveToken = confirmUserPrefix + token;
       const url = AuthHelper.createConfirmUserUrl(token);
       await sendEmail(created.email, url);
-      await this.redisService.setValue(token, created._id);
+      await this.redisService.setValue(saveToken, created._id);
     }
 
     return {
@@ -86,7 +88,8 @@ export class AuthService {
   }
 
   public async confirmAccount(input: AuthConfirmInput): Promise<Boolean> {
-    const userId = await this.redisService.getValue(input.confirmToken);
+    const token = confirmUserPrefix + input.confirmToken;
+    const userId = await this.redisService.getValue(token);
     const user = await this.userModel.findOne({ _id: userId });
 
     if (!user) {
@@ -95,7 +98,7 @@ export class AuthService {
 
     user.confirm = true;
     await user.save();
-    await this.redisService.delete(input.confirmToken);
+    await this.redisService.delete(token);
 
     return true;
   }
@@ -107,11 +110,43 @@ export class AuthService {
       return false;
     }
 
-    const token = forgotPasswordPrefix + nanoid(32);
+    const token = nanoid(32);
+    const saveToken = forgotPasswordPrefix + token;
     const url = AuthHelper.createForgotPasswordUrl(token);
     await sendEmail(user.email, url)
+    await this.redisService.setValue(saveToken, user._id)
 
     return true;
+  }
+
+  public async changePassword(input: AuthChangePasswordInput): Promise<UserToken> {
+    const token = forgotPasswordPrefix + input.token;
+    const userId = await this.redisService.getValue(token);
+
+    if (!userId) {
+      throw new BadRequestException(
+        `Cannot change password`,
+      );
+    }
+
+    const user = await this.userModel.findOne({ _id: userId });
+
+    if (!user) {
+      throw new BadRequestException(
+        `Cannot change password`,
+      );
+    }
+
+    await this.redisService.delete(token);
+    const hashedPassword = await AuthHelper.hashPassword(input.password);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return {
+      user,
+      token: this.signToken(user.id),
+    };
   }
 
   public signToken(id: number) {

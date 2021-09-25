@@ -8,6 +8,7 @@ import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { User } from './models/user.schema';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
+import { AuthChangePasswordInput } from "./dto/auth-change-password.input";
 
 @Resolver()
 export class AuthResolver {
@@ -48,5 +49,13 @@ export class AuthResolver {
     input: AuthForgotPasswordInput,
   ) {
     return this.authService.forgotPassword(input);
+  }
+
+  @Mutation(() => UserToken)
+  changePassword(
+    @Args({ name: 'input', type: () => AuthChangePasswordInput })
+    input: AuthChangePasswordInput,
+  ) {
+    return this.authService.changePassword(input);
   }
 }
