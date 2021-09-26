@@ -11,15 +11,23 @@ import { User, UserDocument } from './models/user.schema';
 import { Model } from 'mongoose';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
+import { UserLogin } from './models/user-login';
 import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { sendEmail } from '../shared/sendEmail';
 import { RedisService } from '../redis/redis.service';
-import { AuthForgotPasswordInput } from "./dto/auth-forgot-password.input";
-import { confirmUserPrefix, forgotPasswordPrefix } from "../shared/consts/redisPrefixed.const";
-import { AuthChangePasswordInput } from "./dto/auth-change-password.input";
+import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
+import {
+  confirmUserPrefix,
+  forgotPasswordPrefix,
+} from '../shared/consts/redisPrefixed.const';
+import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import { generateQr } from '../shared/generateQr';
+import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
+import { AuthVerifyInput } from './dto/auth-verify.input';
+import { twoFactorVerify } from '../shared/twoFactorVerify';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +37,7 @@ export class AuthService {
     private readonly redisService: RedisService,
   ) {}
 
-  public async login(input: AuthLoginInput): Promise<UserToken> {
+  public async login(input: AuthLoginInput): Promise<UserLogin> {
     const found = await this.userModel.findOne({ email: input.email });
 
     if (!found) {
@@ -51,9 +59,51 @@ export class AuthService {
       throw new BadRequestException('User is not active');
     }
 
+    if (found.twoFactorEnabled) {
+      const { otpauth_url, base32 } = twoFactorGenerateSecret();
+
+      if (!found.twoFactorToken) {
+        found.twoFactorToken = base32;
+        await found.save();
+
+        return {
+          qrUrl: await generateQr(otpauth_url),
+        };
+      }
+
+      return {
+        useAuthenticator: true,
+      };
+    }
+
     return {
       user: found,
       token: this.signToken(found.id),
+    };
+  }
+
+  public async verifyLogin(input: AuthVerifyInput): Promise<UserToken> {
+    const user = await this.userModel.findOne({ email: input.email });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with email ${input.email} does not exist`,
+      );
+    }
+
+    if (!user.twoFactorToken) {
+      throw new BadRequestException('Base token is not valid');
+    }
+
+    const verified = twoFactorVerify(user.twoFactorToken, input.token);
+
+    if (!verified) {
+      throw new BadRequestException('User is not verified');
+    }
+
+    return {
+      user,
+      token: this.signToken(user.id),
     };
   }
 
@@ -103,7 +153,9 @@ export class AuthService {
     return true;
   }
 
-  public async forgotPassword(input: AuthForgotPasswordInput): Promise<Boolean> {
+  public async forgotPassword(
+    input: AuthForgotPasswordInput,
+  ): Promise<Boolean> {
     const user = await this.userModel.findOne({ email: input.email });
 
     if (!user) {
@@ -113,28 +165,26 @@ export class AuthService {
     const token = nanoid(32);
     const saveToken = forgotPasswordPrefix + token;
     const url = AuthHelper.createForgotPasswordUrl(token);
-    await sendEmail(user.email, url)
-    await this.redisService.setValue(saveToken, user._id)
+    await sendEmail(user.email, url);
+    await this.redisService.setValue(saveToken, user._id);
 
     return true;
   }
 
-  public async changePassword(input: AuthChangePasswordInput): Promise<UserToken> {
+  public async changePassword(
+    input: AuthChangePasswordInput,
+  ): Promise<UserToken> {
     const token = forgotPasswordPrefix + input.token;
     const userId = await this.redisService.getValue(token);
 
     if (!userId) {
-      throw new BadRequestException(
-        `Cannot change password`,
-      );
+      throw new BadRequestException(`Cannot change password`);
     }
 
     const user = await this.userModel.findOne({ _id: userId });
 
     if (!user) {
-      throw new BadRequestException(
-        `Cannot change password`,
-      );
+      throw new BadRequestException(`Cannot change password`);
     }
 
     await this.redisService.delete(token);

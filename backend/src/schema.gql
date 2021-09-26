@@ -9,6 +9,7 @@ type User {
   lastName: String
   bio: String!
   confirm: Boolean!
+  twoFactorEnabled: Boolean!
 }
 
 type UserToken {
@@ -16,19 +17,35 @@ type UserToken {
   user: User!
 }
 
+type UserLogin {
+  token: String
+  user: User
+  qrUrl: String
+  useAuthenticator: Boolean!
+}
+
 type Query {
   hello: String!
 }
 
 type Mutation {
-  login(input: AuthLoginInput!): UserToken!
+  login(input: AuthLoginInput!): UserLogin
+  verifyLogin(input: AuthVerifyInput!): UserToken!
   confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
+  forgotPassword(input: AuthForgotPasswordInput!): Boolean!
+  changePassword(input: AuthChangePasswordInput!): UserToken!
 }
 
 input AuthLoginInput {
   email: String!
   password: String!
+}
+
+input AuthVerifyInput {
+  email: String!
+  password: String!
+  token: String!
 }
 
 input AuthConfirmInput {
@@ -39,5 +56,15 @@ input AuthRegisterInput {
   email: String!
   firstName: String
   lastName: String
+  twoFactorEnabled: Boolean = false
   password: String!
+}
+
+input AuthForgotPasswordInput {
+  email: String!
+}
+
+input AuthChangePasswordInput {
+  password: String!
+  token: String!
 }
