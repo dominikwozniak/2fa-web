@@ -22,8 +22,12 @@ import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import {
   confirmUserPrefix,
   forgotPasswordPrefix,
+  twoFactorGeneratePrefix,
 } from '../shared/consts/redisPrefixed.const';
 import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import * as speakeasy from 'speakeasy';
+import { generateQr } from '../shared/generateQr';
+import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 
 @Injectable()
 export class AuthService {
@@ -56,9 +60,12 @@ export class AuthService {
     }
 
     if (found.twoFactorEnabled) {
+      const { otpauth_url, saveToken } = await this.loginTwoFactor()
+
       return {
-        qrUrl: '123'
-      }
+        qrUrl: await generateQr(otpauth_url),
+        twoFactorKey: saveToken,
+      };
     }
 
     return {
@@ -163,6 +170,18 @@ export class AuthService {
     const payload: JwtDto = { userId: id };
 
     return this.jwtService.sign(payload);
+  }
+
+  public async loginTwoFactor() {
+    const { otpauth_url, base32 } = twoFactorGenerateSecret();
+    const token = nanoid(32);
+    const saveToken = twoFactorGeneratePrefix + token;
+    await this.redisService.setValue(saveToken, base32);
+
+    return {
+      otpauth_url,
+      saveToken
+    }
   }
 
   public async validateUser(userId: number) {

@@ -11,4 +11,7 @@ export class UserLogin {
 
   @Field({ nullable: true })
   qrUrl?: string;
+
+  @Field({ nullable: true })
+  twoFactorKey?: string;
 }
