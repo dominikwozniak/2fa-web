@@ -17,12 +17,18 @@ type UserToken {
   user: User!
 }
 
+type UserLogin {
+  token: String
+  user: User
+  qrUrl: String
+}
+
 type Query {
   hello: String!
 }
 
 type Mutation {
-  login(input: AuthLoginInput!): UserToken!
+  login(input: AuthLoginInput!): UserLogin
   confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!

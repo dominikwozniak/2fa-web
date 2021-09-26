@@ -11,15 +11,19 @@ import { User, UserDocument } from './models/user.schema';
 import { Model } from 'mongoose';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
+import { UserLogin } from './models/user-login';
 import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { sendEmail } from '../shared/sendEmail';
 import { RedisService } from '../redis/redis.service';
-import { AuthForgotPasswordInput } from "./dto/auth-forgot-password.input";
-import { confirmUserPrefix, forgotPasswordPrefix } from "../shared/consts/redisPrefixed.const";
-import { AuthChangePasswordInput } from "./dto/auth-change-password.input";
+import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
+import {
+  confirmUserPrefix,
+  forgotPasswordPrefix,
+} from '../shared/consts/redisPrefixed.const';
+import { AuthChangePasswordInput } from './dto/auth-change-password.input';
 
 @Injectable()
 export class AuthService {
@@ -29,7 +33,7 @@ export class AuthService {
     private readonly redisService: RedisService,
   ) {}
 
-  public async login(input: AuthLoginInput): Promise<UserToken> {
+  public async login(input: AuthLoginInput): Promise<UserLogin> {
     const found = await this.userModel.findOne({ email: input.email });
 
     if (!found) {
@@ -103,7 +107,9 @@ export class AuthService {
     return true;
   }
 
-  public async forgotPassword(input: AuthForgotPasswordInput): Promise<Boolean> {
+  public async forgotPassword(
+    input: AuthForgotPasswordInput,
+  ): Promise<Boolean> {
     const user = await this.userModel.findOne({ email: input.email });
 
     if (!user) {
@@ -113,28 +119,26 @@ export class AuthService {
     const token = nanoid(32);
     const saveToken = forgotPasswordPrefix + token;
     const url = AuthHelper.createForgotPasswordUrl(token);
-    await sendEmail(user.email, url)
-    await this.redisService.setValue(saveToken, user._id)
+    await sendEmail(user.email, url);
+    await this.redisService.setValue(saveToken, user._id);
 
     return true;
   }
 
-  public async changePassword(input: AuthChangePasswordInput): Promise<UserToken> {
+  public async changePassword(
+    input: AuthChangePasswordInput,
+  ): Promise<UserToken> {
     const token = forgotPasswordPrefix + input.token;
     const userId = await this.redisService.getValue(token);
 
     if (!userId) {
-      throw new BadRequestException(
-        `Cannot change password`,
-      );
+      throw new BadRequestException(`Cannot change password`);
     }
 
     const user = await this.userModel.findOne({ _id: userId });
 
     if (!user) {
-      throw new BadRequestException(
-        `Cannot change password`,
-      );
+      throw new BadRequestException(`Cannot change password`);
     }
 
     await this.redisService.delete(token);
