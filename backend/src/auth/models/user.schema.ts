@@ -40,6 +40,9 @@ export class User {
   @Prop({ required: false, default: false })
   @Field()
   twoFactorEnabled: boolean;
+
+  @Prop({ required: false, default: '' })
+  twoFactorToken: string;
 }
 
 export type UserDocument = User & Document;
