@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { JwtService } from '@nestjs/jwt';
 import { nanoid } from 'nanoid';
 import { User, UserDocument } from './models/user.schema';
 import { Model } from 'mongoose';
@@ -12,15 +13,20 @@ import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
 import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
-import { JwtService } from '@nestjs/jwt';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
+import { sendEmail } from '../shared/sendEmail';
+import { RedisService } from '../redis/redis.service';
+import { AuthForgotPasswordInput } from "./dto/auth-forgot-password.input";
+import { confirmUserPrefix, forgotPasswordPrefix } from "../shared/consts/redisPrefixed.const";
+import { AuthChangePasswordInput } from "./dto/auth-change-password.input";
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
 
   public async login(input: AuthLoginInput): Promise<UserToken> {
@@ -61,12 +67,19 @@ export class AuthService {
     }
 
     const hashedPassword = await AuthHelper.hashPassword(input.password);
-    const token = nanoid(32);
+
     const created = await this.userModel.create({
       ...input,
       password: hashedPassword,
-      confirmToken: token,
     });
+
+    if (created) {
+      const token = nanoid(32);
+      const saveToken = confirmUserPrefix + token;
+      const url = AuthHelper.createConfirmUserUrl(token);
+      await sendEmail(created.email, url);
+      await this.redisService.setValue(saveToken, created._id);
+    }
 
     return {
       user: created,
@@ -74,19 +87,66 @@ export class AuthService {
     };
   }
 
-  public async confirmAccount(input: AuthConfirmInput): Promise<User> {
-    const user = await this.userModel.findOne({ email: input.email });
+  public async confirmAccount(input: AuthConfirmInput): Promise<Boolean> {
+    const token = confirmUserPrefix + input.confirmToken;
+    const userId = await this.redisService.getValue(token);
+    const user = await this.userModel.findOne({ _id: userId });
 
-    if (!user || input.confirmToken !== user.confirmToken) {
-      throw new BadRequestException(
-        `Cannot confirm user with email ${input.email}`,
-      );
+    if (!user) {
+      return false;
     }
 
     user.confirm = true;
     await user.save();
+    await this.redisService.delete(token);
 
-    return user;
+    return true;
+  }
+
+  public async forgotPassword(input: AuthForgotPasswordInput): Promise<Boolean> {
+    const user = await this.userModel.findOne({ email: input.email });
+
+    if (!user) {
+      return false;
+    }
+
+    const token = nanoid(32);
+    const saveToken = forgotPasswordPrefix + token;
+    const url = AuthHelper.createForgotPasswordUrl(token);
+    await sendEmail(user.email, url)
+    await this.redisService.setValue(saveToken, user._id)
+
+    return true;
+  }
+
+  public async changePassword(input: AuthChangePasswordInput): Promise<UserToken> {
+    const token = forgotPasswordPrefix + input.token;
+    const userId = await this.redisService.getValue(token);
+
+    if (!userId) {
+      throw new BadRequestException(
+        `Cannot change password`,
+      );
+    }
+
+    const user = await this.userModel.findOne({ _id: userId });
+
+    if (!user) {
+      throw new BadRequestException(
+        `Cannot change password`,
+      );
+    }
+
+    await this.redisService.delete(token);
+    const hashedPassword = await AuthHelper.hashPassword(input.password);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    return {
+      user,
+      token: this.signToken(user.id),
+    };
   }
 
   public signToken(id: number) {

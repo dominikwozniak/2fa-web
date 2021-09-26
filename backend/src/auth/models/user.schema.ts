@@ -26,21 +26,16 @@ export class User {
   @Field({ nullable: true })
   lastName: string;
 
-  @Prop({ minlength: 5, required: [true, 'Password is required'] })
+  @Prop({ required: false, default: '' })
   @Field()
+  bio: string;
+
+  @Prop({ minlength: 5, required: [true, 'Password is required'] })
   password: string;
 
   @Prop({ required: true, default: false })
   @Field()
   confirm: boolean;
-
-  @Prop({ required: false, default: '' })
-  @Field()
-  confirmToken: string;
-
-  @Prop({ required: false, default: '' })
-  @Field()
-  bio: string;
 }
 
 export type UserDocument = User & Document;

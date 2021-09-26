@@ -7,10 +7,8 @@ type User {
   email: String!
   firstName: String
   lastName: String
-  password: String!
-  confirm: Boolean!
-  confirmToken: String!
   bio: String!
+  confirm: Boolean!
 }
 
 type UserToken {
@@ -24,7 +22,7 @@ type Query {
 
 type Mutation {
   login(input: AuthLoginInput!): UserToken!
-  confirmAccount(input: AuthConfirmInput!): User!
+  confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
 }
 
@@ -34,7 +32,6 @@ input AuthLoginInput {
 }
 
 input AuthConfirmInput {
-  email: String!
   confirmToken: String!
 }
 
