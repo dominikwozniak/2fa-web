@@ -21,7 +21,7 @@ type UserLogin {
   token: String
   user: User
   qrUrl: String
-  twoFactorKey: String
+  useAuthenticator: Boolean!
 }
 
 type Query {
@@ -30,7 +30,7 @@ type Query {
 
 type Mutation {
   login(input: AuthLoginInput!): UserLogin
-  verifyLogin(input: AuthLoginInput!): UserToken!
+  verifyLogin(input: AuthVerifyInput!): UserToken!
   confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
@@ -40,6 +40,12 @@ type Mutation {
 input AuthLoginInput {
   email: String!
   password: String!
+}
+
+input AuthVerifyInput {
+  email: String!
+  password: String!
+  token: String!
 }
 
 input AuthConfirmInput {

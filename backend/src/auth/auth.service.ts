@@ -22,12 +22,12 @@ import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import {
   confirmUserPrefix,
   forgotPasswordPrefix,
-  twoFactorGeneratePrefix,
 } from '../shared/consts/redisPrefixed.const';
 import { AuthChangePasswordInput } from './dto/auth-change-password.input';
-import * as speakeasy from 'speakeasy';
 import { generateQr } from '../shared/generateQr';
 import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
+import { AuthVerifyInput } from './dto/auth-verify.input';
+import { twoFactorVerify } from '../shared/twoFactorVerify';
 
 @Injectable()
 export class AuthService {
@@ -60,17 +60,50 @@ export class AuthService {
     }
 
     if (found.twoFactorEnabled) {
-      const { otpauth_url, saveToken } = await this.loginTwoFactor()
+      const { otpauth_url, base32 } = twoFactorGenerateSecret();
+
+      if (!found.twoFactorToken) {
+        found.twoFactorToken = base32;
+        await found.save();
+
+        return {
+          qrUrl: await generateQr(otpauth_url),
+        };
+      }
 
       return {
-        qrUrl: await generateQr(otpauth_url),
-        twoFactorKey: saveToken,
+        useAuthenticator: true,
       };
     }
 
     return {
       user: found,
       token: this.signToken(found.id),
+    };
+  }
+
+  public async verifyLogin(input: AuthVerifyInput): Promise<UserToken> {
+    const user = await this.userModel.findOne({ email: input.email });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with email ${input.email} does not exist`,
+      );
+    }
+
+    if (!user.twoFactorToken) {
+      throw new BadRequestException('Base token is not valid');
+    }
+
+    const verified = twoFactorVerify(user.twoFactorToken, input.token);
+
+    if (!verified) {
+      throw new BadRequestException('User is not verified');
+    }
+
+    return {
+      user,
+      token: this.signToken(user.id),
     };
   }
 
@@ -170,18 +203,6 @@ export class AuthService {
     const payload: JwtDto = { userId: id };
 
     return this.jwtService.sign(payload);
-  }
-
-  public async loginTwoFactor() {
-    const { otpauth_url, base32 } = twoFactorGenerateSecret();
-    const token = nanoid(32);
-    const saveToken = twoFactorGeneratePrefix + token;
-    await this.redisService.setValue(saveToken, base32);
-
-    return {
-      otpauth_url,
-      saveToken
-    }
   }
 
   public async validateUser(userId: number) {
