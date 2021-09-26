@@ -55,6 +55,12 @@ export class AuthService {
       throw new BadRequestException('User is not active');
     }
 
+    if (found.twoFactorEnabled) {
+      return {
+        qrUrl: '123'
+      }
+    }
+
     return {
       user: found,
       token: this.signToken(found.id),
