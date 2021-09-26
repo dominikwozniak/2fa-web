@@ -24,6 +24,10 @@ type UserLogin {
   useAuthenticator: Boolean!
 }
 
+type QrCode {
+  qrUrl: String!
+}
+
 type Query {
   hello: String!
 }
@@ -35,6 +39,7 @@ type Mutation {
   register(input: AuthRegisterInput!): UserToken!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
   changePassword(input: AuthChangePasswordInput!): UserToken!
+  changeAuthenticationDevice: QrCode!
 }
 
 input AuthLoginInput {

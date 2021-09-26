@@ -9,7 +9,10 @@ import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthChangePasswordInput } from './dto/auth-change-password.input';
-import { AuthVerifyInput } from "./dto/auth-verify.input";
+import { AuthVerifyInput } from './dto/auth-verify.input';
+import { CtxUser } from "./decorators/ctx-user.decorator";
+import { User } from "./models/user.schema";
+import { QrCode } from "./models/qr-code";
 
 @Resolver()
 export class AuthResolver {
@@ -30,7 +33,8 @@ export class AuthResolver {
 
   @Mutation(() => UserToken)
   verifyLogin(
-    @Args({ name: 'input', type: () => AuthVerifyInput }) input: AuthVerifyInput,
+    @Args({ name: 'input', type: () => AuthVerifyInput })
+    input: AuthVerifyInput,
   ) {
     return this.authService.verifyLogin(input);
   }
@@ -65,5 +69,13 @@ export class AuthResolver {
     input: AuthChangePasswordInput,
   ) {
     return this.authService.changePassword(input);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => QrCode)
+  changeAuthenticationDevice(
+    @CtxUser() user: User,
+  ) {
+    return this.authService.changeAuthenticationDevice(user)
   }
 }

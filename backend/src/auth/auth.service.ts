@@ -28,6 +28,7 @@ import { generateQr } from '../shared/generateQr';
 import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { twoFactorVerify } from '../shared/twoFactorVerify';
+import { QrCode } from "./models/qr-code";
 
 @Injectable()
 export class AuthService {
@@ -197,6 +198,30 @@ export class AuthService {
       user,
       token: this.signToken(user.id),
     };
+  }
+
+  public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      throw new BadRequestException(
+        `Cannot find user with email ${userInput.email}`,
+      );
+    }
+
+    if (!user.twoFactorEnabled) {
+      throw new BadRequestException(
+        `${user.email} is not using two factor authentication`,
+      );
+    }
+
+    const { otpauth_url, base32 } = twoFactorGenerateSecret();
+    user.twoFactorToken = base32;
+    await user.save();
+
+    return {
+      qrUrl: await generateQr(otpauth_url),
+    }
   }
 
   public signToken(id: number) {
