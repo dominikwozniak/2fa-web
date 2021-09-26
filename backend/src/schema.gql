@@ -9,6 +9,7 @@ type User {
   lastName: String
   bio: String!
   confirm: Boolean!
+  twoFactorEnabled: Boolean!
 }
 
 type UserToken {
@@ -24,6 +25,8 @@ type Mutation {
   login(input: AuthLoginInput!): UserToken!
   confirmAccount(input: AuthConfirmInput!): Boolean!
   register(input: AuthRegisterInput!): UserToken!
+  forgotPassword(input: AuthForgotPasswordInput!): Boolean!
+  changePassword(input: AuthChangePasswordInput!): UserToken!
 }
 
 input AuthLoginInput {
@@ -39,5 +42,15 @@ input AuthRegisterInput {
   email: String!
   firstName: String
   lastName: String
+  twoFactorEnabled: Boolean = false
   password: String!
+}
+
+input AuthForgotPasswordInput {
+  email: String!
+}
+
+input AuthChangePasswordInput {
+  password: String!
+  token: String!
 }

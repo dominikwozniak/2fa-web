@@ -6,10 +6,13 @@ export class AuthRegisterInput {
   email: string;
 
   @Field({ nullable: true })
-  firstName: string;
+  firstName?: string;
 
   @Field({ nullable: true })
-  lastName: string;
+  lastName?: string;
+
+  @Field({ defaultValue: false })
+  twoFactorEnabled?: boolean;
 
   @Field()
   password: string;

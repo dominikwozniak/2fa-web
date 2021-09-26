@@ -36,6 +36,10 @@ export class User {
   @Prop({ required: true, default: false })
   @Field()
   confirm: boolean;
+
+  @Prop({ required: false, default: false })
+  @Field()
+  twoFactorEnabled: boolean;
 }
 
 export type UserDocument = User & Document;
