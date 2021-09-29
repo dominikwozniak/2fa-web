@@ -28,7 +28,7 @@ import { generateQr } from '../shared/generateQr';
 import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { twoFactorVerify } from '../shared/twoFactorVerify';
-import { QrCode } from "./models/qr-code";
+import { QrCode } from './models/qr-code';
 
 @Injectable()
 export class AuthService {
@@ -80,6 +80,21 @@ export class AuthService {
     return {
       user: found,
       token: this.signToken(found.id),
+    };
+  }
+
+  public async whoAmI(userInput: User): Promise<UserToken> {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      throw new NotFoundException(
+        `User with email ${userInput.email} does not exist`,
+      );
+    }
+
+    return {
+      user,
+      token: this.signToken(user.id),
     };
   }
 
@@ -221,7 +236,7 @@ export class AuthService {
 
     return {
       qrUrl: await generateQr(otpauth_url),
-    }
+    };
   }
 
   public signToken(id: number) {

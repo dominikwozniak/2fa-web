@@ -10,9 +10,9 @@ import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthChangePasswordInput } from './dto/auth-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
-import { CtxUser } from "./decorators/ctx-user.decorator";
-import { User } from "./models/user.schema";
-import { QrCode } from "./models/qr-code";
+import { CtxUser } from './decorators/ctx-user.decorator';
+import { User } from './models/user.schema';
+import { QrCode } from './models/qr-code';
 
 @Resolver()
 export class AuthResolver {
@@ -22,6 +22,12 @@ export class AuthResolver {
   @Query(() => String)
   hello() {
     return 'Hello world';
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(() => UserToken)
+  WhoAmI(@CtxUser() user: User) {
+    return this.authService.whoAmI(user);
   }
 
   @Mutation(() => UserLogin, { nullable: true })
@@ -73,9 +79,7 @@ export class AuthResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => QrCode)
-  changeAuthenticationDevice(
-    @CtxUser() user: User,
-  ) {
-    return this.authService.changeAuthenticationDevice(user)
+  changeAuthenticationDevice(@CtxUser() user: User) {
+    return this.authService.changeAuthenticationDevice(user);
   }
 }

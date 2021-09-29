@@ -30,6 +30,7 @@ type QrCode {
 
 type Query {
   hello: String!
+  WhoAmI: UserToken!
 }
 
 type Mutation {
