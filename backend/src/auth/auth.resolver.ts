@@ -19,12 +19,6 @@ export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
   @UseGuards(GqlAuthGuard)
-  @Query(() => String)
-  hello() {
-    return 'Hello world';
-  }
-
-  @UseGuards(GqlAuthGuard)
   @Query(() => UserToken)
   WhoAmI(@CtxUser() user: User) {
     return this.authService.whoAmI(user);
