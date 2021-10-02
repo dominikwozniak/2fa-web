@@ -1,13 +1,20 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
+import Router from 'next/router';
 import MainTemplate from '@/templates/MainTemplate';
 import img from '@/public/assets/phone_data.svg';
 import { UserSignUpPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
+import withApollo from '@/lib/withApollo';
+import { useRegisterMutation } from '../generated';
+import { ToastContainer } from 'react-toastify';
+import { popupNotification } from '@/utils/popup-notification';
 
 const Signup: React.FC = () => {
+  const [registerUser, ctx] = useRegisterMutation();
+  const buttonLoading = ctx.loading ? 'is-loading' : '';
   const {
     handleSubmit,
     register,
@@ -18,9 +25,24 @@ const Signup: React.FC = () => {
   const onSubmit = useCallback(
     async (data: UserSignUpPayload) => {
       try {
-        console.log('sign up', data);
+        console.log('DATA >>>', data)
+
+        await registerUser({
+          variables: {
+            email: data.email,
+            password: data.password,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            twoFactorEnabled: data.twoFactorEnabled
+          },
+        });
+
+        if (ctx.data?.registerUser.user) {
+          await Router.push('/');
+        }
       } catch (err) {
-        console.error('error', err);
+        console.error('register error', err);
+        popupNotification(`Cannot register user with ${data.email}`);
       }
     },
     [reset],
@@ -30,7 +52,7 @@ const Signup: React.FC = () => {
     <MainTemplate title={'Sign up'}>
       <div className="is-flex is-flex-direction-column signup">
         <div className="is-flex is-flex-direction-column is-justify-content-center signup__header">
-          <Image src={img} alt={'Signup banner image'} width={250} />
+          <Image src={img} alt={'Signup banner image'} width={200} />
           <h1>Sign up</h1>
           <h4>I’m glad that you are joing the group of users</h4>
         </div>
@@ -68,31 +90,18 @@ const Signup: React.FC = () => {
               />
             </div>
             <div className="half-column">
-              {errors.secondName && <ErrorInputIcon />}
+              {errors.lastName && <ErrorInputIcon />}
               <input
                 type="text"
-                aria-invalid={errors.secondName ? 'true' : 'false'}
-                placeholder="Second name"
-                {...register('secondName', {
+                aria-invalid={errors.lastName ? 'true' : 'false'}
+                placeholder="Last name"
+                {...register('lastName', {
                   required: true,
                   maxLength: 30,
                   minLength: 2,
                 })}
               />
             </div>
-          </div>
-          <div className="column p-0">
-            {errors.username && <ErrorInputIcon />}
-            <input
-              type="text"
-              aria-invalid={errors.username ? 'true' : 'false'}
-              placeholder="Username"
-              {...register('username', {
-                required: true,
-                maxLength: 20,
-                minLength: 5,
-              })}
-            />
           </div>
           <div className="column p-0">
             {errors.password && <ErrorInputIcon />}
@@ -107,8 +116,17 @@ const Signup: React.FC = () => {
               })}
             />
           </div>
+          <div className="column p-0">
+            <label className="checkbox is-flex is-align-items-center">
+              <input
+                type="checkbox"
+                {...register('twoFactorEnabled')}
+              />
+              Use two-factor authentication
+            </label>
+          </div>
           <button
-            className="column button is-primary is-flex mx-auto mt-3"
+            className={`column button is-primary is-flex mx-auto mt-3 ${buttonLoading}`}
             type="submit"
           >
             Create an account!
@@ -119,8 +137,9 @@ const Signup: React.FC = () => {
           </div>
         </form>
       </div>
+      <ToastContainer />
     </MainTemplate>
   );
 };
 
-export default Signup;
+export default withApollo(Signup);
