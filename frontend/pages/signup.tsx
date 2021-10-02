@@ -13,8 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
 
 const Signup: React.FC = () => {
-  const [registerUser, ctx] = useRegisterMutation();
-  const buttonLoading = ctx.loading ? 'is-loading' : '';
+  const [registerMutation, { data, loading }] = useRegisterMutation();
   const {
     handleSubmit,
     register,
@@ -23,30 +22,30 @@ const Signup: React.FC = () => {
   } = useForm<UserSignUpPayload>();
 
   const onSubmit = useCallback(
-    async (data: UserSignUpPayload) => {
+    async (form: UserSignUpPayload) => {
       try {
-        console.log('DATA >>>', data)
-
-        await registerUser({
+        await registerMutation({
           variables: {
-            email: data.email,
-            password: data.password,
-            firstName: data.firstName,
-            lastName: data.lastName,
-            twoFactorEnabled: data.twoFactorEnabled
+            email: form.email,
+            password: form.password,
+            firstName: form.firstName,
+            lastName: form.lastName,
+            twoFactorEnabled: form.twoFactorEnabled,
           },
         });
-
-        if (ctx.data?.registerUser.user) {
-          await Router.push('/');
-        }
       } catch (err) {
         console.error('register error', err);
-        popupNotification(`Cannot register user with ${data.email}`);
+        popupNotification(`Cannot register user with ${form.email}`);
       }
     },
-    [reset],
+    [reset, data, registerMutation],
   );
+
+  useEffect(() => {
+    if (data?.registerUser.user) {
+      Router.push('/');
+    }
+  }, [data]);
 
   return (
     <MainTemplate title={'Sign up'}>
@@ -118,15 +117,12 @@ const Signup: React.FC = () => {
           </div>
           <div className="column p-0">
             <label className="checkbox is-flex is-align-items-center">
-              <input
-                type="checkbox"
-                {...register('twoFactorEnabled')}
-              />
+              <input type="checkbox" {...register('twoFactorEnabled')} />
               Use two-factor authentication
             </label>
           </div>
           <button
-            className={`column button is-primary is-flex mx-auto mt-3 ${buttonLoading}`}
+            className={`column button is-primary is-flex mx-auto mt-3 ${loading ? 'is-loading' : ''}`}
             type="submit"
           >
             Create an account!
