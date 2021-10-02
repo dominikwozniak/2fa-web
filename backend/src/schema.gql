@@ -36,7 +36,7 @@ type Mutation {
   login(input: AuthLoginInput!): UserLogin
   verifyLogin(input: AuthVerifyInput!): UserToken!
   confirmAccount(input: AuthConfirmInput!): Boolean!
-  register(input: AuthRegisterInput!): UserToken!
+  registerUser(input: AuthRegisterInput!): UserToken!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
   changePassword(input: AuthChangePasswordInput!): UserToken!
   changeAuthenticationDevice: QrCode!

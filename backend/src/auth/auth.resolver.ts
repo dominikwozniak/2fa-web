@@ -48,7 +48,7 @@ export class AuthResolver {
   }
 
   @Mutation(() => UserToken)
-  register(
+  registerUser(
     @Args({ name: 'input', type: () => AuthRegisterInput })
     input: AuthRegisterInput,
   ) {
