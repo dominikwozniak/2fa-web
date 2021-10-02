@@ -111,7 +111,7 @@ const Signup: React.FC = () => {
             className="column button is-primary is-flex mx-auto mt-3"
             type="submit"
           >
-            Create account!
+            Create an account!
           </button>
           <div className="my-3">
             <span>Do you have an account? </span>
