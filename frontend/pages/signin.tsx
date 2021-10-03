@@ -19,7 +19,7 @@ const Signin: React.FC = () => {
     onCompleted({ login }) {
       if (login?.token && !login?.useAuthenticator) {
         setAuthToken(login.token);
-        Router.push('/dashboard');
+        window.location.href = '/dashboard';
       }
     },
     onError() {
