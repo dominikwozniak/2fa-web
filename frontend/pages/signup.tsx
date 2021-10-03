@@ -13,7 +13,16 @@ import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
 
 const Signup: React.FC = () => {
-  const [registerMutation, { data, loading }] = useRegisterMutation();
+  const [registerMutation, { data, loading }] = useRegisterMutation({
+    onCompleted({ registerUser }) {
+      if (registerUser.user) {
+        popupNotification(
+          `Successfully registered! Please check your email to confirm account`,
+        );
+        setTimeout(() => Router.push('/'), 4000);
+      }
+    },
+  });
   const {
     handleSubmit,
     register,
@@ -40,12 +49,6 @@ const Signup: React.FC = () => {
     },
     [reset, data, registerMutation],
   );
-
-  useEffect(() => {
-    if (data?.registerUser.user) {
-      Router.push('/');
-    }
-  }, [data]);
 
   return (
     <MainTemplate title={'Sign up'}>
@@ -122,7 +125,9 @@ const Signup: React.FC = () => {
             </label>
           </div>
           <button
-            className={`column button is-primary is-flex mx-auto mt-3 ${loading ? 'is-loading' : ''}`}
+            className={`column button is-primary is-flex mx-auto mt-3 ${
+              loading ? 'is-loading' : ''
+            }`}
             type="submit"
           >
             Create an account!
