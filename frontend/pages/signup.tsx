@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from "react";
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -11,8 +11,10 @@ import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
 import withApollo from "@/lib/withApollo";
+import { useAuthToken } from "@/hooks/useAuthToken";
 
 const Signup: React.FC = () => {
+  const [authToken] = useAuthToken();
   const [registerMutation, { data, loading }] = useRegisterMutation({
     onCompleted({ registerUser }) {
       if (registerUser.user) {
@@ -49,6 +51,16 @@ const Signup: React.FC = () => {
     },
     [reset, data, registerMutation],
   );
+
+  useEffect(() => {
+    if (authToken) {
+      Router.back();
+    }
+  }, []);
+
+  if (authToken) {
+    return <p>Loading...</p>
+  }
 
   return (
     <MainTemplate title={'Sign up'}>

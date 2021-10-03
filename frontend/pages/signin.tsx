@@ -49,6 +49,16 @@ const Signin: React.FC = () => {
     [reset],
   );
 
+  useEffect(() => {
+    if (authToken) {
+      Router.back();
+    }
+  }, []);
+
+  if (authToken) {
+    return <p>Loading...</p>
+  }
+
   return (
     <MainTemplate title={'Sign in'}>
       <div className="is-flex is-flex-direction-column signin">
