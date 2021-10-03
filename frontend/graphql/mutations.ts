@@ -28,3 +28,19 @@ const REGISTER = gql`
     }
   }
 `;
+
+const LOGIN = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(input: { email: $email, password: $password }) {
+      qrUrl
+      useAuthenticator
+      user {
+        email
+        firstName
+        lastName
+        bio
+      }
+      token
+    }
+  }
+`;
