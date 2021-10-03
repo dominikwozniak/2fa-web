@@ -9,7 +9,7 @@ import MainTemplate from '@/templates/MainTemplate';
 import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
-import { useLoginMutation, useWhoAmIQuery } from '../generated';
+import { useLoginMutation } from '../generated';
 import { useAuthToken } from '@/hooks/useAuthToken';
 import withApollo from '@/lib/withApollo';
 
@@ -22,8 +22,8 @@ const Signin: React.FC = () => {
         window.location.href = '/dashboard';
       }
     },
-    onError() {
-      popupNotification('Error! Wrong credentials!');
+    onError(err) {
+      popupNotification(`Error! ${err.message}`);
     },
   });
   const {
