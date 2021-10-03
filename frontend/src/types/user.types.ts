@@ -5,6 +5,6 @@ export interface UserSignInPayload {
 
 export interface UserSignUpPayload extends UserSignInPayload {
   firstName: string;
-  secondName: string;
-  username: string;
+  lastName: string;
+  twoFactorEnabled: boolean;
 }

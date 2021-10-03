@@ -19,7 +19,8 @@
   &__form {
     width: 30rem;
 
-    .column, .half-column {
+    .column,
+    .half-column {
       position: relative;
     }
 
@@ -27,7 +28,9 @@
       width: calc(50% - 0.5rem);
     }
 
-    input {
+    input[type='text'],
+    input[type='password'],
+    input[type='email'] {
       @include FormInput();
     }
 
@@ -41,6 +44,15 @@
 
     span {
       @include FormText();
+    }
+
+    label {
+      @include FormText();
+      gap: 0.5rem;
+
+      input {
+        margin-top: -0.3rem;
+      }
     }
   }
 }

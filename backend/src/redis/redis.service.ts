@@ -3,6 +3,7 @@ import Redis from 'ioredis';
 
 @Injectable()
 export class RedisService {
+  // TODO: inline initialize redis
   private redis;
 
   constructor() {

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Router from 'next/router';
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
 import img from '@/public/assets/team_building.svg';
@@ -8,8 +9,23 @@ import MainTemplate from '@/templates/MainTemplate';
 import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
+import { useLoginMutation, useWhoAmIQuery } from '../generated';
+import { useAuthToken } from '@/hooks/useAuthToken';
+import withApollo from '@/lib/withApollo';
 
 const Signin: React.FC = () => {
+  const [authToken, setAuthToken] = useAuthToken();
+  const [loginMutation, { loading }] = useLoginMutation({
+    onCompleted({ login }) {
+      if (login?.token && !login?.useAuthenticator) {
+        setAuthToken(login.token);
+        Router.push('/dashboard');
+      }
+    },
+    onError() {
+      popupNotification('Error! Wrong credentials!');
+    },
+  });
   const {
     handleSubmit,
     register,
@@ -18,9 +34,14 @@ const Signin: React.FC = () => {
   } = useForm<UserSignInPayload>();
 
   const onSubmit = useCallback(
-    async (data: UserSignInPayload) => {
+    async (form: UserSignInPayload) => {
       try {
-        console.log('sign up', data);
+        await loginMutation({
+          variables: {
+            email: form.email,
+            password: form.password,
+          },
+        });
       } catch (err) {
         console.error('error', err);
       }
@@ -29,10 +50,14 @@ const Signin: React.FC = () => {
   );
 
   useEffect(() => {
-    if (Object.keys(errors).length) {
-      popupNotification('Error!');
+    if (authToken) {
+      Router.back();
     }
-  }, [errors]);
+  }, []);
+
+  if (authToken) {
+    return <p>Loading...</p>
+  }
 
   return (
     <MainTemplate title={'Sign in'}>
@@ -80,7 +105,9 @@ const Signin: React.FC = () => {
             </a>
           </Link>
           <button
-            className="column button is-primary is-flex mx-auto mt-3"
+            className={`column button is-primary is-flex mx-auto mt-3 ${
+              loading ? 'is-loading' : ''
+            }`}
             type="submit"
           >
             Log in!
@@ -96,4 +123,4 @@ const Signin: React.FC = () => {
   );
 };
 
-export default Signin;
+export default withApollo(Signin);
