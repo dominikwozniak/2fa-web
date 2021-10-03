@@ -29,6 +29,12 @@ const REGISTER = gql`
   }
 `;
 
+const CONFIRM_USER = gql`
+  mutation confirmUser($token: String!) {
+    confirmAccount(input: { confirmToken: $token })
+  }
+`;
+
 const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(input: { email: $email, password: $password }) {
