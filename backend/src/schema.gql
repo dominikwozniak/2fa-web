@@ -1,0 +1,75 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type User {
+  _id: ID!
+  email: String!
+  firstName: String
+  lastName: String
+  bio: String!
+  confirm: Boolean!
+  twoFactorEnabled: Boolean!
+}
+
+type UserToken {
+  token: String!
+  user: User!
+}
+
+type UserLogin {
+  token: String
+  user: User
+  qrUrl: String
+  useAuthenticator: Boolean!
+}
+
+type QrCode {
+  qrUrl: String!
+}
+
+type Query {
+  WhoAmI: UserToken!
+}
+
+type Mutation {
+  login(input: AuthLoginInput!): UserLogin
+  verifyLogin(input: AuthVerifyInput!): UserToken!
+  confirmAccount(input: AuthConfirmInput!): Boolean!
+  registerUser(input: AuthRegisterInput!): UserToken!
+  forgotPassword(input: AuthForgotPasswordInput!): Boolean!
+  changePassword(input: AuthChangePasswordInput!): UserToken!
+  changeAuthenticationDevice: QrCode!
+}
+
+input AuthLoginInput {
+  email: String!
+  password: String!
+}
+
+input AuthVerifyInput {
+  email: String!
+  password: String!
+  token: String!
+}
+
+input AuthConfirmInput {
+  confirmToken: String!
+}
+
+input AuthRegisterInput {
+  email: String!
+  firstName: String
+  lastName: String
+  twoFactorEnabled: Boolean = false
+  password: String!
+}
+
+input AuthForgotPasswordInput {
+  email: String!
+}
+
+input AuthChangePasswordInput {
+  password: String!
+  token: String!
+}

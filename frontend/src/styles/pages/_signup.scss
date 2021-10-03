@@ -1,0 +1,58 @@
+.signup {
+  @include container();
+
+  &__header {
+    @include HeaderMargins();
+
+    h1 {
+      @include H1();
+      margin-bottom: 0.5rem;
+    }
+
+    h4 {
+      @include H4();
+      margin: 0 auto;
+      max-width: 16.3rem;
+    }
+  }
+
+  &__form {
+    width: 30rem;
+
+    .column,
+    .half-column {
+      position: relative;
+    }
+
+    .half-column {
+      width: calc(50% - 0.5rem);
+    }
+
+    input[type='text'],
+    input[type='password'],
+    input[type='email'] {
+      @include FormInput();
+    }
+
+    button {
+      @include FormSubmitButton();
+    }
+
+    a {
+      @include FormLink();
+    }
+
+    span {
+      @include FormText();
+    }
+
+    label {
+      @include FormText();
+      gap: 0.5rem;
+
+      input {
+        margin-top: -0.3rem;
+      }
+    }
+  }
+}

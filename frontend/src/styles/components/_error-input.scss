@@ -1,0 +1,12 @@
+.error-input {
+  position: absolute;
+  top: 1rem;
+  right: 0.5rem;
+  z-index: 100;
+  cursor: default;
+  background-color: $red-primary;
+
+  &:hover {
+    background-color: $red-primary;
+  }
+}
