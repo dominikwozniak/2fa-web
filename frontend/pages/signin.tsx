@@ -3,13 +3,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
+import withApollo from "@/lib/withApollo";
 import img from '@/public/assets/team_building.svg';
 import MainTemplate from '@/templates/MainTemplate';
 import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
+import { useLoginMutation } from '../generated';
 
 const Signin: React.FC = () => {
+  const [loginMutation, { data, loading, error }] = useLoginMutation({
+    onCompleted({ login }) {
+      if (login?.user) {
+        console.log('SUCCESS!', login);
+      }
+    },
+  });
   const {
     handleSubmit,
     register,
@@ -18,9 +27,14 @@ const Signin: React.FC = () => {
   } = useForm<UserSignInPayload>();
 
   const onSubmit = useCallback(
-    async (data: UserSignInPayload) => {
+    async (form: UserSignInPayload) => {
       try {
-        console.log('sign up', data);
+        await loginMutation({
+          variables: {
+            email: form.email,
+            password: form.password,
+          },
+        });
       } catch (err) {
         console.error('error', err);
       }
@@ -96,4 +110,4 @@ const Signin: React.FC = () => {
   );
 };
 
-export default Signin;
+export default withApollo(Signin);
