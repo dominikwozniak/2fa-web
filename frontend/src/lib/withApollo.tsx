@@ -7,7 +7,7 @@ import {
 } from '@apollo/client';
 import { useRouter } from 'next/router';
 import nextWithApollo from 'next-with-apollo';
-import { useAuthToken } from '@/utils/auth-cookie';
+import { useAuthToken } from '@/hooks/useAuthToken';
 
 const httpLink = new HttpLink({
   uri: 'http://localhost:4000/graphql',
