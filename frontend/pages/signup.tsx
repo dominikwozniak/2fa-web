@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -7,10 +7,10 @@ import MainTemplate from '@/templates/MainTemplate';
 import img from '@/public/assets/phone_data.svg';
 import { UserSignUpPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
-import withApollo from '@/lib/withApollo';
 import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
+import withApollo from "@/lib/withApollo";
 
 const Signup: React.FC = () => {
   const [registerMutation, { data, loading }] = useRegisterMutation({

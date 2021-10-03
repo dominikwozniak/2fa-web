@@ -1,22 +1,29 @@
 import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import Router from 'next/router';
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
-import withApollo from "@/lib/withApollo";
 import img from '@/public/assets/team_building.svg';
 import MainTemplate from '@/templates/MainTemplate';
 import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
-import { useLoginMutation } from '../generated';
+import { useLoginMutation, useWhoAmIQuery } from '../generated';
+import { useAuthToken } from '@/hooks/useAuthToken';
+import withApollo from '@/lib/withApollo';
 
 const Signin: React.FC = () => {
-  const [loginMutation, { data, loading, error }] = useLoginMutation({
+  const [authToken, setAuthToken] = useAuthToken();
+  const [loginMutation, { loading }] = useLoginMutation({
     onCompleted({ login }) {
-      if (login?.user) {
-        console.log('SUCCESS!', login);
+      if (login?.token && !login?.useAuthenticator) {
+        setAuthToken(login.token);
+        Router.push('/dashboard');
       }
+    },
+    onError() {
+      popupNotification('Error! Wrong credentials!');
     },
   });
   const {
@@ -41,12 +48,6 @@ const Signin: React.FC = () => {
     },
     [reset],
   );
-
-  useEffect(() => {
-    if (Object.keys(errors).length) {
-      popupNotification('Error!');
-    }
-  }, [errors]);
 
   return (
     <MainTemplate title={'Sign in'}>
@@ -94,7 +95,9 @@ const Signin: React.FC = () => {
             </a>
           </Link>
           <button
-            className="column button is-primary is-flex mx-auto mt-3"
+            className={`column button is-primary is-flex mx-auto mt-3 ${
+              loading ? 'is-loading' : ''
+            }`}
             type="submit"
           >
             Log in!
