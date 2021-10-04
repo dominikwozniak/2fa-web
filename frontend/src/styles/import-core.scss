@@ -17,10 +17,11 @@
 @import 'mixins/form/form-submit-button';
 @import 'mixins/form/form-text';
 
-@import 'pages/home';
-@import 'pages/signup';
-@import 'pages/signin';
 @import 'pages/confirm';
+@import 'pages/forgot-password';
+@import 'pages/home';
+@import 'pages/signin';
+@import 'pages/signup';
 
 @import 'components/error-input';
 @import 'components/toast';
