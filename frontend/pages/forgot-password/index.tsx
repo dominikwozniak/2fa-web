@@ -7,8 +7,21 @@ import { UserSignInPayload } from '@/types/user.types';
 import { ToastContainer } from 'react-toastify';
 import img from '@/public/assets/authentication_fsn5.svg';
 import Image from 'next/image';
+import { useForgotPasswordMutation } from '../../generated';
+import { popupNotification } from '@/utils/popup-notification';
+import withApollo from '@/lib/withApollo';
+import Link from "next/link";
 
 const ForgotPassword: React.FC = () => {
+  const [forgotPasswordMutation, { data, loading, error }] =
+    useForgotPasswordMutation({
+      onCompleted() {
+        popupNotification('Success! Email was sent');
+      },
+      onError(err) {
+        popupNotification(`Error! ${err.message}`);
+      },
+    });
   const {
     handleSubmit,
     register,
@@ -19,7 +32,11 @@ const ForgotPassword: React.FC = () => {
   const onSubmit = useCallback(
     async (form: UserSignInPayload) => {
       try {
-        // TODO: add mutation
+        await forgotPasswordMutation({
+          variables: {
+            email: form.email,
+          },
+        });
       } catch (err) {
         console.error('error', err);
       }
@@ -63,11 +80,19 @@ const ForgotPassword: React.FC = () => {
             />
           </div>
           <button
-            className={`column button is-primary is-flex mx-auto mt-3`}
+            className={`column button is-primary is-flex mx-auto mt-3 ${
+              loading ? 'is-loading' : ''
+            }`}
             type="submit"
+            disabled={loading}
           >
             Send e-mail
           </button>
+          <Link href="/">
+            <a className="is-flex is-flex-direction-row is-justify-content-flex-end mt-4">
+              Back to home
+            </a>
+          </Link>
         </form>
         <ToastContainer />
       </div>
@@ -75,4 +100,4 @@ const ForgotPassword: React.FC = () => {
   );
 };
 
-export default ForgotPassword;
+export default withApollo(ForgotPassword);
