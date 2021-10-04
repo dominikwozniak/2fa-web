@@ -50,3 +50,9 @@ const LOGIN = gql`
     }
   }
 `;
+
+const FORGOT_PASSWORD = gql`
+  mutation forgotPassword($email: String!) {
+    forgotPassword(input: { email: $email })
+  }
+`;
