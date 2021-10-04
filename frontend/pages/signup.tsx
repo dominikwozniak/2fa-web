@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import Image from 'next/image';
@@ -10,8 +10,8 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
-import withApollo from "@/lib/withApollo";
-import { useAuthToken } from "@/hooks/useAuthToken";
+import withApollo from '@/lib/withApollo';
+import { useAuthToken } from '@/hooks/useAuthToken';
 
 const Signup: React.FC = () => {
   const [authToken] = useAuthToken();
@@ -59,7 +59,7 @@ const Signup: React.FC = () => {
   }, []);
 
   if (authToken) {
-    return <p>Loading...</p>
+    return <p>Loading...</p>;
   }
 
   return (
@@ -141,6 +141,7 @@ const Signup: React.FC = () => {
               loading ? 'is-loading' : ''
             }`}
             type="submit"
+            disabled={loading}
           >
             Create an account!
           </button>

@@ -56,7 +56,7 @@ const Signin: React.FC = () => {
   }, []);
 
   if (authToken) {
-    return <p>Loading...</p>
+    return <p>Loading...</p>;
   }
 
   return (
@@ -99,7 +99,7 @@ const Signin: React.FC = () => {
               })}
             />
           </div>
-          <Link href="#">
+          <Link href="/forgot-password">
             <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
               Forgot password?
             </a>
@@ -109,6 +109,7 @@ const Signin: React.FC = () => {
               loading ? 'is-loading' : ''
             }`}
             type="submit"
+            disabled={loading}
           >
             Log in!
           </button>
