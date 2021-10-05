@@ -23,7 +23,7 @@ import {
   confirmUserPrefix,
   forgotPasswordPrefix,
 } from '../shared/consts/redisPrefixed.const';
-import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { generateQr } from '../shared/generateQr';
 import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
@@ -187,20 +187,20 @@ export class AuthService {
     return true;
   }
 
-  public async changePassword(
-    input: AuthChangePasswordInput,
-  ): Promise<UserToken> {
+  public async forgotPasswordChangePassword(
+    input: AuthForgotChangePasswordInput,
+  ): Promise<Boolean> {
     const token = forgotPasswordPrefix + input.token;
     const userId = await this.redisService.getValue(token);
 
     if (!userId) {
-      throw new BadRequestException(`Cannot change password`);
+      return false;
     }
 
     const user = await this.userModel.findOne({ _id: userId });
 
     if (!user) {
-      throw new BadRequestException(`Cannot change password`);
+      return false;
     }
 
     await this.redisService.delete(token);
@@ -209,10 +209,7 @@ export class AuthService {
     user.password = hashedPassword;
     await user.save();
 
-    return {
-      user,
-      token: this.signToken(user.id),
-    };
+    return true;
   }
 
   public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {

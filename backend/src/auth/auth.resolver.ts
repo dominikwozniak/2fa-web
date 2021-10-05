@@ -8,7 +8,7 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
-import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { CtxUser } from './decorators/ctx-user.decorator';
 import { User } from './models/user.schema';
@@ -63,12 +63,12 @@ export class AuthResolver {
     return this.authService.forgotPassword(input);
   }
 
-  @Mutation(() => UserToken)
-  changePassword(
-    @Args({ name: 'input', type: () => AuthChangePasswordInput })
-    input: AuthChangePasswordInput,
+  @Mutation(() => Boolean)
+  forgotPasswordChangePassword(
+    @Args({ name: 'input', type: () => AuthForgotChangePasswordInput })
+    input: AuthForgotChangePasswordInput,
   ) {
-    return this.authService.changePassword(input);
+    return this.authService.forgotPasswordChangePassword(input);
   }
 
   @UseGuards(GqlAuthGuard)

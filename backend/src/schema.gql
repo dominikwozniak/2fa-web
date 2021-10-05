@@ -38,7 +38,7 @@ type Mutation {
   confirmAccount(input: AuthConfirmInput!): Boolean!
   registerUser(input: AuthRegisterInput!): UserToken!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
-  changePassword(input: AuthChangePasswordInput!): UserToken!
+  forgotPasswordChangePassword(input: AuthForgotChangePasswordInput!): Boolean!
   changeAuthenticationDevice: QrCode!
 }
 
@@ -69,7 +69,7 @@ input AuthForgotPasswordInput {
   email: String!
 }
 
-input AuthChangePasswordInput {
+input AuthForgotChangePasswordInput {
   password: String!
   token: String!
 }

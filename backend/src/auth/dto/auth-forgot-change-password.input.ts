@@ -1,7 +1,7 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class AuthChangePasswordInput {
+export class AuthForgotChangePasswordInput {
   @Field()
   password: string;
 
