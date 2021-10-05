@@ -56,3 +56,9 @@ const FORGOT_PASSWORD = gql`
     forgotPassword(input: { email: $email })
   }
 `;
+
+const FORGOT_CHANGE_PASSWORD = gql`
+  mutation forgotChangePassword($token: String!, $password: String!) {
+    forgotPasswordChangePassword(input: { token: $token, password: $password })
+  }
+`;
