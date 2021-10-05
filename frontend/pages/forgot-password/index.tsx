@@ -1,4 +1,6 @@
 import React, { useCallback } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
 import MainTemplate from '@/templates/MainTemplate';
 import { useForm } from 'react-hook-form';
 import { ForgotPasswordPayload } from '@/types/forgot-password.types';
@@ -6,11 +8,9 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { UserSignInPayload } from '@/types/user.types';
 import { ToastContainer } from 'react-toastify';
 import img from '@/public/assets/authentication_fsn5.svg';
-import Image from 'next/image';
 import { useForgotPasswordMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
 import withApollo from '@/lib/withApollo';
-import Link from "next/link";
 
 const ForgotPassword: React.FC = () => {
   const [forgotPasswordMutation, { data, loading, error }] =
@@ -47,7 +47,7 @@ const ForgotPassword: React.FC = () => {
   return (
     <MainTemplate title={'Forgot password'}>
       <div className="is-flex is-flex-direction-column is-align-items-center forgot">
-        <div className="is-flex is-flex-direction-column is-align-items-center  forgot__header">
+        <div className="is-flex is-flex-direction-column is-align-items-center forgot__header">
           <Image
             src={img}
             alt={'Confirm account banner image'}
