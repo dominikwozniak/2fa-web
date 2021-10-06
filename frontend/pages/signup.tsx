@@ -54,7 +54,7 @@ const Signup: React.FC = () => {
 
   useEffect(() => {
     if (authToken) {
-      Router.back();
+      Router.push('/');
     }
   }, []);
 
