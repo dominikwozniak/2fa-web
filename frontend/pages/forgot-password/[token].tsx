@@ -1,12 +1,32 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import MainTemplate from '@/templates/MainTemplate';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
-import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { ForgotChangePasswordPayload } from '@/types/forgot-password.types';
-import { UserSignInPayload } from '@/types/user.types';
+import { useForgotChangePasswordMutation } from '../../generated';
+import { popupNotification } from '@/utils/popup-notification';
+import { ToastContainer } from 'react-toastify';
+import withApollo from '@/lib/withApollo';
 
 const ForgotPasswordToken: React.FC = () => {
+  const router = useRouter();
+  const { token } = router.query;
+  const [forgotChangePassword, { loading }] =
+    useForgotChangePasswordMutation({
+      onCompleted({ forgotPasswordChangePassword }) {
+        if (forgotPasswordChangePassword) {
+          popupNotification('Password was changed!');
+          setTimeout(() => router.push('/'), 2000);
+        } else {
+          popupNotification('Cannot change password');
+        }
+      },
+      onError(err) {
+        popupNotification(`Error! ${err.message}`);
+      }
+    });
   const {
     handleSubmit,
     register,
@@ -15,10 +35,11 @@ const ForgotPasswordToken: React.FC = () => {
   } = useForm<ForgotChangePasswordPayload>();
 
   const onSubmit = useCallback(
-    async (form: UserSignInPayload) => {
+    async (form: ForgotChangePasswordPayload) => {
       try {
-        await loginMutation({
+        await forgotChangePassword({
           variables: {
+            token: token ? token.toString() : '',
             password: form.password,
           },
         });
@@ -26,7 +47,7 @@ const ForgotPasswordToken: React.FC = () => {
         console.error('error', err);
       }
     },
-    [reset],
+    [reset, token],
   );
 
   return (
@@ -68,9 +89,10 @@ const ForgotPasswordToken: React.FC = () => {
             </a>
           </Link>
         </form>
+        <ToastContainer />
       </div>
     </MainTemplate>
   );
 };
 
-export default ForgotPasswordToken;
+export default withApollo(ForgotPasswordToken);

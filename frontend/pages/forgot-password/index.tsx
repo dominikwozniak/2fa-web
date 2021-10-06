@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 import MainTemplate from '@/templates/MainTemplate';
 import { useForm } from 'react-hook-form';
 import { ForgotPasswordPayload } from '@/types/forgot-password.types';
@@ -13,10 +14,16 @@ import { popupNotification } from '@/utils/popup-notification';
 import withApollo from '@/lib/withApollo';
 
 const ForgotPassword: React.FC = () => {
-  const [forgotPasswordMutation, { data, loading, error }] =
+  const router = useRouter();
+  const [forgotPasswordMutation, { loading }] =
     useForgotPasswordMutation({
-      onCompleted() {
-        popupNotification('Success! Email was sent');
+      onCompleted(forgotPasswordMutation) {
+        if (forgotPasswordMutation) {
+          popupNotification('Success! Email was sent');
+          setTimeout(() => router.push('/'), 2000);
+        } else {
+          popupNotification('Error');
+        }
       },
       onError(err) {
         popupNotification(`Error! ${err.message}`);
