@@ -9,6 +9,6 @@ export const useLogout = () => {
   return async () => {
     await apolloClient.clearStore();
     removeAuthToken();
-    Router.push('/');
+    window.location.href = '/';
   };
 };
