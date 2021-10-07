@@ -1,0 +1,30 @@
+.header {
+  &__image {
+    border-radius: 50%;
+    overflow: hidden;
+    width: 128px;
+    height: 128px;
+    z-index: 1;
+  }
+
+  &__content {
+    @include input-box-shadow();
+    width: 180px;
+    height: 100px;
+    background-color: $green-primary;
+    border-radius: 1rem;
+    margin-left: -2.5rem;
+    z-index: 2;
+
+    h1 {
+      @include H2-white();
+      text-align: left;
+    }
+
+    h3, h4 {
+      @include H4-white();
+      text-align: left;
+      margin-top: 1rem;
+    }
+  }
+}
