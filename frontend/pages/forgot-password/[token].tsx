@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MainTemplate from '@/templates/MainTemplate';
@@ -13,19 +13,18 @@ import withApollo from '@/lib/withApollo';
 const ForgotPasswordToken: React.FC = () => {
   const router = useRouter();
   const { token } = router.query;
-  const [forgotChangePassword, { loading }] =
+  const [forgotChangePassword, { data, loading }] =
     useForgotChangePasswordMutation({
       onCompleted({ forgotPasswordChangePassword }) {
         if (forgotPasswordChangePassword) {
-          popupNotification('Password was changed!');
-          setTimeout(() => router.push('/'), 2000);
+          window.location.href = '/'
         } else {
           popupNotification('Cannot change password');
         }
       },
       onError(err) {
         popupNotification(`Error! ${err.message}`);
-      }
+      },
     });
   const {
     handleSubmit,
@@ -83,11 +82,13 @@ const ForgotPasswordToken: React.FC = () => {
           >
             Change password!
           </button>
-          <Link href="/">
-            <a className="is-flex is-flex-direction-row is-justify-content-flex-end mt-4">
-              Back to home
-            </a>
-          </Link>
+          {(!loading || data) && (
+            <Link href="/">
+              <a className="is-flex is-flex-direction-row is-justify-content-flex-end mt-4">
+                Back to home
+              </a>
+            </Link>
+          )}
         </form>
         <ToastContainer />
       </div>
