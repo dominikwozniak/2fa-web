@@ -22,6 +22,6 @@ export class AuthHelper {
   }
 
   static createForgotPasswordUrl(token: string) {
-    return `http://localhost:3000/reset-password/${token}`
+    return `http://localhost:3000/forgot-password/${token}`
   }
 }
