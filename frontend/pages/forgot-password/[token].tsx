@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import MainTemplate from '@/templates/MainTemplate';

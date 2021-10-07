@@ -1,7 +1,6 @@
-import React, { useEffect } from 'react';
-import { useWhoAmIQuery } from '../../generated';
+import React from 'react';
 import Router from 'next/router';
-import { useLogout } from '@/hooks/useLogout';
+import { useWhoAmIQuery } from '../../generated';
 import { useAuthToken } from '@/hooks/useAuthToken';
 
 interface Props {
@@ -11,16 +10,8 @@ interface Props {
 const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
   const { loading, error, data } = useWhoAmIQuery({
     fetchPolicy: 'network-only',
-    onCompleted() {
-      // Router.push('/dashboard');
-    },
   });
   const [, , removeAuthToken] = useAuthToken();
-  const logout = useLogout();
-
-  // useEffect(() => {
-  //   removeAuthToken();
-  // }, [])
 
   // TODO: replace with loader
   if (loading) {
@@ -38,7 +29,6 @@ const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
     Router.push('/dashboard');
   }
 
-  // return !data && error ? <>{children}</> : <p>Loading...</p>;
   return null;
 };
 
