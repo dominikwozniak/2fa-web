@@ -1,0 +1,17 @@
+.action-button {
+  @include input-box-shadow();
+  width: 8.4rem;
+  height: 8.4rem;
+  border-radius: 1rem;
+
+  p {
+    @include H4-white();
+    text-align: left;
+    overflow-wrap: break-word;
+    white-space: normal;
+  }
+
+  &__icon {
+
+  }
+}
