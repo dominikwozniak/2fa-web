@@ -1,6 +1,6 @@
-import React from "react";
-import ActionButton from "@/components/ActionButton";
-import { IconType } from "@/types/icon.types";
+import React from 'react';
+import ActionButton from '@/components/ActionButton';
+import { IconType } from '@/types/icon.types';
 
 const ActionMenu = () => {
   return (
