@@ -18,6 +18,7 @@
 @import 'mixins/form/form-text';
 
 @import 'pages/confirm';
+@import 'pages/dashboard';
 @import 'pages/forgot-password';
 @import 'pages/home';
 @import 'pages/signin';
@@ -27,5 +28,6 @@
 @import 'components/action-button';
 @import 'components/bio';
 @import 'components/error-input';
-@import 'components/toast';
 @import 'components/header';
+@import 'components/logout-button';
+@import 'components/toast';

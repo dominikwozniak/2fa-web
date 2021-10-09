@@ -1,0 +1,9 @@
+.dashboard {
+  margin-top: 3rem;
+
+  @media (min-width: $sm-screen) {
+    height: 100vh;
+    margin-top: 0;
+    justify-content: center;
+  }
+}
