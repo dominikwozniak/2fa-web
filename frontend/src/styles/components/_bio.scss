@@ -4,6 +4,10 @@
   height: 8rem;
   background-color: $gray-primary;
 
+  @media (min-width: $sm-screen) {
+    width: 34rem;
+  }
+
   a {
     @include FormText();
     text-align: right;
