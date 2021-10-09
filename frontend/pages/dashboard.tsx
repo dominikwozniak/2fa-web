@@ -33,9 +33,6 @@ const Dashboard: React.FC = () => {
             <ActionMenu />
           </div>
         </div>
-        {/*dashboard*/}
-        {/*<button onClick={() => Router.push('/dashboard2')}>Dashboard 2</button>*/}
-        {/*<button onClick={logout}>Logout</button>*/}
       </MainTemplate>
     </ProtectedRoute>
   );
