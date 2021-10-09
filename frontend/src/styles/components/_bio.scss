@@ -1,0 +1,19 @@
+.bio {
+  @include input-box-shadow();
+  width: 30rem;
+  height: 8rem;
+  background-color: $gray-primary;
+
+  a {
+    @include FormText();
+    text-align: right;
+    text-decoration: underline;
+  }
+
+  &__content {
+    span {
+      @include FormText();
+      font-weight: bold;
+    }
+  }
+}
