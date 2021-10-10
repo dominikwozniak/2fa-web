@@ -29,6 +29,7 @@ import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { twoFactorVerify } from '../shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
+import { UserUpdateInput } from './dto/user-update.input';
 
 @Injectable()
 export class AuthService {
@@ -234,6 +235,18 @@ export class AuthService {
     return {
       qrUrl: await generateQr(otpauth_url),
     };
+  }
+
+  public async updateUserProfile(userInput: User, input: UserUpdateInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      return false
+    }
+
+    await user.update({ ...input });
+
+    return true
   }
 
   public signToken(id: number) {

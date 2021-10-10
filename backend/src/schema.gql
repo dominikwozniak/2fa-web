@@ -40,6 +40,7 @@ type Mutation {
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
   forgotPasswordChangePassword(input: AuthForgotChangePasswordInput!): Boolean!
   changeAuthenticationDevice: QrCode!
+  updateProfile(input: UserUpdateInput!): Boolean!
 }
 
 input AuthLoginInput {
@@ -72,4 +73,12 @@ input AuthForgotPasswordInput {
 input AuthForgotChangePasswordInput {
   password: String!
   token: String!
+}
+
+input UserUpdateInput {
+  email: String
+  firstName: String
+  lastName: String
+  twoFactorEnabled: Boolean
+  bio: String
 }
