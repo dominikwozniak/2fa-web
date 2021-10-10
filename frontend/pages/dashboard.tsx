@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import Bio from '@/components/Bio';
 import ActionMenu from '@/components/ActionMenu';
 import { useWhoAmIQuery } from '../generated';
+import { ToastContainer } from 'react-toastify';
 
 const Dashboard: React.FC = () => {
   const { data } = useWhoAmIQuery();
@@ -26,12 +27,13 @@ const Dashboard: React.FC = () => {
               )}
           </div>
           <div className="mt-5">
-            <Bio />
+            <Bio text={data?.WhoAmI.user.bio} />
           </div>
           <div className="mt-5">
             <ActionMenu />
           </div>
         </div>
+        <ToastContainer />
       </MainTemplate>
     </ProtectedRoute>
   );
