@@ -1,0 +1,7 @@
+@mixin RoundedImage {
+  border-radius: 50%;
+  overflow: hidden;
+  width: 12.8rem;
+  height: 12.8rem;
+  z-index: 1;
+}

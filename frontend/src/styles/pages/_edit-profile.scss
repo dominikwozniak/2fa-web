@@ -1,3 +1,16 @@
 .edit-profile {
+  &__image {
+    @include RoundedImage();
+  }
 
+  &__content {
+    @include input-box-shadow();
+    width: 30rem;
+    height: 8rem;
+    background-color: $gray-primary;
+
+    @media (min-width: $sm-screen) {
+      width: 34rem;
+    }
+  }
 }
