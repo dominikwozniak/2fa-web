@@ -1,10 +1,10 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { IconType } from '@/types/icon.types';
 import editImg from '@/public/assets/pen.svg';
 import changePasswordImg from '@/public/assets/lock.svg';
 import twoFactorImg from '@/public/assets/bookmark.svg';
-import Link from 'next/link';
 
 interface Props {
   icon: IconType;
