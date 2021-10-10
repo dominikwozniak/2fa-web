@@ -62,3 +62,9 @@ const FORGOT_CHANGE_PASSWORD = gql`
     forgotPasswordChangePassword(input: { token: $token, password: $password })
   }
 `;
+
+const UPDATE_PROFILE = gql`
+  mutation updateProfile($bio: String) {
+    updateProfile(input: { bio: $bio })
+  }
+`;
