@@ -11,6 +11,7 @@ import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { UserUpdateInput } from './dto/user-update.input';
+import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { CtxUser } from './decorators/ctx-user.decorator';
 import { User } from './models/user.schema';
 import { QrCode } from './models/qr-code';
@@ -70,6 +71,16 @@ export class AuthResolver {
     input: AuthForgotChangePasswordInput,
   ) {
     return this.authService.forgotPasswordChangePassword(input);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  changePassword(
+    @CtxUser() user: User,
+    @Args({ name: 'input', type: () => UserChangePasswordInput })
+    input: UserChangePasswordInput,
+  ) {
+    return this.authService.changePassword(user, input);
   }
 
   @UseGuards(GqlAuthGuard)

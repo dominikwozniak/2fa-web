@@ -30,6 +30,7 @@ import { AuthVerifyInput } from './dto/auth-verify.input';
 import { twoFactorVerify } from '../shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
+import { UserChangePasswordInput } from './dto/user-change-password.input';
 
 @Injectable()
 export class AuthService {
@@ -237,16 +238,38 @@ export class AuthService {
     };
   }
 
+  public async changePassword(userInput: User, input: UserChangePasswordInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      return false;
+    }
+
+    const passwordValid = await AuthHelper.validatePassword(
+      input.oldPassword,
+      user.password,
+    );
+
+    if (!passwordValid) {
+      return false;
+    }
+
+    user.password = await AuthHelper.hashPassword(input.newPassword);
+    await user.save();
+
+    return true;
+  }
+
   public async updateUserProfile(userInput: User, input: UserUpdateInput) {
     const user = await this.userModel.findOne({ email: userInput.email });
 
     if (!user) {
-      return false
+      return false;
     }
 
     await user.update({ ...input });
 
-    return true
+    return true;
   }
 
   public signToken(id: number) {
