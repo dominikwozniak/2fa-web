@@ -68,3 +68,11 @@ const UPDATE_PROFILE = gql`
     updateProfile(input: { bio: $bio })
   }
 `;
+
+const CHANGE_PASSWORD = gql`
+  mutation changePassword($oldPassword: String!, $newPassword: String!) {
+    changePassword(
+      input: { oldPassword: $oldPassword, newPassword: $newPassword }
+    )
+  }
+`;
