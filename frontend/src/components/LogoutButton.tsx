@@ -7,7 +7,7 @@ const LogoutButton: React.FC = () => {
   const logout = useLogout();
 
   return (
-    <button className="button is-light is-flex is-align-items-center logout-button" onClick={logout}>
+    <button className="button is-light is-flex is-align-items-center" onClick={logout}>
       <Image src={img} alt={'Logout button'} width={24} height={24} />
     </button>
   );
