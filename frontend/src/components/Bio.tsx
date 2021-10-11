@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { useForm } from 'react-hook-form';
@@ -36,11 +36,23 @@ const Bio: React.FC<Props> = ({ text }) => {
     register,
     formState: { errors },
     reset,
-  } = useForm<EditBioPayload>();
+  } = useForm<EditBioPayload>({
+    defaultValues: {
+      bio: text || '',
+    },
+  });
 
   const handleChangeActive = () => {
     setActive((current) => !current);
   };
+
+  useEffect(() => {
+    if (text) {
+      reset({
+        bio: text,
+      });
+    }
+  }, [text]);
 
   const onSubmit = useCallback(
     async (form: EditBioPayload) => {
