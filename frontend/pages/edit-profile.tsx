@@ -16,6 +16,7 @@ import img from '@/public/assets/placeholder.png';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { ChangeNamePayload } from '@/types/change-name.types';
 import Link from 'next/link';
+import ChangePhotoButton from "@/components/ChangePhotoButton";
 
 const EditProfile: React.FC = () => {
   const { data } = useWhoAmIQuery();
@@ -87,6 +88,9 @@ const EditProfile: React.FC = () => {
             className="columns py-4 is-flex is-flex-direction-column is-align-items-center edit-profile__content"
             onSubmit={handleSubmit(onSubmit)}
           >
+            <div className="p-0 mb-4 is-flex is-flex-direction-column is-align-items-center edit-profile__input">
+              <ChangePhotoButton />
+            </div>
             <div className="column p-0 is-flex is-flex-direction-column edit-profile__input">
               {errors.firstName && <ErrorInputIcon />}
               <span>First name</span>
