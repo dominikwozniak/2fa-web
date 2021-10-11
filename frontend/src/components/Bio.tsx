@@ -3,11 +3,7 @@ import Link from 'next/link';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { useForm } from 'react-hook-form';
 import { EditBioPayload } from '@/types/edit-bio.types';
-import {
-  namedOperations,
-  useUpdateProfileMutation,
-  WhoAmIQuery,
-} from '../../generated';
+import { namedOperations, useUpdateProfileMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
 
 interface Props {
@@ -17,7 +13,7 @@ interface Props {
 const Bio: React.FC<Props> = ({ text }) => {
   const [active, setActive] = useState(false);
 
-  const [updateProfile, { data, loading }] = useUpdateProfileMutation({
+  const [updateProfile, { loading }] = useUpdateProfileMutation({
     onCompleted({ updateProfile }) {
       if (updateProfile) {
         popupNotification('Bio was changed');

@@ -5,27 +5,32 @@ import { useForm } from 'react-hook-form';
 import ProtectedRoute from '@/templates/ProtectedRoute';
 import MainTemplate from '@/templates/MainTemplate';
 import { ToastContainer } from 'react-toastify';
-import { useChangePasswordMutation, useWhoAmIQuery } from '../generated';
+import {
+  namedOperations,
+  useUpdateProfileMutation,
+  useWhoAmIQuery,
+} from '../generated';
 import withApollo from '@/lib/withApollo';
 import { popupNotification } from '@/utils/popup-notification';
 import img from '@/public/assets/placeholder.png';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { ChangeNamePayload } from '@/types/change-name.types';
-import Link from "next/link";
+import Link from 'next/link';
 
 const EditProfile: React.FC = () => {
   const { data } = useWhoAmIQuery();
-  const [changePasswordMutation, { loading }] = useChangePasswordMutation({
-    onCompleted(changePasswordMutation) {
-      if (changePasswordMutation) {
-        Router.push('/dashboard');
+  const [updateProfile, { loading }] = useUpdateProfileMutation({
+    onCompleted({ updateProfile }) {
+      if (updateProfile) {
+        popupNotification('Profile was updated');
       } else {
-        popupNotification('Error! Cannot change password.');
+        popupNotification('Cannot update profile');
       }
     },
     onError(err) {
       popupNotification(`Error! ${err.message}`);
     },
+    refetchQueries: [namedOperations.Query.WhoAmI],
   });
 
   const {
@@ -43,8 +48,12 @@ const EditProfile: React.FC = () => {
   const onSubmit = useCallback(
     async (form: ChangeNamePayload) => {
       try {
-        // TODO:
-        console.log('FORM >>>', form);
+        await updateProfile({
+          variables: {
+            firstName: form.firstName,
+            lastName: form.lastName,
+          },
+        });
       } catch (err) {
         console.error('error', err);
       }
@@ -112,16 +121,11 @@ const EditProfile: React.FC = () => {
               </Link>
             </div>
             <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between edit-profile__input">
-              <button
-                type="button"
-                className="button is-primary"
-              >
+              <button type="button" className="button is-primary">
                 Change e-mail
               </button>
               <button
-                className={`button is-primary ${
-                  loading ? 'is-loading' : ''
-                }`}
+                className={`button is-primary ${loading ? 'is-loading' : ''}`}
                 type="submit"
                 disabled={loading}
               >
