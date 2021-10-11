@@ -1,4 +1,6 @@
 .edit-profile {
+  height: 100vh;
+
   &__image {
     @include RoundedImage();
     z-index: 1;
@@ -7,7 +9,6 @@
   &__content {
     @include input-box-shadow();
     width: 30rem;
-    //height: 8rem;
     background-color: $gray-primary;
     z-index: 2;
 
@@ -25,7 +26,11 @@
   }
 
   &__input {
-    width: 80%;
+    width: 90%;
+
+    @media (min-width: $sm-screen) {
+      width: 80%;
+    }
 
     span {
       @include FormText();

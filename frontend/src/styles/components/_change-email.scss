@@ -1,0 +1,15 @@
+.change-email {
+  font-size: 1.4rem;
+
+  input {
+    @include FormInput();
+  }
+
+  button {
+    font-size: 1.4rem;
+  }
+
+  .column {
+    position: relative;
+  }
+}

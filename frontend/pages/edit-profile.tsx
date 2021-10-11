@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import Router from 'next/router';
 import { useForm } from 'react-hook-form';
@@ -17,8 +17,10 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { ChangeNamePayload } from '@/types/change-name.types';
 import Link from 'next/link';
 import ChangePhotoButton from '@/components/ChangePhotoButton';
+import ChangeEmail from '@/components/ChangeEmail';
 
 const EditProfile: React.FC = () => {
+  const [active, setActive] = useState(false);
   const { data } = useWhoAmIQuery();
   const [updateProfile, { loading }] = useUpdateProfileMutation({
     onCompleted({ updateProfile }) {
@@ -63,7 +65,7 @@ const EditProfile: React.FC = () => {
   );
 
   const handleChangeEmail = () => {
-    Router.push('/change-email');
+    setActive((current) => !current);
   };
 
   useEffect(() => {
@@ -78,7 +80,7 @@ const EditProfile: React.FC = () => {
   return (
     <ProtectedRoute>
       <MainTemplate title={'Edit profile'}>
-        <div className="is-flex is-flex-direction-column is-align-items-center edit-profile">
+        <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center edit-profile">
           <div className="edit-profile__image">
             <Image
               src={img}
@@ -145,6 +147,7 @@ const EditProfile: React.FC = () => {
               </button>
             </div>
           </form>
+          <ChangeEmail active={active} setActive={setActive} />
           <ToastContainer />
         </div>
       </MainTemplate>
