@@ -31,6 +31,7 @@ import { twoFactorVerify } from '../shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
+import { UserChangeEmailInput } from './dto/user-change-email.input';
 
 @Injectable()
 export class AuthService {
@@ -268,6 +269,29 @@ export class AuthService {
     }
 
     await user.update({ ...input });
+
+    return true;
+  }
+
+  public async changeEmail(userInput: User, input: UserChangeEmailInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+    const isReservedEmail = await this.userModel.findOne({ email: input.email });
+
+    if (!user || isReservedEmail) {
+      return false;
+    }
+
+    const passwordValid = await AuthHelper.validatePassword(
+      input.password,
+      user.password,
+    );
+
+    if (!passwordValid) {
+      return false;
+    }
+
+    user.email = input.email;
+    await user.save();
 
     return true;
   }

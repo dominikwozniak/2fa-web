@@ -10,6 +10,7 @@ import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
+import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { CtxUser } from './decorators/ctx-user.decorator';
@@ -97,5 +98,15 @@ export class AuthResolver {
     input: UserUpdateInput,
   ) {
     return this.authService.updateUserProfile(user, input);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  changeEmail(
+    @CtxUser() user: User,
+    @Args({ name: 'input', type: () => UserChangeEmailInput })
+    input: UserChangeEmailInput,
+  ) {
+    return this.authService.changeEmail(user, input);
   }
 }

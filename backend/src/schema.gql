@@ -42,6 +42,7 @@ type Mutation {
   changePassword(input: UserChangePasswordInput!): Boolean!
   changeAuthenticationDevice: QrCode!
   updateProfile(input: UserUpdateInput!): Boolean!
+  changeEmail(input: UserChangeEmailInput!): Boolean!
 }
 
 input AuthLoginInput {
@@ -87,4 +88,9 @@ input UserUpdateInput {
   lastName: String
   twoFactorEnabled: Boolean
   bio: String
+}
+
+input UserChangeEmailInput {
+  email: String!
+  password: String!
 }
