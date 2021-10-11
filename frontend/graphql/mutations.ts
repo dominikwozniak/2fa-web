@@ -78,3 +78,9 @@ const CHANGE_PASSWORD = gql`
     )
   }
 `;
+
+const CHANGE_EMAIL = gql`
+  mutation changeEmail($email: String!, $password: String!) {
+    changeEmail(input: { email: $email, password: $password })
+  }
+`;

@@ -16,7 +16,7 @@ import img from '@/public/assets/placeholder.png';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { ChangeNamePayload } from '@/types/change-name.types';
 import Link from 'next/link';
-import ChangePhotoButton from "@/components/ChangePhotoButton";
+import ChangePhotoButton from '@/components/ChangePhotoButton';
 
 const EditProfile: React.FC = () => {
   const { data } = useWhoAmIQuery();
@@ -61,6 +61,10 @@ const EditProfile: React.FC = () => {
     },
     [reset],
   );
+
+  const handleChangeEmail = () => {
+    Router.push('/change-email');
+  };
 
   useEffect(() => {
     if (data?.WhoAmI.user.firstName && data.WhoAmI.user.lastName) {
@@ -118,14 +122,18 @@ const EditProfile: React.FC = () => {
               />
             </div>
             <div className="column p-0 edit-profile__input">
-              <Link href="/dashboard">
+              <Link href={'/dashboard'}>
                 <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
                   Back to dashboard
                 </a>
               </Link>
             </div>
             <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between edit-profile__input">
-              <button type="button" className="button is-primary">
+              <button
+                type="button"
+                className="button is-primary"
+                onClick={handleChangeEmail}
+              >
                 Change e-mail
               </button>
               <button

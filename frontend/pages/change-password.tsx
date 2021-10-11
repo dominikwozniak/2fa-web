@@ -101,7 +101,7 @@ const ChangePassword: React.FC = () => {
             >
               Change password
             </button>
-            <Link href="/dashboard">
+            <Link href={'/dashboard'}>
               <a className="is-flex is-flex-direction-row is-justify-content-flex-end mt-4">
                 Back to dashboard
               </a>
