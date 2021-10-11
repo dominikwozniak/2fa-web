@@ -1,0 +1,31 @@
+.header {
+  &__image {
+    @include RoundedImage();
+  }
+
+  &__content {
+    @include input-box-shadow();
+    width: 20rem;
+    height: 10rem;
+    background-color: $green-primary;
+    border-radius: 1rem;
+    margin-left: -2.5rem;
+    z-index: 2;
+
+    @media (min-width: $sm-screen) {
+      margin-left: 1rem;
+      width: 26rem;
+    }
+
+    h1 {
+      @include H2-white();
+      text-align: left;
+    }
+
+    h3, h4 {
+      @include H4-white();
+      text-align: left;
+      margin-top: 1rem;
+    }
+  }
+}

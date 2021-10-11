@@ -18,10 +18,10 @@ export class AuthHelper {
   }
 
   static createConfirmUserUrl(token: string) {
-    return `http://localhost:3000/confirm-account?t=${token}`
+    return `http://localhost:3000/confirm-account/${token}`
   }
 
   static createForgotPasswordUrl(token: string) {
-    return `http://localhost:3000/reset-password?t=${token}`
+    return `http://localhost:3000/forgot-password/${token}`
   }
 }

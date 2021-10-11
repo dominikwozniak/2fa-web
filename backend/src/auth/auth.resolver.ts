@@ -8,8 +8,11 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { GqlAuthGuard } from './guards/gql-auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
-import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
+import { UserChangeEmailInput } from './dto/user-change-email.input';
+import { UserUpdateInput } from './dto/user-update.input';
+import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { CtxUser } from './decorators/ctx-user.decorator';
 import { User } from './models/user.schema';
 import { QrCode } from './models/qr-code';
@@ -63,17 +66,47 @@ export class AuthResolver {
     return this.authService.forgotPassword(input);
   }
 
-  @Mutation(() => UserToken)
-  changePassword(
-    @Args({ name: 'input', type: () => AuthChangePasswordInput })
-    input: AuthChangePasswordInput,
+  @Mutation(() => Boolean)
+  forgotPasswordChangePassword(
+    @Args({ name: 'input', type: () => AuthForgotChangePasswordInput })
+    input: AuthForgotChangePasswordInput,
   ) {
-    return this.authService.changePassword(input);
+    return this.authService.forgotPasswordChangePassword(input);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  changePassword(
+    @CtxUser() user: User,
+    @Args({ name: 'input', type: () => UserChangePasswordInput })
+    input: UserChangePasswordInput,
+  ) {
+    return this.authService.changePassword(user, input);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => QrCode)
   changeAuthenticationDevice(@CtxUser() user: User) {
     return this.authService.changeAuthenticationDevice(user);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  updateProfile(
+    @CtxUser() user: User,
+    @Args({ name: 'input', type: () => UserUpdateInput })
+    input: UserUpdateInput,
+  ) {
+    return this.authService.updateUserProfile(user, input);
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(() => Boolean)
+  changeEmail(
+    @CtxUser() user: User,
+    @Args({ name: 'input', type: () => UserChangeEmailInput })
+    input: UserChangeEmailInput,
+  ) {
+    return this.authService.changeEmail(user, input);
   }
 }

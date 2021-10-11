@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.4.15",
+    "@graphql-codegen/named-operations-object": "^2.1.0",
     "bulma": "^0.9.3",
     "graphql": "^15.6.0",
     "lodash": "^4.17.21",

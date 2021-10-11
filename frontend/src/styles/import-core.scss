@@ -11,15 +11,27 @@
 @import 'mixins/full-width-background';
 @import 'mixins/header-margins';
 @import 'mixins/primary-button';
+@import 'mixins/rounded-image';
 
 @import 'mixins/form/form-input';
 @import 'mixins/form/form-link';
 @import 'mixins/form/form-submit-button';
 @import 'mixins/form/form-text';
+@import 'mixins/form/form-textarea';
 
+@import 'pages/change-password';
+@import 'pages/confirm';
+@import 'pages/dashboard';
+@import 'pages/edit-profile';
+@import 'pages/forgot-password';
 @import 'pages/home';
-@import 'pages/signup';
 @import 'pages/signin';
+@import 'pages/signup';
 
+@import 'components/action';
+@import 'components/action-button';
+@import 'components/bio';
+@import 'components/change-email';
 @import 'components/error-input';
+@import 'components/header';
 @import 'components/toast';

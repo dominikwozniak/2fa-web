@@ -23,12 +23,15 @@ import {
   confirmUserPrefix,
   forgotPasswordPrefix,
 } from '../shared/consts/redisPrefixed.const';
-import { AuthChangePasswordInput } from './dto/auth-change-password.input';
+import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { generateQr } from '../shared/generateQr';
 import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { twoFactorVerify } from '../shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
+import { UserUpdateInput } from './dto/user-update.input';
+import { UserChangePasswordInput } from './dto/user-change-password.input';
+import { UserChangeEmailInput } from './dto/user-change-email.input';
 
 @Injectable()
 export class AuthService {
@@ -187,20 +190,20 @@ export class AuthService {
     return true;
   }
 
-  public async changePassword(
-    input: AuthChangePasswordInput,
-  ): Promise<UserToken> {
+  public async forgotPasswordChangePassword(
+    input: AuthForgotChangePasswordInput,
+  ): Promise<Boolean> {
     const token = forgotPasswordPrefix + input.token;
     const userId = await this.redisService.getValue(token);
 
     if (!userId) {
-      throw new BadRequestException(`Cannot change password`);
+      return false;
     }
 
     const user = await this.userModel.findOne({ _id: userId });
 
     if (!user) {
-      throw new BadRequestException(`Cannot change password`);
+      return false;
     }
 
     await this.redisService.delete(token);
@@ -209,10 +212,7 @@ export class AuthService {
     user.password = hashedPassword;
     await user.save();
 
-    return {
-      user,
-      token: this.signToken(user.id),
-    };
+    return true;
   }
 
   public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {
@@ -237,6 +237,63 @@ export class AuthService {
     return {
       qrUrl: await generateQr(otpauth_url),
     };
+  }
+
+  public async changePassword(userInput: User, input: UserChangePasswordInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      return false;
+    }
+
+    const passwordValid = await AuthHelper.validatePassword(
+      input.oldPassword,
+      user.password,
+    );
+
+    if (!passwordValid) {
+      return false;
+    }
+
+    user.password = await AuthHelper.hashPassword(input.newPassword);
+    await user.save();
+
+    return true;
+  }
+
+  public async updateUserProfile(userInput: User, input: UserUpdateInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+
+    if (!user) {
+      return false;
+    }
+
+    await user.update({ ...input });
+
+    return true;
+  }
+
+  public async changeEmail(userInput: User, input: UserChangeEmailInput) {
+    const user = await this.userModel.findOne({ email: userInput.email });
+    const isReservedEmail = await this.userModel.findOne({ email: input.email });
+
+    if (!user || isReservedEmail) {
+      return false;
+    }
+
+    const passwordValid = await AuthHelper.validatePassword(
+      input.password,
+      user.password,
+    );
+
+    if (!passwordValid) {
+      return false;
+    }
+
+    user.email = input.email;
+    await user.save();
+
+    return true;
   }
 
   public signToken(id: number) {

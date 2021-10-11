@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react';
-import { useWhoAmIQuery } from '../generated';
+import React from 'react';
 import ProtectedRoute from '@/templates/ProtectedRoute';
 import Router from 'next/router';
 import withApollo from "@/lib/withApollo";

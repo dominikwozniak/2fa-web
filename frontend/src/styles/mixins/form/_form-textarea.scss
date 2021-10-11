@@ -1,0 +1,4 @@
+@mixin FormTextarea {
+  @include FormInput();
+  height: 10rem;
+}

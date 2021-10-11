@@ -1,0 +1,56 @@
+.edit-profile {
+  height: 100vh;
+
+  &__image {
+    @include RoundedImage();
+    z-index: 1;
+  }
+
+  &__content {
+    @include input-box-shadow();
+    width: 30rem;
+    background-color: $gray-primary;
+    z-index: 2;
+
+    @media (min-width: $sm-screen) {
+      width: 34rem;
+    }
+
+    .column {
+      position: relative;
+    }
+
+    a {
+      @include FormLink();
+    }
+  }
+
+  &__input {
+    width: 90%;
+
+    @media (min-width: $sm-screen) {
+      width: 80%;
+    }
+
+    span {
+      @include FormText();
+      font-weight: bold;
+      margin-left: 0.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    input {
+      @include FormInput();
+      background-color: $white-primary;
+    }
+
+    button {
+      @include FormSubmitButton();
+      width: auto;
+    }
+
+    .error-input {
+      top: 2.7rem;
+    }
+  }
+}

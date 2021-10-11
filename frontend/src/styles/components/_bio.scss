@@ -1,0 +1,40 @@
+.bio {
+  @include input-box-shadow();
+  width: 30rem;
+  height: 8rem;
+  background-color: $gray-primary;
+
+  @media (min-width: $sm-screen) {
+    width: 34rem;
+  }
+
+  &__edit {
+    @include FormText();
+    text-align: right;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  &__content {
+    span {
+      @include FormText();
+      font-weight: bold;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  }
+
+  &__modal {
+    font-size: 1.4rem;
+
+    textarea {
+      @include FormTextarea();
+    }
+
+    button {
+      font-size: 1.4rem;
+    }
+  }
+}
