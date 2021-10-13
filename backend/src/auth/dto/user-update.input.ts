@@ -16,4 +16,7 @@ export class UserUpdateInput {
 
   @Field({ nullable: true })
   bio?: string;
+
+  @Field({ nullable: true })
+  image?: string;
 }

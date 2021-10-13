@@ -89,6 +89,7 @@ input UserUpdateInput {
   lastName: String
   twoFactorEnabled: Boolean
   bio: String
+  image: String
 }
 
 input UserChangeEmailInput {
