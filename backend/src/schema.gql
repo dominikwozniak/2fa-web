@@ -8,6 +8,7 @@ type User {
   firstName: String
   lastName: String
   bio: String!
+  image: String!
   confirm: Boolean!
   twoFactorEnabled: Boolean!
 }
