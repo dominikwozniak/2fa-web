@@ -83,7 +83,7 @@ const EditProfile: React.FC = () => {
         <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center edit-profile">
           <div className="edit-profile__image">
             <Image
-              src={img}
+              src={data?.WhoAmI.user.image || img}
               alt={'Avatar'}
               width={128}
               height={128}
