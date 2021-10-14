@@ -7,9 +7,10 @@ interface Props {
   firstName: string;
   lastName: string;
   email: string;
+  image: string;
 }
 
-const Header: React.FC<Props> = ({ firstName, lastName, email }) => {
+const Header: React.FC<Props> = ({ firstName, lastName, email, image }) => {
   return (
     <div className="is-flex is-flex-direction-column header">
       <div className="is-flex is-justify-content-flex-end">
@@ -18,7 +19,7 @@ const Header: React.FC<Props> = ({ firstName, lastName, email }) => {
       <div className="mt-2 is-flex is-flex-direction-row is-align-items-center">
         <div className="header__image">
           <Image
-            src={img}
+            src={image || img}
             alt={'Avatar'}
             width={128}
             height={128}
