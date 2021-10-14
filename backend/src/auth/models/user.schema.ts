@@ -30,6 +30,10 @@ export class User {
   @Field()
   bio: string;
 
+  @Prop({ required: false, default: '' })
+  @Field()
+  image: string;
+
   @Prop({ minlength: 5, required: [true, 'Password is required'] })
   password: string;
 

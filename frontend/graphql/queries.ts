@@ -9,6 +9,7 @@ const WHOAMI = gql`
         firstName
         lastName
         bio
+        image
       }
     }
   }

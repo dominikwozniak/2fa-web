@@ -8,6 +8,7 @@ type User {
   firstName: String
   lastName: String
   bio: String!
+  image: String!
   confirm: Boolean!
   twoFactorEnabled: Boolean!
 }
@@ -88,6 +89,7 @@ input UserUpdateInput {
   lastName: String
   twoFactorEnabled: Boolean
   bio: String
+  image: String
 }
 
 input UserChangeEmailInput {

@@ -23,6 +23,7 @@ const Dashboard: React.FC = () => {
                   firstName={data?.WhoAmI.user.firstName}
                   lastName={data?.WhoAmI.user.lastName}
                   email={data?.WhoAmI.user.email}
+                  image={data.WhoAmI.user.image}
                 />
               )}
           </div>
