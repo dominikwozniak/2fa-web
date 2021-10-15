@@ -7,6 +7,7 @@ import { AppService } from './app.service';
 import { LoggingInterceptor } from './shared/logging.interceptor';
 import { AuthModule } from './auth/auth.module';
 import { RedisModule } from './redis/redis.module';
+import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { RedisModule } from './redis/redis.module';
     }),
     AuthModule,
     RedisModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [
