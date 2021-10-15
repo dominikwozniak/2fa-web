@@ -50,7 +50,7 @@ export class AuthResolver {
     return this.authService.confirmAccount(input);
   }
 
-  @Mutation(() => UserToken)
+  @Mutation(() => Boolean)
   registerUser(
     @Args({ name: 'input', type: () => AuthRegisterInput })
     input: AuthRegisterInput,

@@ -126,7 +126,7 @@ export class AuthService {
     };
   }
 
-  public async register(input: AuthRegisterInput): Promise<UserToken> {
+  public async register(input: AuthRegisterInput): Promise<Boolean> {
     const found = await this.userModel.findOne({ email: input.email });
 
     if (found) {
@@ -150,10 +150,7 @@ export class AuthService {
       await this.redisService.setValue(saveToken, created._id);
     }
 
-    return {
-      user: created,
-      token: this.signToken(created.id),
-    };
+    return true;
   }
 
   public async confirmAccount(input: AuthConfirmInput): Promise<Boolean> {
