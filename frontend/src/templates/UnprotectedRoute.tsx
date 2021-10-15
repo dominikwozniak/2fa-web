@@ -18,8 +18,6 @@ const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
     return <p>Loading...</p>;
   }
 
-  console.log(loading, error?.message, data);
-
   if (!loading && error?.message) {
     return <>{children}</>;
   }

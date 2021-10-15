@@ -14,7 +14,7 @@ import withApollo from '@/lib/withApollo';
 import { popupNotification } from "@/utils/popup-notification";
 
 const ChangePassword: React.FC = () => {
-  const [changePasswordMutation, { loading, data }] =
+  const [changePasswordMutation, { loading }] =
     useChangePasswordMutation({
       onCompleted(changePasswordMutation) {
         if (changePasswordMutation) {

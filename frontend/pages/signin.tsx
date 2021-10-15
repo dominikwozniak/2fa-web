@@ -1,7 +1,6 @@
 import React, { useCallback } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import Router from 'next/router';
 import { useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
 import img from '@/public/assets/team_building.svg';
@@ -15,7 +14,7 @@ import withApollo from '@/lib/withApollo';
 import UnprotectedRoute from '@/templates/UnprotectedRoute';
 
 const Signin: React.FC = () => {
-  const [authToken, setAuthToken] = useAuthToken();
+  const [, setAuthToken] = useAuthToken();
   const [loginMutation, { loading }] = useLoginMutation({
     onCompleted({ login }) {
       if (login?.token && !login?.useAuthenticator) {
@@ -57,7 +56,7 @@ const Signin: React.FC = () => {
           <div className="is-flex is-flex-direction-column is-justify-content-center signin__header">
             <Image src={img} alt={'Signin banner image'} width={250} />
             <h1>Sign in</h1>
-            <h4>Welcome back! Let's go log in to the website</h4>
+            <h4>Welcome back! Let&apos;s go log in to the website</h4>
           </div>
           <form
             className="columns mt-4 mb-0 mx-auto is-flex is-flex-direction-column signin__form"
@@ -106,8 +105,8 @@ const Signin: React.FC = () => {
               Log in!
             </button>
             <div className="my-3">
-              <span>Don't you have an account? </span>
-              <Link href="/signup">Let's sign up</Link>
+              <span>Don&apos;t you have an account? </span>
+              <Link href="/signup">Let&apos;s sign up</Link>
             </div>
           </form>
           <ToastContainer />
