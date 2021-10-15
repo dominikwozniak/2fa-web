@@ -16,16 +16,7 @@ const REGISTER = gql`
         lastName: $lastName
         twoFactorEnabled: $twoFactorEnabled
       }
-    ) {
-      token
-      user {
-        _id
-        email
-        firstName
-        lastName
-        bio
-      }
-    }
+    )
   }
 `;
 

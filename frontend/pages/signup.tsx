@@ -16,13 +16,16 @@ import UnprotectedRoute from '@/templates/UnprotectedRoute';
 const Signup: React.FC = () => {
   const [registerMutation, { data, loading }] = useRegisterMutation({
     onCompleted({ registerUser }) {
-      if (registerUser.user) {
+      if (registerUser) {
         popupNotification(
-          `Successfully registered! Please check your email to confirm account`,
+          'Successfully registered! Please check your email to confirm account'
         );
         setTimeout(() => Router.push('/'), 4000);
       }
     },
+    onError(err) {
+      popupNotification(`Error! ${err.message}`);
+    }
   });
   const {
     handleSubmit,
