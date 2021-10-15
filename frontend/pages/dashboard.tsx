@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import withApollo from '@/lib/withApollo';
 import ProtectedRoute from '@/templates/ProtectedRoute';
 import MainTemplate from '@/templates/MainTemplate';

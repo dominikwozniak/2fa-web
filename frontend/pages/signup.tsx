@@ -11,11 +11,9 @@ import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
 import withApollo from '@/lib/withApollo';
-import { useAuthToken } from '@/hooks/useAuthToken';
 import UnprotectedRoute from '@/templates/UnprotectedRoute';
 
 const Signup: React.FC = () => {
-  const [authToken] = useAuthToken();
   const [registerMutation, { data, loading }] = useRegisterMutation({
     onCompleted({ registerUser }) {
       if (registerUser.user) {
@@ -139,7 +137,7 @@ const Signup: React.FC = () => {
             </button>
             <div className="my-3">
               <span>Do you have an account? </span>
-              <Link href="/signin">Let's sign in</Link>
+              <Link href="/signin">Let&apos;s sign in</Link>
             </div>
           </form>
         </div>

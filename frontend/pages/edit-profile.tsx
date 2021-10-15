@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
-import Router from 'next/router';
 import { useForm } from 'react-hook-form';
 import ProtectedRoute from '@/templates/ProtectedRoute';
 import MainTemplate from '@/templates/MainTemplate';
