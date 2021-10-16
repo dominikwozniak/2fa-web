@@ -30,7 +30,8 @@ const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(input: { email: $email, password: $password }) {
       qrUrl
-      useAuthenticator
+      qrCode
+      authenticator
       user {
         email
         firstName
@@ -38,6 +39,19 @@ const LOGIN = gql`
         bio
       }
       token
+    }
+  }
+`;
+
+const VERIFY_LOGIN = gql`
+  mutation verifyLogin($email: String!, $password: String!, $token: String!) {
+    verifyLogin(input: { email: $email, password: $password, token: $token }) {
+      token
+      user {
+        email
+        firstName
+        lastName
+      }
     }
   }
 `;
