@@ -261,7 +261,7 @@ export class AuthService {
       return false;
     }
 
-    await user.update({ ...input });
+    await user.updateOne({ ...input });
 
     return true;
   }
