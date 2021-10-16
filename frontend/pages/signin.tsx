@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -8,24 +8,51 @@ import MainTemplate from '@/templates/MainTemplate';
 import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
-import { useLoginMutation } from '../generated';
+import { useLoginMutation, useVerifyLoginMutation } from '../generated';
 import { useAuthToken } from '@/hooks/useAuthToken';
 import withApollo from '@/lib/withApollo';
 import UnprotectedRoute from '@/templates/UnprotectedRoute';
+import QrModal from '@/components/QrModal';
 
 const Signin: React.FC = () => {
+  const [activeQrModal, setActiveQrModal] = useState(false);
+  const [qrUrl, setQrUrl] = useState('');
   const [, setAuthToken] = useAuthToken();
-  const [loginMutation, { loading }] = useLoginMutation({
+  const [loginMutation, { loading, data }] = useLoginMutation({
     onCompleted({ login }) {
-      if (login?.token && !login?.useAuthenticator) {
+      if (login?.token && !login?.authenticator && !login?.qrCode) {
         setAuthToken(login.token);
         window.location.href = '/dashboard';
+      }
+
+      if (!login?.token && login?.authenticator) {
+        if (login?.qrUrl && login?.qrCode) {
+          setQrUrl(login.qrUrl);
+          setActiveQrModal(true);
+        } else {
+          console.log('SECOND LOGIN');
+        }
       }
     },
     onError(err) {
       popupNotification(`Error! ${err.message}`);
     },
   });
+
+  const [verifyLoginMutation, { loading: verifyLoading }] = useVerifyLoginMutation({
+    onCompleted({ verifyLogin }) {
+      if (verifyLogin.token) {
+        setAuthToken(verifyLogin.token);
+        window.location.href = '/dashboard';
+      } else {
+        popupNotification('Cannot authorize');
+      }
+    },
+    onError(err) {
+      popupNotification(`Error! ${err.message}`);
+    },
+  });
+
   const {
     handleSubmit,
     register,
@@ -36,12 +63,23 @@ const Signin: React.FC = () => {
   const onSubmit = useCallback(
     async (form: UserSignInPayload) => {
       try {
-        await loginMutation({
-          variables: {
-            email: form.email,
-            password: form.password,
-          },
-        });
+        if (form.code) {
+          console.log('CODE', form.code);
+          await verifyLoginMutation({
+            variables: {
+              email: form.email,
+              password: form.password,
+              token: form.code,
+            },
+          });
+        } else {
+          await loginMutation({
+            variables: {
+              email: form.email,
+              password: form.password,
+            },
+          });
+        }
       } catch (err) {
         console.error('error', err);
       }
@@ -90,25 +128,45 @@ const Signin: React.FC = () => {
                 })}
               />
             </div>
-            <Link href="/forgot-password">
-              <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
-                Forgot password?
-              </a>
-            </Link>
+            {data?.login?.authenticator && (
+              <div className="column p-0">
+                {errors.code && <ErrorInputIcon />}
+                <input
+                  type="text"
+                  aria-invalid={errors.code ? 'true' : 'false'}
+                  placeholder="Authenticator code"
+                  {...register('code', {
+                    required: false,
+                  })}
+                />
+              </div>
+            )}
+            {!data?.login?.authenticator && (
+              <Link href="/forgot-password">
+                <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
+                  Forgot password?
+                </a>
+              </Link>
+            )}
             <button
               className={`column button is-primary is-flex mx-auto mt-3 ${
-                loading ? 'is-loading' : ''
+                loading || verifyLoading ? 'is-loading' : ''
               }`}
               type="submit"
-              disabled={loading}
+              disabled={loading || verifyLoading}
             >
-              Log in!
+              {data?.login?.authenticator ? 'Authorize' : 'Log in!'}
             </button>
             <div className="my-3">
               <span>Don&apos;t you have an account? </span>
               <Link href="/signup">Let&apos;s sign up</Link>
             </div>
           </form>
+          <QrModal
+            url={qrUrl}
+            active={activeQrModal}
+            setActive={setActiveQrModal}
+          />
           <ToastContainer />
         </div>
       </MainTemplate>
