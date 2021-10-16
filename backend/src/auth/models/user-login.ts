@@ -13,5 +13,8 @@ export class UserLogin {
   qrUrl?: string;
 
   @Field({ defaultValue: false })
-  useAuthenticator?: boolean;
+  qrCode?: boolean;
+
+  @Field({ defaultValue: false })
+  authenticator?: boolean;
 }

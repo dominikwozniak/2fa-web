@@ -65,23 +65,28 @@ export class AuthService {
     if (found.twoFactorEnabled) {
       const { otpauth_url, base32 } = twoFactorGenerateSecret();
 
-      if (!found.twoFactorToken) {
+      if (!found.twoFactorToken || !found.afterFirstLogin) {
         found.twoFactorToken = base32;
         await found.save();
 
         return {
           qrUrl: await generateQr(otpauth_url),
+          qrCode: true,
+          authenticator: true,
         };
       }
 
       return {
-        useAuthenticator: true,
+        authenticator: true,
+        qrCode: false,
       };
     }
 
     return {
       user: found,
       token: this.signToken(found.id),
+      authenticator: false,
+      qrCode: false,
     };
   }
 
@@ -118,6 +123,9 @@ export class AuthService {
     if (!verified) {
       throw new BadRequestException('User is not verified');
     }
+
+    user.afterFirstLogin = true;
+    await user.save();
 
     return {
       user,

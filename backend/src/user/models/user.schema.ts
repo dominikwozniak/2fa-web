@@ -45,6 +45,10 @@ export class User {
   @Field()
   twoFactorEnabled: boolean;
 
+  @Prop({ required: false, default: false })
+  @Field()
+  afterFirstLogin: boolean;
+
   @Prop({ required: false, default: '' })
   twoFactorToken: string;
 }

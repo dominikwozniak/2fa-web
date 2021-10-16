@@ -11,6 +11,7 @@ type User {
   image: String!
   confirm: Boolean!
   twoFactorEnabled: Boolean!
+  afterFirstLogin: Boolean!
 }
 
 type UserToken {
@@ -22,7 +23,8 @@ type UserLogin {
   token: String
   user: User
   qrUrl: String
-  useAuthenticator: Boolean!
+  qrCode: Boolean!
+  authenticator: Boolean!
 }
 
 type QrCode {
