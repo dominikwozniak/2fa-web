@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { AuthHelper } from '../../auth/auth.helper';
+import { AuthHelper } from '@/auth/auth.helper';
 
 @Schema({
   validateBeforeSave: true,

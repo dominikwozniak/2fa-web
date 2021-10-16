@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { nanoid } from 'nanoid';
-import { User } from './models/user.schema';
+import { User } from '@/user/models/user.schema';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
@@ -14,23 +14,23 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
-import { sendEmail } from '../shared/sendEmail';
-import { RedisService } from '../redis/redis.service';
+import { sendEmail } from '@/shared/sendEmail';
+import { RedisService } from '@/redis/redis.service';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import {
   confirmUserPrefix,
   forgotPasswordPrefix,
-} from '../shared/consts/redisPrefixed.const';
+} from '@/shared/consts/redisPrefixed.const';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
-import { generateQr } from '../shared/generateQr';
-import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
+import { generateQr } from '@/shared/generateQr';
+import { twoFactorGenerateSecret } from '@/shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
-import { twoFactorVerify } from '../shared/twoFactorVerify';
+import { twoFactorVerify } from '@/shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
-import { UserService } from '../user/user.service';
+import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class AuthService {
