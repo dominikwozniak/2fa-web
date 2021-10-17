@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import img from '@/public/assets/synchronize.svg';
@@ -7,6 +7,7 @@ import MainTemplate from '@/templates/MainTemplate';
 import withApollo from '@/lib/withApollo';
 import {
   namedOperations,
+  useChangeAuthenticationDeviceMutation,
   useUpdateProfileMutation,
   useWhoAmIQuery,
 } from '../generated';
@@ -14,8 +15,11 @@ import { popupNotification } from '@/utils/popup-notification';
 import { ToastContainer } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { ChangeTwoFactor } from '@/types/change-two-factor.types';
+import QrModal from '@/components/QrModal';
 
 const TwoFactor: React.FC = () => {
+  const [activeQrModal, setActiveQrModal] = useState(false);
+  const [qrUrl, setQrUrl] = useState('');
   const { data } = useWhoAmIQuery();
   const [updateProfile, { loading }] = useUpdateProfileMutation({
     onCompleted({ updateProfile }) {
@@ -30,6 +34,23 @@ const TwoFactor: React.FC = () => {
     },
     refetchQueries: [namedOperations.Query.WhoAmI],
   });
+
+  const [changeAuthenticationDeviceMutation, { loading: changeAuthLoading }] =
+    useChangeAuthenticationDeviceMutation({
+      onCompleted({ changeAuthenticationDevice }) {
+        if (changeAuthenticationDevice.qrUrl) {
+          popupNotification('Settings was updated');
+          setQrUrl(changeAuthenticationDevice.qrUrl);
+          setActiveQrModal(true);
+        } else {
+          popupNotification('Cannot update settings');
+        }
+      },
+      onError(err) {
+        popupNotification(`Error! ${err.message}`);
+      },
+      refetchQueries: [namedOperations.Query.WhoAmI],
+    });
 
   const { handleSubmit, register, reset } = useForm<ChangeTwoFactor>({
     defaultValues: {
@@ -51,6 +72,16 @@ const TwoFactor: React.FC = () => {
     },
     [reset],
   );
+
+  const handleChangeDevice = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    try {
+      await changeAuthenticationDeviceMutation();
+    } catch (err) {
+      console.error('error', err);
+    }
+  };
 
   useEffect(() => {
     if (data?.WhoAmI.user.twoFactorEnabled) {
@@ -89,7 +120,16 @@ const TwoFactor: React.FC = () => {
               </a>
             </Link>
             <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between two-factor__input">
-              <button type="button" className="button is-primary">
+              <button
+                type="button"
+                className={`button is-primary ${
+                  changeAuthLoading ? 'is-loading' : ''
+                }`}
+                onClick={handleChangeDevice}
+                disabled={
+                  !data?.WhoAmI.user.twoFactorEnabled || changeAuthLoading
+                }
+              >
                 Change device
               </button>
               <button
@@ -102,6 +142,11 @@ const TwoFactor: React.FC = () => {
             </div>
           </form>
         </div>
+        <QrModal
+          url={qrUrl}
+          active={activeQrModal}
+          setActive={setActiveQrModal}
+        />
         <ToastContainer />
       </MainTemplate>
     </ProtectedRoute>

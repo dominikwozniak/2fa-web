@@ -30,6 +30,7 @@ const Signin: React.FC = () => {
           setQrUrl(login.qrUrl);
           setActiveQrModal(true);
         } else {
+          // TODO: check
           console.log('SECOND LOGIN');
         }
       }
