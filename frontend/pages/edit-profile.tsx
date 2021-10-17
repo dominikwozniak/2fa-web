@@ -11,7 +11,7 @@ import {
 } from '../generated';
 import withApollo from '@/lib/withApollo';
 import { popupNotification } from '@/utils/popup-notification';
-import img from '@/public/assets/placeholder.png';
+import img from '@/public/assets/avatar.svg';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { ChangeNamePayload } from '@/types/change-name.types';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ import ChangeEmail from '@/components/ChangeEmail';
 const EditProfile: React.FC = () => {
   const [active, setActive] = useState(false);
   const { data } = useWhoAmIQuery();
-  const [updateProfile, { loading }] = useUpdateProfileMutation({
+  const [updateProfileMutation, { loading }] = useUpdateProfileMutation({
     onCompleted({ updateProfile }) {
       if (updateProfile) {
         popupNotification('Profile was updated');
@@ -50,7 +50,7 @@ const EditProfile: React.FC = () => {
   const onSubmit = useCallback(
     async (form: ChangeNamePayload) => {
       try {
-        await updateProfile({
+        await updateProfileMutation({
           variables: {
             firstName: form.firstName,
             lastName: form.lastName,
@@ -63,8 +63,20 @@ const EditProfile: React.FC = () => {
     [reset],
   );
 
-  const handleChangeEmail = () => {
+  const handleChangeEmail = (e: React.MouseEvent) => {
+    e.preventDefault();
     setActive((current) => !current);
+  };
+
+  const handleRemoveImage = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (data?.WhoAmI.user.image) {
+      await updateProfileMutation({
+        variables: {
+          image: '',
+        },
+      });
+    }
   };
 
   useEffect(() => {
@@ -80,7 +92,7 @@ const EditProfile: React.FC = () => {
     <ProtectedRoute>
       <MainTemplate title={'Edit profile'}>
         <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center edit-profile">
-          <div className="edit-profile__image">
+          <div className="edit-profile__image" onClick={handleRemoveImage}>
             <Image
               src={data?.WhoAmI.user.image || img}
               alt={'Avatar'}
@@ -88,6 +100,11 @@ const EditProfile: React.FC = () => {
               height={128}
               objectFit={'fill'}
             />
+            {data?.WhoAmI.user.image && (
+              <div className="is-flex is-align-items-center is-justify-content-center edit-profile__image--overlay">
+                <span>Remove image</span>
+              </div>
+            )}
           </div>
           <form
             className="columns py-4 is-flex is-flex-direction-column is-align-items-center edit-profile__content"

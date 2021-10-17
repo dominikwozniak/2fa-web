@@ -87,3 +87,8 @@
   font-stretch: normal;
   font-style: normal;
 }
+
+@mixin Paragraph-white {
+  @include Paragraph();
+  color: $white;
+}

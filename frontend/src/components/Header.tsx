@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import img from '../../public/assets/placeholder.png';
+import img from '../../public/assets/avatar.svg';
 import LogoutButton from '@/components/LogoutButton';
 import { Maybe } from "../../generated";
 
