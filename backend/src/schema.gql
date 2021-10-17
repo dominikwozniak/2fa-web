@@ -11,6 +11,7 @@ type User {
   image: String!
   confirm: Boolean!
   twoFactorEnabled: Boolean!
+  afterFirstLogin: Boolean!
 }
 
 type UserToken {
@@ -22,7 +23,8 @@ type UserLogin {
   token: String
   user: User
   qrUrl: String
-  useAuthenticator: Boolean!
+  qrCode: Boolean!
+  authenticator: Boolean!
 }
 
 type QrCode {
@@ -37,7 +39,7 @@ type Mutation {
   login(input: AuthLoginInput!): UserLogin
   verifyLogin(input: AuthVerifyInput!): UserToken!
   confirmAccount(input: AuthConfirmInput!): Boolean!
-  registerUser(input: AuthRegisterInput!): UserToken!
+  registerUser(input: AuthRegisterInput!): Boolean!
   forgotPassword(input: AuthForgotPasswordInput!): Boolean!
   forgotPasswordChangePassword(input: AuthForgotChangePasswordInput!): Boolean!
   changePassword(input: UserChangePasswordInput!): Boolean!

@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import Link from 'next/link';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { useForm } from 'react-hook-form';
 import { EditBioPayload } from '@/types/edit-bio.types';

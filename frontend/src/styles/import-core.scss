@@ -13,6 +13,7 @@
 @import 'mixins/primary-button';
 @import 'mixins/rounded-image';
 
+@import 'mixins/form/form-checkbox';
 @import 'mixins/form/form-input';
 @import 'mixins/form/form-link';
 @import 'mixins/form/form-submit-button';
@@ -27,6 +28,7 @@
 @import 'pages/home';
 @import 'pages/signin';
 @import 'pages/signup';
+@import 'pages/two-factor';
 
 @import 'components/action';
 @import 'components/action-button';
@@ -35,4 +37,5 @@
 @import 'components/change-photo';
 @import 'components/error-input';
 @import 'components/header';
+@import 'components/qr-modal';
 @import 'components/toast';

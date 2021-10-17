@@ -11,20 +11,21 @@ import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
 import withApollo from '@/lib/withApollo';
-import { useAuthToken } from '@/hooks/useAuthToken';
 import UnprotectedRoute from '@/templates/UnprotectedRoute';
 
 const Signup: React.FC = () => {
-  const [authToken] = useAuthToken();
   const [registerMutation, { data, loading }] = useRegisterMutation({
     onCompleted({ registerUser }) {
-      if (registerUser.user) {
+      if (registerUser) {
         popupNotification(
-          `Successfully registered! Please check your email to confirm account`,
+          'Successfully registered! Please check your email to confirm account'
         );
         setTimeout(() => Router.push('/'), 4000);
       }
     },
+    onError(err) {
+      popupNotification(`Error! ${err.message}`);
+    }
   });
   const {
     handleSubmit,
@@ -122,7 +123,7 @@ const Signup: React.FC = () => {
                 })}
               />
             </div>
-            <div className="column p-0">
+            <div className="column p-0 signup__form-checkbox">
               <label className="checkbox is-flex is-align-items-center">
                 <input type="checkbox" {...register('twoFactorEnabled')} />
                 Use two-factor authentication
@@ -139,7 +140,7 @@ const Signup: React.FC = () => {
             </button>
             <div className="my-3">
               <span>Do you have an account? </span>
-              <Link href="/signin">Let's sign in</Link>
+              <Link href="/signin">Let&apos;s sign in</Link>
             </div>
           </form>
         </div>

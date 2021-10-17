@@ -14,7 +14,7 @@ import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { CtxUser } from './decorators/ctx-user.decorator';
-import { User } from './models/user.schema';
+import { User } from '@/user/models/user.schema';
 import { QrCode } from './models/qr-code';
 
 @Resolver()
@@ -50,7 +50,7 @@ export class AuthResolver {
     return this.authService.confirmAccount(input);
   }
 
-  @Mutation(() => UserToken)
+  @Mutation(() => Boolean)
   registerUser(
     @Args({ name: 'input', type: () => AuthRegisterInput })
     input: AuthRegisterInput,

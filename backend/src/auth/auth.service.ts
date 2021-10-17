@@ -4,11 +4,9 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
 import { JwtService } from '@nestjs/jwt';
 import { nanoid } from 'nanoid';
-import { User, UserDocument } from './models/user.schema';
-import { Model } from 'mongoose';
+import { User } from '@/user/models/user.schema';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
@@ -16,33 +14,34 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
-import { sendEmail } from '../shared/sendEmail';
-import { RedisService } from '../redis/redis.service';
+import { sendEmail } from '@/shared/sendEmail';
+import { RedisService } from '@/redis/redis.service';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import {
   confirmUserPrefix,
   forgotPasswordPrefix,
-} from '../shared/consts/redisPrefixed.const';
+} from '@/shared/consts/redisPrefixed.const';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
-import { generateQr } from '../shared/generateQr';
-import { twoFactorGenerateSecret } from '../shared/twoFactorGenerateSecret';
+import { generateQr } from '@/shared/generateQr';
+import { twoFactorGenerateSecret } from '@/shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
-import { twoFactorVerify } from '../shared/twoFactorVerify';
+import { twoFactorVerify } from '@/shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
+import { UserService } from '@/user/user.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
+    private readonly userService: UserService,
   ) {}
 
   public async login(input: AuthLoginInput): Promise<UserLogin> {
-    const found = await this.userModel.findOne({ email: input.email });
+    const found = await this.userService.findUserByEmail(input.email);
 
     if (!found) {
       throw new NotFoundException(
@@ -66,28 +65,33 @@ export class AuthService {
     if (found.twoFactorEnabled) {
       const { otpauth_url, base32 } = twoFactorGenerateSecret();
 
-      if (!found.twoFactorToken) {
+      if (!found.twoFactorToken || !found.afterFirstLogin) {
         found.twoFactorToken = base32;
         await found.save();
 
         return {
           qrUrl: await generateQr(otpauth_url),
+          qrCode: true,
+          authenticator: true,
         };
       }
 
       return {
-        useAuthenticator: true,
+        authenticator: true,
+        qrCode: false,
       };
     }
 
     return {
       user: found,
       token: this.signToken(found.id),
+      authenticator: false,
+      qrCode: false,
     };
   }
 
   public async whoAmI(userInput: User): Promise<UserToken> {
-    const user = await this.userModel.findOne({ email: userInput.email });
+    const user = await this.userService.findUserByEmail(userInput.email);
 
     if (!user) {
       throw new NotFoundException(
@@ -102,7 +106,7 @@ export class AuthService {
   }
 
   public async verifyLogin(input: AuthVerifyInput): Promise<UserToken> {
-    const user = await this.userModel.findOne({ email: input.email });
+    const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
       throw new NotFoundException(
@@ -120,14 +124,17 @@ export class AuthService {
       throw new BadRequestException('User is not verified');
     }
 
+    user.afterFirstLogin = true;
+    await user.save();
+
     return {
       user,
       token: this.signToken(user.id),
     };
   }
 
-  public async register(input: AuthRegisterInput): Promise<UserToken> {
-    const found = await this.userModel.findOne({ email: input.email });
+  public async register(input: AuthRegisterInput): Promise<Boolean> {
+    const found = await this.userService.findUserByEmail(input.email);
 
     if (found) {
       throw new BadRequestException(
@@ -137,10 +144,7 @@ export class AuthService {
 
     const hashedPassword = await AuthHelper.hashPassword(input.password);
 
-    const created = await this.userModel.create({
-      ...input,
-      password: hashedPassword,
-    });
+    const created = await this.userService.createUser(input, hashedPassword);
 
     if (created) {
       const token = nanoid(32);
@@ -150,16 +154,13 @@ export class AuthService {
       await this.redisService.setValue(saveToken, created._id);
     }
 
-    return {
-      user: created,
-      token: this.signToken(created.id),
-    };
+    return true;
   }
 
   public async confirmAccount(input: AuthConfirmInput): Promise<Boolean> {
     const token = confirmUserPrefix + input.confirmToken;
     const userId = await this.redisService.getValue(token);
-    const user = await this.userModel.findOne({ _id: userId });
+    const user = await this.userService.findUserById(userId);
 
     if (!user) {
       return false;
@@ -175,7 +176,7 @@ export class AuthService {
   public async forgotPassword(
     input: AuthForgotPasswordInput,
   ): Promise<Boolean> {
-    const user = await this.userModel.findOne({ email: input.email });
+    const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
       return false;
@@ -200,7 +201,7 @@ export class AuthService {
       return false;
     }
 
-    const user = await this.userModel.findOne({ _id: userId });
+    const user = await this.userService.findUserById(userId);
 
     if (!user) {
       return false;
@@ -216,7 +217,7 @@ export class AuthService {
   }
 
   public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {
-    const user = await this.userModel.findOne({ email: userInput.email });
+    const user = await this.userService.findUserByEmail(userInput.email);
 
     if (!user) {
       throw new BadRequestException(
@@ -240,7 +241,7 @@ export class AuthService {
   }
 
   public async changePassword(userInput: User, input: UserChangePasswordInput) {
-    const user = await this.userModel.findOne({ email: userInput.email });
+    const user = await this.userService.findUserByEmail(userInput.email);
 
     if (!user) {
       return false;
@@ -262,20 +263,26 @@ export class AuthService {
   }
 
   public async updateUserProfile(userInput: User, input: UserUpdateInput) {
-    const user = await this.userModel.findOne({ email: userInput.email });
+    const user = await this.userService.findUserByEmail(userInput.email);
+    let twoFactorUpdateInput = {} as User
 
     if (!user) {
       return false;
     }
 
-    await user.update({ ...input });
+    if (user.twoFactorEnabled && input.twoFactorEnabled === false) {
+      twoFactorUpdateInput.twoFactorToken = '';
+      twoFactorUpdateInput.afterFirstLogin = false;
+    }
+
+    await user.updateOne({ ...input, ...twoFactorUpdateInput });
 
     return true;
   }
 
   public async changeEmail(userInput: User, input: UserChangeEmailInput) {
-    const user = await this.userModel.findOne({ email: userInput.email });
-    const isReservedEmail = await this.userModel.findOne({ email: input.email });
+    const user = await this.userService.findUserByEmail(userInput.email);
+    const isReservedEmail = await this.userService.findUserByEmail(input.email);
 
     if (!user || isReservedEmail) {
       return false;
@@ -303,6 +310,6 @@ export class AuthService {
   }
 
   public async validateUser(userId: number) {
-    return this.userModel.findOne({ _id: userId });
+    return this.userService.findUserById(userId);
   }
 }

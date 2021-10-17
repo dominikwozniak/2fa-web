@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
-import Router from 'next/router';
 import img from '../../public/assets/camera.svg';
 import { namedOperations, useUpdateProfileMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
@@ -42,7 +41,7 @@ const ChangePhotoButton: React.FC = () => {
     });
     const { url } = await res.json();
 
-    const s3_res = await fetch(url, {
+    const s3Res = await fetch(url, {
       method: 'PUT',
       body: file,
       headers: {
@@ -50,7 +49,7 @@ const ChangePhotoButton: React.FC = () => {
       },
     });
 
-    if (s3_res.status === 200) {
+    if (s3Res.status === 200) {
       await updateProfile({
         variables: {
           image: `${BUCKET_URL}/${formattedName}`,
@@ -65,7 +64,7 @@ const ChangePhotoButton: React.FC = () => {
       className="button is-white is-flex is-align-items-center change-photo"
     >
       <Image src={img} alt={'Change photo button'} width={24} height={24} />
-      <input id="image-upload" type="file" onChange={onFileChange} />
+      <input id="image-upload" type="file" onChange={onFileChange} disabled={loading} />
     </label>
   );
 };

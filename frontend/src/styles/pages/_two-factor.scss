@@ -1,0 +1,55 @@
+.two-factor {
+  @include container();
+
+  padding-top: 1rem;
+
+  @media (min-width: $sm-screen) {
+    padding-top: 5rem;
+  }
+
+  @media (min-width: $md-screen) {
+    padding-top: 7rem;
+  }
+
+  &__header {
+    @include HeaderMargins();
+
+    h3 {
+      @include H3();
+      margin: 0.5rem auto;
+      max-width: 100%;
+    }
+  }
+
+  &__content {
+    @include input-box-shadow();
+    width: 30rem;
+    background-color: $gray-primary;
+    z-index: 2;
+
+    @media (min-width: $sm-screen) {
+      width: 34rem;
+    }
+
+    .column {
+      position: relative;
+    }
+
+    a {
+      @include FormLink();
+    }
+  }
+
+  &__checkbox {
+    @include FormCheckbox();
+  }
+
+  &__input {
+    width: 100%;
+
+    button {
+      @include FormSubmitButton();
+      width: auto;
+    }
+  }
+}

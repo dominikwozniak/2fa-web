@@ -16,16 +16,7 @@ const REGISTER = gql`
         lastName: $lastName
         twoFactorEnabled: $twoFactorEnabled
       }
-    ) {
-      token
-      user {
-        _id
-        email
-        firstName
-        lastName
-        bio
-      }
-    }
+    )
   }
 `;
 
@@ -39,7 +30,8 @@ const LOGIN = gql`
   mutation Login($email: String!, $password: String!) {
     login(input: { email: $email, password: $password }) {
       qrUrl
-      useAuthenticator
+      qrCode
+      authenticator
       user {
         email
         firstName
@@ -47,6 +39,19 @@ const LOGIN = gql`
         bio
       }
       token
+    }
+  }
+`;
+
+const VERIFY_LOGIN = gql`
+  mutation verifyLogin($email: String!, $password: String!, $token: String!) {
+    verifyLogin(input: { email: $email, password: $password, token: $token }) {
+      token
+      user {
+        email
+        firstName
+        lastName
+      }
     }
   }
 `;
@@ -69,6 +74,7 @@ const UPDATE_PROFILE = gql`
     $firstName: String
     $lastName: String
     $image: String
+    $twoFactorEnabled: Boolean
   ) {
     updateProfile(
       input: {
@@ -76,6 +82,7 @@ const UPDATE_PROFILE = gql`
         firstName: $firstName
         lastName: $lastName
         image: $image
+        twoFactorEnabled: $twoFactorEnabled
       }
     )
   }
@@ -92,5 +99,13 @@ const CHANGE_PASSWORD = gql`
 const CHANGE_EMAIL = gql`
   mutation changeEmail($email: String!, $password: String!) {
     changeEmail(input: { email: $email, password: $password })
+  }
+`;
+
+const CHANGE_AUTHENTICATION_DEVICE = gql`
+  mutation changeAuthenticationDevice {
+    changeAuthenticationDevice {
+      qrUrl
+    }
   }
 `;

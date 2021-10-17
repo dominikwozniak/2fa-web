@@ -2,10 +2,11 @@ import React from 'react';
 import Image from 'next/image';
 import img from '../../public/assets/placeholder.png';
 import LogoutButton from '@/components/LogoutButton';
+import { Maybe } from "../../generated";
 
 interface Props {
-  firstName: string;
-  lastName: string;
+  firstName: Maybe<string> | undefined;
+  lastName: Maybe<string> | undefined;
   email: string;
   image: string;
 }
@@ -28,9 +29,11 @@ const Header: React.FC<Props> = ({ firstName, lastName, email, image }) => {
         </div>
         <div className="pl-4 pt-4 header__content">
           <h1>Your profile</h1>
-          <h3>
-            {firstName} {lastName}
-          </h3>
+          {firstName && lastName && (
+            <h3>
+              {firstName} {lastName}
+            </h3>
+          )}
           <h4>{email}</h4>
         </div>
       </div>

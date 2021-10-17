@@ -1,5 +1,5 @@
 import { Field, ObjectType } from '@nestjs/graphql';
-import { User } from './user.schema';
+import { User } from '@/user/models/user.schema';
 
 @ObjectType()
 export class UserLogin {
@@ -13,5 +13,8 @@ export class UserLogin {
   qrUrl?: string;
 
   @Field({ defaultValue: false })
-  useAuthenticator?: boolean;
+  qrCode?: boolean;
+
+  @Field({ defaultValue: false })
+  authenticator?: boolean;
 }

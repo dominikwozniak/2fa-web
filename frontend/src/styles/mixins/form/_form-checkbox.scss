@@ -1,0 +1,10 @@
+@mixin FormCheckbox {
+  label {
+    @include FormText();
+    gap: 0.5rem;
+
+    input {
+      margin-top: -0.3rem;
+    }
+  }
+}

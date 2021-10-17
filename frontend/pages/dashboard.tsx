@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import withApollo from '@/lib/withApollo';
 import ProtectedRoute from '@/templates/ProtectedRoute';
 import MainTemplate from '@/templates/MainTemplate';
@@ -16,9 +16,7 @@ const Dashboard: React.FC = () => {
       <MainTemplate title={'Dashboard'}>
         <div className=" is-flex is-flex-direction-column is-align-items-center dashboard">
           <div>
-            {data?.WhoAmI.user &&
-              data?.WhoAmI.user.firstName &&
-              data?.WhoAmI.user.lastName && (
+            {data?.WhoAmI.user && (
                 <Header
                   firstName={data?.WhoAmI.user.firstName}
                   lastName={data?.WhoAmI.user.lastName}

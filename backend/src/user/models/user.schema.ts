@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { AuthHelper } from '../auth.helper';
+import { AuthHelper } from '@/auth/auth.helper';
 
 @Schema({
   validateBeforeSave: true,
@@ -44,6 +44,10 @@ export class User {
   @Prop({ required: false, default: false })
   @Field()
   twoFactorEnabled: boolean;
+
+  @Prop({ required: false, default: false })
+  @Field()
+  afterFirstLogin: boolean;
 
   @Prop({ required: false, default: '' })
   twoFactorToken: string;
