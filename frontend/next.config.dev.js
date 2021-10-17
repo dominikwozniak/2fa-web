@@ -1,12 +1,4 @@
-const withPWA = require('next-pwa');
-
-module.exports = withPWA({
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development',
-  },
+module.exports = {
   webpackDevMiddleware: (config) => {
     config.watchOptions = {
       poll: 1000,
@@ -21,4 +13,4 @@ module.exports = withPWA({
       'file-upload-bucket-public.s3.eu-central-1.amazonaws.com',
     ],
   },
-});
+};
