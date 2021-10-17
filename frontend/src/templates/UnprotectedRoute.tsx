@@ -2,6 +2,7 @@ import React from 'react';
 import Router from 'next/router';
 import { useWhoAmIQuery } from '../../generated';
 import { useAuthToken } from '@/hooks/useAuthToken';
+import Loader from '@/components/Loader';
 
 interface Props {
   children: React.ReactNode;
@@ -13,9 +14,8 @@ const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
   });
   const [, , removeAuthToken] = useAuthToken();
 
-  // TODO: replace with loader
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!loading && error?.message) {

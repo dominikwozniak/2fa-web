@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import img from '@/public/assets/accept.svg';
 import withApollo from '@/lib/withApollo';
 import { useConfirmUserMutation } from '../../generated';
+import Loader from '@/components/Loader';
 
 const ConfirmAccountWithToken: React.FC = () => {
   const router = useRouter();
@@ -30,7 +31,7 @@ const ConfirmAccountWithToken: React.FC = () => {
     <MainTemplate title={'Confirm account'}>
       <div className="is-flex is-flex-direction-column is-align-items-center confirm">
         {loading ? (
-          <p>Loading...</p>
+          <Loader />
         ) : (
           <>
             <Image
