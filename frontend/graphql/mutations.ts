@@ -74,6 +74,7 @@ const UPDATE_PROFILE = gql`
     $firstName: String
     $lastName: String
     $image: String
+    $twoFactorEnabled: Boolean
   ) {
     updateProfile(
       input: {
@@ -81,6 +82,7 @@ const UPDATE_PROFILE = gql`
         firstName: $firstName
         lastName: $lastName
         image: $image
+        twoFactorEnabled: $twoFactorEnabled
       }
     )
   }

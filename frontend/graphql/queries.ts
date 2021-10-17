@@ -10,6 +10,7 @@ const WHOAMI = gql`
         lastName
         bio
         image
+        twoFactorEnabled
       }
     }
   }
