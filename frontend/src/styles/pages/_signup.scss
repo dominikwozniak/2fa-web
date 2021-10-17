@@ -46,13 +46,8 @@
       @include FormText();
     }
 
-    label {
-      @include FormText();
-      gap: 0.5rem;
-
-      input {
-        margin-top: -0.3rem;
-      }
+    &-checkbox {
+      @include FormCheckbox();
     }
   }
 }

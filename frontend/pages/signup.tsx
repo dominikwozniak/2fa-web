@@ -123,7 +123,7 @@ const Signup: React.FC = () => {
                 })}
               />
             </div>
-            <div className="column p-0">
+            <div className="column p-0 signup__form-checkbox">
               <label className="checkbox is-flex is-align-items-center">
                 <input type="checkbox" {...register('twoFactorEnabled')} />
                 Use two-factor authentication
