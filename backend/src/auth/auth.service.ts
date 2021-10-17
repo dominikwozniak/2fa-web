@@ -264,12 +264,18 @@ export class AuthService {
 
   public async updateUserProfile(userInput: User, input: UserUpdateInput) {
     const user = await this.userService.findUserByEmail(userInput.email);
+    let twoFactorUpdateInput = {} as User
 
     if (!user) {
       return false;
     }
 
-    await user.updateOne({ ...input });
+    if (user.twoFactorEnabled && input.twoFactorEnabled === false) {
+      twoFactorUpdateInput.twoFactorToken = '';
+      twoFactorUpdateInput.afterFirstLogin = false;
+    }
+
+    await user.updateOne({ ...input, ...twoFactorUpdateInput });
 
     return true;
   }
