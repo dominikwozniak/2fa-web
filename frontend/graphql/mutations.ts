@@ -101,3 +101,11 @@ const CHANGE_EMAIL = gql`
     changeEmail(input: { email: $email, password: $password })
   }
 `;
+
+const CHANGE_AUTHENTICATION_DEVICE = gql`
+  mutation changeAuthenticationDevice {
+    changeAuthenticationDevice {
+      qrUrl
+    }
+  }
+`;
