@@ -4,6 +4,7 @@ import { AuthHelper } from '@/auth/auth.helper';
 
 @Schema({
   validateBeforeSave: true,
+  timestamps: true,
 })
 @ObjectType()
 export class User {
