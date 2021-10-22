@@ -31,6 +31,7 @@ import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserService } from '@/user/user.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -40,7 +41,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  public async login(input: AuthLoginInput): Promise<UserLogin> {
+  public async login(input: AuthLoginInput, res: Response): Promise<UserLogin> {
     const found = await this.userService.findUserByEmail(input.email);
 
     if (!found) {
@@ -82,6 +83,8 @@ export class AuthService {
       };
     }
 
+    res.cookie('authorization', this.signToken(found.id), { httpOnly: true });
+
     return {
       user: found,
       token: this.signToken(found.id),
@@ -90,12 +93,12 @@ export class AuthService {
     };
   }
 
-  public async whoAmI(userInput: User): Promise<UserToken> {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async whoAmI(userEmail: string): Promise<UserToken> {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
       throw new NotFoundException(
-        `User with email ${userInput.email} does not exist`,
+        `User with email ${userEmail} does not exist`,
       );
     }
 
@@ -216,12 +219,12 @@ export class AuthService {
     return true;
   }
 
-  public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changeAuthenticationDevice(userEmail: string): Promise<QrCode> {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
       throw new BadRequestException(
-        `Cannot find user with email ${userInput.email}`,
+        `Cannot find user with email ${userEmail}`,
       );
     }
 
@@ -240,8 +243,8 @@ export class AuthService {
     };
   }
 
-  public async changePassword(userInput: User, input: UserChangePasswordInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changePassword(userEmail: string, input: UserChangePasswordInput) {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
       return false;
@@ -262,9 +265,9 @@ export class AuthService {
     return true;
   }
 
-  public async updateUserProfile(userInput: User, input: UserUpdateInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
-    let twoFactorUpdateInput = {} as User
+  public async updateUserProfile(userEmail: string, input: UserUpdateInput) {
+    const user = await this.userService.findUserByEmail(userEmail);
+    let twoFactorUpdateInput = {} as User;
 
     if (!user) {
       return false;
@@ -280,8 +283,8 @@ export class AuthService {
     return true;
   }
 
-  public async changeEmail(userInput: User, input: UserChangeEmailInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changeEmail(userEmail: string, input: UserChangeEmailInput) {
+    const user = await this.userService.findUserByEmail(userEmail);
     const isReservedEmail = await this.userService.findUserByEmail(input.email);
 
     if (!user || isReservedEmail) {

@@ -13,9 +13,10 @@ import { AuthVerifyInput } from './dto/auth-verify.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
-import { CtxUser } from './decorators/ctx-user.decorator';
-import { User } from '@/user/models/user.schema';
 import { QrCode } from './models/qr-code';
+import { UserGql } from '@/shared/decorators/user-gql.decorator';
+import { ResGql } from '@/shared/decorators/res-gql.decorator';
+import { Response } from 'express';
 
 @Resolver()
 export class AuthResolver {
@@ -23,15 +24,16 @@ export class AuthResolver {
 
   @UseGuards(GqlAuthGuard)
   @Query(() => UserToken)
-  WhoAmI(@CtxUser() user: User) {
-    return this.authService.whoAmI(user);
+  WhoAmI(@UserGql() email: string) {
+    return this.authService.whoAmI(email);
   }
 
   @Mutation(() => UserLogin, { nullable: true })
   login(
     @Args({ name: 'input', type: () => AuthLoginInput }) input: AuthLoginInput,
+    @ResGql() res: Response,
   ) {
-    return this.authService.login(input);
+    return this.authService.login(input, res);
   }
 
   @Mutation(() => UserToken)
@@ -77,36 +79,36 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   changePassword(
-    @CtxUser() user: User,
+    @UserGql() userEmail: string,
     @Args({ name: 'input', type: () => UserChangePasswordInput })
     input: UserChangePasswordInput,
   ) {
-    return this.authService.changePassword(user, input);
+    return this.authService.changePassword(userEmail, input);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => QrCode)
-  changeAuthenticationDevice(@CtxUser() user: User) {
-    return this.authService.changeAuthenticationDevice(user);
+  changeAuthenticationDevice(@UserGql() userEmail: string) {
+    return this.authService.changeAuthenticationDevice(userEmail);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   updateProfile(
-    @CtxUser() user: User,
+    @UserGql() userEmail: string,
     @Args({ name: 'input', type: () => UserUpdateInput })
     input: UserUpdateInput,
   ) {
-    return this.authService.updateUserProfile(user, input);
+    return this.authService.updateUserProfile(userEmail, input);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(() => Boolean)
   changeEmail(
-    @CtxUser() user: User,
+    @UserGql() userEmail: string,
     @Args({ name: 'input', type: () => UserChangeEmailInput })
     input: UserChangeEmailInput,
   ) {
-    return this.authService.changeEmail(user, input);
+    return this.authService.changeEmail(userEmail, input);
   }
 }
