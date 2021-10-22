@@ -1,5 +1,5 @@
-import { APP_INTERCEPTOR } from '@nestjs/core';
-import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { Module, ValidationPipe } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GraphQLModule } from '@nestjs/graphql';
 import { AppController } from './app.controller';
@@ -16,6 +16,7 @@ import { UserModule } from './user/user.module';
       useNewUrlParser: true,
     }),
     GraphQLModule.forRoot({
+      context: ({ req, res }) => ({ req, res }),
       autoSchemaFile: 'src/schema.gql',
     }),
     AuthModule,
@@ -28,6 +29,10 @@ import { UserModule } from './user/user.module';
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
+    },
+    {
+      provide: APP_PIPE,
+      useClass: ValidationPipe,
     },
   ],
 })
