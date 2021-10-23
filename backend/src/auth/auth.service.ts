@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { nanoid } from 'nanoid';
 import { User } from '@/user/models/user.schema';
 import { AuthLoginInput } from './dto/auth-login.input';
@@ -31,7 +32,6 @@ import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserService } from '@/user/user.service';
-import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -87,7 +87,6 @@ export class AuthService {
 
     return {
       user: found,
-      token: this.signToken(found.id),
       authenticator: false,
       qrCode: false,
     };
@@ -104,11 +103,13 @@ export class AuthService {
 
     return {
       user,
-      token: this.signToken(user.id),
     };
   }
 
-  public async verifyLogin(input: AuthVerifyInput): Promise<UserToken> {
+  public async verifyLogin(
+    input: AuthVerifyInput,
+    res: Response,
+  ): Promise<UserToken> {
     const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
@@ -130,9 +131,10 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
+    res.cookie('authorization', this.signToken(user.id), { httpOnly: true });
+
     return {
       user,
-      token: this.signToken(user.id),
     };
   }
 
@@ -223,9 +225,7 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
-      throw new BadRequestException(
-        `Cannot find user with email ${userEmail}`,
-      );
+      throw new BadRequestException(`Cannot find user with email ${userEmail}`);
     }
 
     if (!user.twoFactorEnabled) {
@@ -243,7 +243,10 @@ export class AuthService {
     };
   }
 
-  public async changePassword(userEmail: string, input: UserChangePasswordInput) {
+  public async changePassword(
+    userEmail: string,
+    input: UserChangePasswordInput,
+  ) {
     const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {

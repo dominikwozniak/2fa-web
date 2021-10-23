@@ -1,5 +1,6 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
@@ -16,7 +17,6 @@ import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { QrCode } from './models/qr-code';
 import { UserGql } from '@/shared/decorators/user-gql.decorator';
 import { ResGql } from '@/shared/decorators/res-gql.decorator';
-import { Response } from 'express';
 
 @Resolver()
 export class AuthResolver {
@@ -40,8 +40,9 @@ export class AuthResolver {
   verifyLogin(
     @Args({ name: 'input', type: () => AuthVerifyInput })
     input: AuthVerifyInput,
+    @ResGql() res: Response,
   ) {
-    return this.authService.verifyLogin(input);
+    return this.authService.verifyLogin(input, res);
   }
 
   @Mutation(() => Boolean)
