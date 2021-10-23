@@ -112,4 +112,9 @@ export class AuthResolver {
   ) {
     return this.authService.changeEmail(userEmail, input);
   }
+
+  @Mutation(() => Boolean)
+  logout(@ResGql() res: Response) {
+    return this.authService.logout(res)
+  }
 }

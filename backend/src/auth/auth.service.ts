@@ -309,6 +309,12 @@ export class AuthService {
     return true;
   }
 
+  public logout(res: Response) {
+    res.cookie('authorization', '', { httpOnly: true });
+
+    return true;
+  }
+
   public signToken(id: number) {
     const payload: JwtDto = { userId: id };
 

@@ -45,6 +45,7 @@ type Mutation {
   changeAuthenticationDevice: QrCode!
   updateProfile(input: UserUpdateInput!): Boolean!
   changeEmail(input: UserChangeEmailInput!): Boolean!
+  logout: Boolean!
 }
 
 input AuthLoginInput {
