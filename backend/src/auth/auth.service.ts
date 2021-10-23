@@ -83,7 +83,7 @@ export class AuthService {
       };
     }
 
-    res.cookie('authorization', this.signToken(found.id), { httpOnly: true });
+    res.cookie('authorization', this.signToken(found.id), { httpOnly: false });
 
     return {
       user: found,
@@ -131,7 +131,7 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
-    res.cookie('authorization', this.signToken(user.id), { httpOnly: true });
+    res.cookie('authorization', this.signToken(user.id), { httpOnly: false });
 
     return {
       user,
@@ -310,7 +310,7 @@ export class AuthService {
   }
 
   public logout(res: Response) {
-    res.cookie('authorization', '', { httpOnly: true });
+    res.cookie('authorization', '', { httpOnly: false });
 
     return true;
   }

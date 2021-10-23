@@ -18,6 +18,11 @@ import { UserModule } from './user/user.module';
     GraphQLModule.forRoot({
       context: ({ req, res }) => ({ req, res }),
       autoSchemaFile: 'src/schema.gql',
+      cors: false,
+      debug: true,
+      introspection: true,
+      playground: true,
+      installSubscriptionHandlers: true,
     }),
     AuthModule,
     RedisModule,

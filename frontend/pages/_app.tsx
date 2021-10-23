@@ -1,13 +1,9 @@
 import type { AppProps } from 'next/app';
-import { CookiesProvider } from 'react-cookie';
+// import { CookiesProvider } from 'react-cookie';
 import '../src/styles/styles-core.scss';
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return (
-    <CookiesProvider>
-      <Component {...pageProps} />
-    </CookiesProvider>
-  );
+  return <Component {...pageProps} />;
 }
 
 export default MyApp;
