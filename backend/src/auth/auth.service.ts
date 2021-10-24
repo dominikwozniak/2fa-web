@@ -32,6 +32,7 @@ import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserService } from '@/user/user.service';
+import { cookieAuthName, cookieMaxAge } from "@/shared/consts/cookies.const";
 
 @Injectable()
 export class AuthService {
@@ -83,7 +84,7 @@ export class AuthService {
       };
     }
 
-    res.cookie('authorization', this.signToken(found.id), { httpOnly: true });
+    res.cookie(cookieAuthName, this.signToken(found.id), { httpOnly: true, maxAge: cookieMaxAge });
 
     return {
       user: found,
@@ -131,7 +132,7 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
-    res.cookie('authorization', this.signToken(user.id), { httpOnly: true });
+    res.cookie(cookieAuthName, this.signToken(user.id), { httpOnly: true, maxAge: cookieMaxAge });
 
     return {
       user,
@@ -310,7 +311,7 @@ export class AuthService {
   }
 
   public logout(res: Response) {
-    res.cookie('authorization', '', { httpOnly: true });
+    res.cookie(cookieAuthName, '', { httpOnly: true, maxAge: 0 });
 
     return true;
   }
