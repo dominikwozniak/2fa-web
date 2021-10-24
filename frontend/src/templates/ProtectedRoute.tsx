@@ -24,7 +24,7 @@ const ProtectedRoute: React.FC<Props> = ({ children }: Props) => {
     Router.push('/');
   }
 
-  return null;
+  return <Loader />;
 };
 
 export default ProtectedRoute;
