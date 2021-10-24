@@ -134,6 +134,11 @@ const Signup: React.FC = () => {
                 Use two-factor authentication
               </label>
             </div>
+            <div className="is-flex is-flex-direction-row is-justify-content-flex-end">
+              <Link href="/">
+                <a>Back to home</a>
+              </Link>
+            </div>
             <button
               className={`column button is-primary is-flex mx-auto mt-3 ${
                 loading ? 'is-loading' : ''
