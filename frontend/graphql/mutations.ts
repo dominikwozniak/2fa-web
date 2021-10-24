@@ -38,7 +38,6 @@ const LOGIN = gql`
         lastName
         bio
       }
-      token
     }
   }
 `;
@@ -46,7 +45,6 @@ const LOGIN = gql`
 const VERIFY_LOGIN = gql`
   mutation verifyLogin($email: String!, $password: String!, $token: String!) {
     verifyLogin(input: { email: $email, password: $password, token: $token }) {
-      token
       user {
         email
         firstName
@@ -108,4 +106,10 @@ const CHANGE_AUTHENTICATION_DEVICE = gql`
       qrUrl
     }
   }
+`;
+
+const LOGOUT = gql`
+    mutation logout {
+        logout
+    }
 `;

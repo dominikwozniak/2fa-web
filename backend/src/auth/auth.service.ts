@@ -5,6 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { Response } from 'express';
 import { nanoid } from 'nanoid';
 import { User } from '@/user/models/user.schema';
 import { AuthLoginInput } from './dto/auth-login.input';
@@ -31,6 +32,7 @@ import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserService } from '@/user/user.service';
+import { cookieAuthName, cookieMaxAge } from "@/shared/consts/cookies.const";
 
 @Injectable()
 export class AuthService {
@@ -40,7 +42,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  public async login(input: AuthLoginInput): Promise<UserLogin> {
+  public async login(input: AuthLoginInput, res: Response): Promise<UserLogin> {
     const found = await this.userService.findUserByEmail(input.email);
 
     if (!found) {
@@ -82,30 +84,33 @@ export class AuthService {
       };
     }
 
+    res.cookie(cookieAuthName, this.signToken(found.id), { httpOnly: true, maxAge: cookieMaxAge });
+
     return {
       user: found,
-      token: this.signToken(found.id),
       authenticator: false,
       qrCode: false,
     };
   }
 
-  public async whoAmI(userInput: User): Promise<UserToken> {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async whoAmI(userEmail: string): Promise<UserToken> {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
       throw new NotFoundException(
-        `User with email ${userInput.email} does not exist`,
+        `User with email ${userEmail} does not exist`,
       );
     }
 
     return {
       user,
-      token: this.signToken(user.id),
     };
   }
 
-  public async verifyLogin(input: AuthVerifyInput): Promise<UserToken> {
+  public async verifyLogin(
+    input: AuthVerifyInput,
+    res: Response,
+  ): Promise<UserToken> {
     const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
@@ -127,9 +132,10 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
+    res.cookie(cookieAuthName, this.signToken(user.id), { httpOnly: true, maxAge: cookieMaxAge });
+
     return {
       user,
-      token: this.signToken(user.id),
     };
   }
 
@@ -216,13 +222,11 @@ export class AuthService {
     return true;
   }
 
-  public async changeAuthenticationDevice(userInput: User): Promise<QrCode> {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changeAuthenticationDevice(userEmail: string): Promise<QrCode> {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
-      throw new BadRequestException(
-        `Cannot find user with email ${userInput.email}`,
-      );
+      throw new BadRequestException(`Cannot find user with email ${userEmail}`);
     }
 
     if (!user.twoFactorEnabled) {
@@ -240,8 +244,11 @@ export class AuthService {
     };
   }
 
-  public async changePassword(userInput: User, input: UserChangePasswordInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changePassword(
+    userEmail: string,
+    input: UserChangePasswordInput,
+  ) {
+    const user = await this.userService.findUserByEmail(userEmail);
 
     if (!user) {
       return false;
@@ -262,9 +269,9 @@ export class AuthService {
     return true;
   }
 
-  public async updateUserProfile(userInput: User, input: UserUpdateInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
-    let twoFactorUpdateInput = {} as User
+  public async updateUserProfile(userEmail: string, input: UserUpdateInput) {
+    const user = await this.userService.findUserByEmail(userEmail);
+    let twoFactorUpdateInput = {} as User;
 
     if (!user) {
       return false;
@@ -280,8 +287,8 @@ export class AuthService {
     return true;
   }
 
-  public async changeEmail(userInput: User, input: UserChangeEmailInput) {
-    const user = await this.userService.findUserByEmail(userInput.email);
+  public async changeEmail(userEmail: string, input: UserChangeEmailInput) {
+    const user = await this.userService.findUserByEmail(userEmail);
     const isReservedEmail = await this.userService.findUserByEmail(input.email);
 
     if (!user || isReservedEmail) {
@@ -299,6 +306,12 @@ export class AuthService {
 
     user.email = input.email;
     await user.save();
+
+    return true;
+  }
+
+  public logout(res: Response) {
+    res.cookie(cookieAuthName, '', { httpOnly: true, maxAge: 0 });
 
     return true;
   }

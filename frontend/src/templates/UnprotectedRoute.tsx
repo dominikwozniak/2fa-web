@@ -1,7 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
 import { useWhoAmIQuery } from '../../generated';
-import { useAuthToken } from '@/hooks/useAuthToken';
 import Loader from '@/components/Loader';
 
 interface Props {
@@ -9,10 +8,9 @@ interface Props {
 }
 
 const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
-  const { loading, error, data } = useWhoAmIQuery({
+  const { loading, error } = useWhoAmIQuery({
     fetchPolicy: 'network-only',
   });
-  const [, , removeAuthToken] = useAuthToken();
 
   if (loading) {
     return <Loader />;
@@ -23,11 +21,10 @@ const UnprotectedRoute: React.FC<Props> = ({ children }: Props) => {
   }
 
   if (!loading && !error?.message) {
-    removeAuthToken();
     Router.push('/dashboard');
   }
 
-  return null;
+  return <Loader />;
 };
 
 export default UnprotectedRoute;

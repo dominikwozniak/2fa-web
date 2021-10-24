@@ -15,7 +15,6 @@ type User {
 }
 
 type UserToken {
-  token: String!
   user: User!
 }
 
@@ -46,6 +45,7 @@ type Mutation {
   changeAuthenticationDevice: QrCode!
   updateProfile(input: UserUpdateInput!): Boolean!
   changeEmail(input: UserChangeEmailInput!): Boolean!
+  logout: Boolean!
 }
 
 input AuthLoginInput {
