@@ -13,6 +13,7 @@ const ConfirmAccount: React.FC = () => {
           alt={'Confirm account banner image'}
           width={250}
           height={250}
+          priority={true}
         />
         <h3 className="mt-4">Thanks for create account!</h3>
         <h4 className="mt-2">

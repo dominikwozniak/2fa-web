@@ -18,14 +18,14 @@ const Signup: React.FC = () => {
     onCompleted({ registerUser }) {
       if (registerUser) {
         popupNotification(
-          'Successfully registered! Please check your email to confirm account'
+          'Successfully registered! Please check your email to confirm account',
         );
         setTimeout(() => Router.push('/'), 4000);
       }
     },
     onError(err) {
       popupNotification(`Error! ${err.message}`);
-    }
+    },
   });
   const {
     handleSubmit,
@@ -59,7 +59,12 @@ const Signup: React.FC = () => {
       <MainTemplate title={'Sign up'}>
         <div className="is-flex is-flex-direction-column signup">
           <div className="is-flex is-flex-direction-column is-justify-content-center signup__header">
-            <Image src={img} alt={'Signup banner image'} width={200} />
+            <Image
+              src={img}
+              alt={'Signup banner image'}
+              width={200}
+              priority={true}
+            />
             <h1>Sign up</h1>
             <h4>I’m glad that you are joing the group of users</h4>
           </div>

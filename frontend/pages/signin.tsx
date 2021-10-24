@@ -94,7 +94,12 @@ const Signin: React.FC = () => {
       <MainTemplate title={'Sign in'}>
         <div className="is-flex is-flex-direction-column signin">
           <div className="is-flex is-flex-direction-column is-justify-content-center signin__header">
-            <Image src={img} alt={'Signin banner image'} width={250} />
+            <Image
+              src={img}
+              alt={'Signin banner image'}
+              width={250}
+              priority={true}
+            />
             <h1>Sign in</h1>
             <h4>Welcome back! Let&apos;s go log in to the website</h4>
           </div>
@@ -144,11 +149,14 @@ const Signin: React.FC = () => {
               </div>
             )}
             {!data?.login?.authenticator && (
-              <Link href="/forgot-password">
-                <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
-                  Forgot password?
-                </a>
-              </Link>
+              <div className="is-flex is-flex-direction-row is-justify-content-space-between">
+                <Link href="/">
+                  <a>Back to home</a>
+                </Link>
+                <Link href="/forgot-password">
+                  <a>Forgot password?</a>
+                </Link>
+              </div>
             )}
             <button
               className={`column button is-primary is-flex mx-auto mt-3 ${
