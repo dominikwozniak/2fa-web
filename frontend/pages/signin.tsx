@@ -9,7 +9,6 @@ import { UserSignInPayload } from '@/types/user.types';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
 import { useLoginMutation, useVerifyLoginMutation } from '../generated';
-import { useAuthToken } from '@/hooks/useAuthToken';
 import withApollo from '@/lib/withApollo';
 import UnprotectedRoute from '@/templates/UnprotectedRoute';
 import QrModal from '@/components/QrModal';
@@ -17,42 +16,45 @@ import QrModal from '@/components/QrModal';
 const Signin: React.FC = () => {
   const [activeQrModal, setActiveQrModal] = useState(false);
   const [qrUrl, setQrUrl] = useState('');
-  const [, setAuthToken] = useAuthToken();
   const [loginMutation, { loading, data }] = useLoginMutation({
     onCompleted({ login }) {
-      if (login?.token && !login?.authenticator && !login?.qrCode) {
-        setAuthToken(login.token);
+      if (
+        !login?.qrUrl &&
+        !login?.qrCode &&
+        !login?.authenticator &&
+        login?.user?.email
+      ) {
         window.location.href = '/dashboard';
       }
 
-      if (!login?.token && login?.authenticator) {
-        if (login?.qrUrl && login?.qrCode) {
-          setQrUrl(login.qrUrl);
-          setActiveQrModal(true);
+      if (
+        login?.authenticator &&
+        !login?.user &&
+        login?.qrUrl &&
+        login?.qrCode
+      ) {
+        setQrUrl(login.qrUrl);
+        setActiveQrModal(true);
+      }
+    },
+    onError(err) {
+      popupNotification(`Error! ${err.message}`);
+    },
+  });
+
+  const [verifyLoginMutation, { loading: verifyLoading }] =
+    useVerifyLoginMutation({
+      onCompleted({ verifyLogin }) {
+        if (verifyLogin.user.email) {
+          window.location.href = '/dashboard';
         } else {
-          // TODO: check
-          console.log('SECOND LOGIN');
+          popupNotification('Cannot authorize');
         }
-      }
-    },
-    onError(err) {
-      popupNotification(`Error! ${err.message}`);
-    },
-  });
-
-  const [verifyLoginMutation, { loading: verifyLoading }] = useVerifyLoginMutation({
-    onCompleted({ verifyLogin }) {
-      if (verifyLogin.token) {
-        setAuthToken(verifyLogin.token);
-        window.location.href = '/dashboard';
-      } else {
-        popupNotification('Cannot authorize');
-      }
-    },
-    onError(err) {
-      popupNotification(`Error! ${err.message}`);
-    },
-  });
+      },
+      onError(err) {
+        popupNotification(`Error! ${err.message}`);
+      },
+    });
 
   const {
     handleSubmit,
@@ -65,7 +67,6 @@ const Signin: React.FC = () => {
     async (form: UserSignInPayload) => {
       try {
         if (form.code) {
-          console.log('CODE', form.code);
           await verifyLoginMutation({
             variables: {
               email: form.email,
@@ -93,7 +94,12 @@ const Signin: React.FC = () => {
       <MainTemplate title={'Sign in'}>
         <div className="is-flex is-flex-direction-column signin">
           <div className="is-flex is-flex-direction-column is-justify-content-center signin__header">
-            <Image src={img} alt={'Signin banner image'} width={250} />
+            <Image
+              src={img}
+              alt={'Signin banner image'}
+              width={250}
+              priority={true}
+            />
             <h1>Sign in</h1>
             <h4>Welcome back! Let&apos;s go log in to the website</h4>
           </div>
@@ -143,11 +149,14 @@ const Signin: React.FC = () => {
               </div>
             )}
             {!data?.login?.authenticator && (
-              <Link href="/forgot-password">
-                <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
-                  Forgot password?
-                </a>
-              </Link>
+              <div className="is-flex is-flex-direction-row is-justify-content-space-between">
+                <Link href="/">
+                  <a>Back to home</a>
+                </Link>
+                <Link href="/forgot-password">
+                  <a>Forgot password?</a>
+                </Link>
+              </div>
             )}
             <button
               className={`column button is-primary is-flex mx-auto mt-3 ${

@@ -10,7 +10,13 @@ const Home: React.FC = () => {
       <div className="is-fullwidth home">
         <div className="is-flex is-flex-direction-column is-align-items-center is-justify-content-center home__header">
           <div className="mt-4 mb-3">
-            <Image src={img} alt={'Header image'} width={200} height={200} />
+            <Image
+              src={img}
+              alt={'Header image'}
+              width={200}
+              height={200}
+              priority={true}
+            />
           </div>
           <h1>Authela</h1>
           <h2>

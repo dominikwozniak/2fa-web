@@ -1,13 +1,13 @@
 import { useApolloClient } from '@apollo/client';
-import { useAuthToken } from '@/hooks/useAuthToken';
+import { useLogoutMutation } from '../../generated';
 
-export const useLogout = () => {
-  const [, , removeAuthToken] = useAuthToken();
+export const useAuthLogout = () => {
+  const [logoutMutation] = useLogoutMutation();
   const apolloClient = useApolloClient();
 
   return async () => {
+    await logoutMutation();
     await apolloClient.clearStore();
-    removeAuthToken();
     window.location.href = '/';
   };
 };

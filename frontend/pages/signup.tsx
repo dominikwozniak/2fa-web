@@ -18,14 +18,14 @@ const Signup: React.FC = () => {
     onCompleted({ registerUser }) {
       if (registerUser) {
         popupNotification(
-          'Successfully registered! Please check your email to confirm account'
+          'Successfully registered! Please check your email to confirm account',
         );
         setTimeout(() => Router.push('/'), 4000);
       }
     },
     onError(err) {
       popupNotification(`Error! ${err.message}`);
-    }
+    },
   });
   const {
     handleSubmit,
@@ -59,7 +59,12 @@ const Signup: React.FC = () => {
       <MainTemplate title={'Sign up'}>
         <div className="is-flex is-flex-direction-column signup">
           <div className="is-flex is-flex-direction-column is-justify-content-center signup__header">
-            <Image src={img} alt={'Signup banner image'} width={200} />
+            <Image
+              src={img}
+              alt={'Signup banner image'}
+              width={200}
+              priority={true}
+            />
             <h1>Sign up</h1>
             <h4>I’m glad that you are joing the group of users</h4>
           </div>
@@ -128,6 +133,11 @@ const Signup: React.FC = () => {
                 <input type="checkbox" {...register('twoFactorEnabled')} />
                 Use two-factor authentication
               </label>
+            </div>
+            <div className="is-flex is-flex-direction-row is-justify-content-flex-end">
+              <Link href="/">
+                <a>Back to home</a>
+              </Link>
             </div>
             <button
               className={`column button is-primary is-flex mx-auto mt-3 ${

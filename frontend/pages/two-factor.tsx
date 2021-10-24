@@ -39,11 +39,11 @@ const TwoFactor: React.FC = () => {
     useChangeAuthenticationDeviceMutation({
       onCompleted({ changeAuthenticationDevice }) {
         if (changeAuthenticationDevice.qrUrl) {
-          popupNotification('Settings was updated');
+          popupNotification('Device was updated');
           setQrUrl(changeAuthenticationDevice.qrUrl);
           setActiveQrModal(true);
         } else {
-          popupNotification('Cannot update settings');
+          popupNotification('Cannot change device');
         }
       },
       onError(err) {

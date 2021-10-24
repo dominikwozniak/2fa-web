@@ -1,6 +1,7 @@
 import React from 'react';
 import Router from 'next/router';
 import { useWhoAmIQuery } from '../../generated';
+import Loader from '@/components/Loader';
 
 interface Props {
   children: React.ReactNode;
@@ -11,9 +12,8 @@ const ProtectedRoute: React.FC<Props> = ({ children }: Props) => {
     fetchPolicy: 'network-only',
   });
 
-  // TODO: replace with loader
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   if (!loading && !error?.message) {
@@ -24,7 +24,7 @@ const ProtectedRoute: React.FC<Props> = ({ children }: Props) => {
     Router.push('/');
   }
 
-  return null;
+  return <Loader />;
 };
 
 export default ProtectedRoute;

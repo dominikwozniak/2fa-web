@@ -60,6 +60,7 @@ const ForgotPassword: React.FC = () => {
             alt={'Confirm account banner image'}
             width={250}
             height={250}
+            priority={true}
           />
           <h3>Forgot password?</h3>
           <h4>
