@@ -4,7 +4,6 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { GraphQLError } from 'graphql';
 import { nanoid } from 'nanoid';
@@ -40,7 +39,6 @@ import { UserChangeEmailInput } from './dto/user-change-email.input';
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
     private readonly userService: UserService,
   ) {}
@@ -87,12 +85,6 @@ export class AuthService {
       };
     }
 
-    // TODO: remove
-    // res.cookie(cookieAuthName, this.signToken(found.id), {
-    //   httpOnly: true,
-    //   maxAge: cookieMaxAge,
-    // });
-
     req.session[sessionUserId] = found.id;
 
     return {
@@ -106,10 +98,6 @@ export class AuthService {
     const user = await this.userService.findUserById(userId);
 
     if (!user) {
-      // TODO: remove
-      // throw new NotFoundException(
-      //   `User does not exist`,
-      // );
       throw new GraphQLError('User does not exist');
     }
 
@@ -145,11 +133,6 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
-    // TODO: remove
-    // res.cookie(cookieAuthName, this.signToken(user.id), {
-    //   httpOnly: true,
-    //   maxAge: cookieMaxAge,
-    // });
     req.session[sessionUserId] = user.id;
 
     return {
@@ -333,11 +316,5 @@ export class AuthService {
     res.clearCookie('qid');
 
     return true;
-  }
-
-  public signToken(id: number) {
-    const payload: JwtDto = { userId: id };
-
-    return this.jwtService.sign(payload);
   }
 }

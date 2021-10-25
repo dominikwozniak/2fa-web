@@ -6,7 +6,6 @@ import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { AuthRegisterInput } from './dto/auth-register.input';
-import { GqlAuthGuard } from './guards/gql-auth.guard'; // TODO: remove
 import { AuthGuard } from '@/auth/guards/auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
@@ -16,7 +15,6 @@ import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { QrCode } from './models/qr-code';
-import { UserGql } from '@/shared/decorators/user-gql.decorator';
 import { ResGql } from '@/shared/decorators/res-gql.decorator';
 import { ReqGql } from '@/shared/decorators/req-gql.decorator';
 import { UserIdGql } from '@/shared/decorators/user-id-gql.decorator';
