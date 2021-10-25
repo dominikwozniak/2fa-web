@@ -1,12 +1,13 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { AuthRegisterInput } from './dto/auth-register.input';
-import { GqlAuthGuard } from './guards/gql-auth.guard';
+import { GqlAuthGuard } from './guards/gql-auth.guard'; // TODO: remove
+import { AuthGuard } from '@/auth/guards/auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
@@ -17,32 +18,34 @@ import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { QrCode } from './models/qr-code';
 import { UserGql } from '@/shared/decorators/user-gql.decorator';
 import { ResGql } from '@/shared/decorators/res-gql.decorator';
+import { ReqGql } from '@/shared/decorators/req-gql.decorator';
+import { UserIdGql } from '@/shared/decorators/user-id-gql.decorator';
 
 @Resolver()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(AuthGuard)
   @Query(() => UserToken)
-  WhoAmI(@UserGql() email: string) {
-    return this.authService.whoAmI(email);
+  WhoAmI(@UserIdGql() userId: string) {
+    return this.authService.whoAmI(userId);
   }
 
   @Mutation(() => UserLogin, { nullable: true })
   login(
     @Args({ name: 'input', type: () => AuthLoginInput }) input: AuthLoginInput,
-    @ResGql() res: Response,
+    @ReqGql() req: Request,
   ) {
-    return this.authService.login(input, res);
+    return this.authService.login(input, req);
   }
 
   @Mutation(() => UserToken)
   verifyLogin(
     @Args({ name: 'input', type: () => AuthVerifyInput })
     input: AuthVerifyInput,
-    @ResGql() res: Response,
+    @ReqGql() req: Request,
   ) {
-    return this.authService.verifyLogin(input, res);
+    return this.authService.verifyLogin(input, req);
   }
 
   @Mutation(() => Boolean)
@@ -77,44 +80,44 @@ export class AuthResolver {
     return this.authService.forgotPasswordChangePassword(input);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(AuthGuard)
   @Mutation(() => Boolean)
   changePassword(
-    @UserGql() userEmail: string,
+    @UserIdGql() userId: string,
     @Args({ name: 'input', type: () => UserChangePasswordInput })
     input: UserChangePasswordInput,
   ) {
-    return this.authService.changePassword(userEmail, input);
+    return this.authService.changePassword(userId, input);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(AuthGuard)
   @Mutation(() => QrCode)
-  changeAuthenticationDevice(@UserGql() userEmail: string) {
-    return this.authService.changeAuthenticationDevice(userEmail);
+  changeAuthenticationDevice(@UserIdGql() userId: string) {
+    return this.authService.changeAuthenticationDevice(userId);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(AuthGuard)
   @Mutation(() => Boolean)
   updateProfile(
-    @UserGql() userEmail: string,
+    @UserIdGql() userId: string,
     @Args({ name: 'input', type: () => UserUpdateInput })
     input: UserUpdateInput,
   ) {
-    return this.authService.updateUserProfile(userEmail, input);
+    return this.authService.updateUserProfile(userId, input);
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(AuthGuard)
   @Mutation(() => Boolean)
   changeEmail(
-    @UserGql() userEmail: string,
+    @UserIdGql() userId: string,
     @Args({ name: 'input', type: () => UserChangeEmailInput })
     input: UserChangeEmailInput,
   ) {
-    return this.authService.changeEmail(userEmail, input);
+    return this.authService.changeEmail(userId, input);
   }
 
   @Mutation(() => Boolean)
-  logout(@ResGql() res: Response) {
-    return this.authService.logout(res)
+  logout(@ResGql() res: Response, @ReqGql() req: Request) {
+    return this.authService.logout(res, req);
   }
 }

@@ -9,7 +9,7 @@ import { AuthHelper } from '@/auth/auth.helper';
 @ObjectType()
 export class User {
   @Field(() => ID)
-  _id: number;
+  _id: number | string;
 
   @Prop({
     unique: true,

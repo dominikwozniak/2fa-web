@@ -5,9 +5,23 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
+import { Request, Response } from 'express';
+import { GraphQLError } from 'graphql';
 import { nanoid } from 'nanoid';
 import { User } from '@/user/models/user.schema';
+import { UserService } from '@/user/user.service';
+import { RedisService } from '@/redis/redis.service';
+import { sendEmail } from '@/shared/mail/sendEmail';
+import { generateQr } from '@/shared/two-factor/generateQr';
+import { twoFactorGenerateSecret } from '@/shared/two-factor/twoFactorGenerateSecret';
+import { twoFactorVerify } from '@/shared/two-factor/twoFactorVerify';
+import { createForgotPasswordUrl } from '@/shared/mail/create-forgot-password-url';
+import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url';
+import {
+  confirmUserPrefix,
+  forgotPasswordPrefix,
+} from '@/shared/consts/redisPrefixes.const';
+import { sessionUserId } from '@/shared/consts/session.const';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
@@ -15,24 +29,13 @@ import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
 import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
-import { sendEmail } from '@/shared/sendEmail';
-import { RedisService } from '@/redis/redis.service';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
-import {
-  confirmUserPrefix,
-  forgotPasswordPrefix,
-} from '@/shared/consts/redisPrefixed.const';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
-import { generateQr } from '@/shared/generateQr';
-import { twoFactorGenerateSecret } from '@/shared/twoFactorGenerateSecret';
 import { AuthVerifyInput } from './dto/auth-verify.input';
-import { twoFactorVerify } from '@/shared/twoFactorVerify';
 import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
-import { UserService } from '@/user/user.service';
-import { cookieAuthName, cookieMaxAge } from "@/shared/consts/cookies.const";
 
 @Injectable()
 export class AuthService {
@@ -42,7 +45,7 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  public async login(input: AuthLoginInput, res: Response): Promise<UserLogin> {
+  public async login(input: AuthLoginInput, req: Request): Promise<UserLogin> {
     const found = await this.userService.findUserByEmail(input.email);
 
     if (!found) {
@@ -84,7 +87,13 @@ export class AuthService {
       };
     }
 
-    res.cookie(cookieAuthName, this.signToken(found.id), { httpOnly: true, maxAge: cookieMaxAge });
+    // TODO: remove
+    // res.cookie(cookieAuthName, this.signToken(found.id), {
+    //   httpOnly: true,
+    //   maxAge: cookieMaxAge,
+    // });
+
+    req.session[sessionUserId] = found.id;
 
     return {
       user: found,
@@ -93,13 +102,15 @@ export class AuthService {
     };
   }
 
-  public async whoAmI(userEmail: string): Promise<UserToken> {
-    const user = await this.userService.findUserByEmail(userEmail);
+  public async whoAmI(userId: string): Promise<UserToken> {
+    const user = await this.userService.findUserById(userId);
 
     if (!user) {
-      throw new NotFoundException(
-        `User with email ${userEmail} does not exist`,
-      );
+      // TODO: remove
+      // throw new NotFoundException(
+      //   `User does not exist`,
+      // );
+      throw new GraphQLError('User does not exist');
     }
 
     return {
@@ -109,14 +120,16 @@ export class AuthService {
 
   public async verifyLogin(
     input: AuthVerifyInput,
-    res: Response,
+    req: Request,
   ): Promise<UserToken> {
     const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
-      throw new NotFoundException(
-        `User with email ${input.email} does not exist`,
-      );
+      // TODO: remove
+      // throw new NotFoundException(
+      //   `User with email ${input.email} does not exist`,
+      // );
+      throw new GraphQLError('User does not exist');
     }
 
     if (!user.twoFactorToken) {
@@ -132,7 +145,12 @@ export class AuthService {
     user.afterFirstLogin = true;
     await user.save();
 
-    res.cookie(cookieAuthName, this.signToken(user.id), { httpOnly: true, maxAge: cookieMaxAge });
+    // TODO: remove
+    // res.cookie(cookieAuthName, this.signToken(user.id), {
+    //   httpOnly: true,
+    //   maxAge: cookieMaxAge,
+    // });
+    req.session[sessionUserId] = user.id;
 
     return {
       user,
@@ -155,7 +173,7 @@ export class AuthService {
     if (created) {
       const token = nanoid(32);
       const saveToken = confirmUserPrefix + token;
-      const url = AuthHelper.createConfirmUserUrl(token);
+      const url = createConfirmUserUrl(token);
       await sendEmail(created.email, url);
       await this.redisService.setValue(saveToken, created._id);
     }
@@ -190,7 +208,7 @@ export class AuthService {
 
     const token = nanoid(32);
     const saveToken = forgotPasswordPrefix + token;
-    const url = AuthHelper.createForgotPasswordUrl(token);
+    const url = createForgotPasswordUrl(token);
     await sendEmail(user.email, url);
     await this.redisService.setValue(saveToken, user._id);
 
@@ -222,11 +240,11 @@ export class AuthService {
     return true;
   }
 
-  public async changeAuthenticationDevice(userEmail: string): Promise<QrCode> {
-    const user = await this.userService.findUserByEmail(userEmail);
+  public async changeAuthenticationDevice(userId: string): Promise<QrCode> {
+    const user = await this.userService.findUserById(userId);
 
     if (!user) {
-      throw new BadRequestException(`Cannot find user with email ${userEmail}`);
+      throw new GraphQLError('Cannot find user with provided credentials');
     }
 
     if (!user.twoFactorEnabled) {
@@ -244,12 +262,8 @@ export class AuthService {
     };
   }
 
-  public async changePassword(
-    userEmail: string,
-    input: UserChangePasswordInput,
-  ) {
-    const user = await this.userService.findUserByEmail(userEmail);
-
+  public async changePassword(userId: string, input: UserChangePasswordInput) {
+    const user = await this.userService.findUserById(userId);
     if (!user) {
       return false;
     }
@@ -269,8 +283,8 @@ export class AuthService {
     return true;
   }
 
-  public async updateUserProfile(userEmail: string, input: UserUpdateInput) {
-    const user = await this.userService.findUserByEmail(userEmail);
+  public async updateUserProfile(userId: string, input: UserUpdateInput) {
+    const user = await this.userService.findUserById(userId);
     let twoFactorUpdateInput = {} as User;
 
     if (!user) {
@@ -287,8 +301,8 @@ export class AuthService {
     return true;
   }
 
-  public async changeEmail(userEmail: string, input: UserChangeEmailInput) {
-    const user = await this.userService.findUserByEmail(userEmail);
+  public async changeEmail(userId: string, input: UserChangeEmailInput) {
+    const user = await this.userService.findUserById(userId);
     const isReservedEmail = await this.userService.findUserByEmail(input.email);
 
     if (!user || isReservedEmail) {
@@ -310,8 +324,13 @@ export class AuthService {
     return true;
   }
 
-  public logout(res: Response) {
-    res.cookie(cookieAuthName, '', { httpOnly: true, maxAge: 0 });
+  public async logout(res: Response, req: Request) {
+    // TODO: check destroying session
+    // await req.session.destroy((err) => {
+    //   throw new GraphQLError(err);
+    // });
+
+    res.clearCookie('qid');
 
     return true;
   }
