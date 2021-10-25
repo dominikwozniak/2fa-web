@@ -1,12 +1,15 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { AuthGuard } from '@/auth/guards/auth.guard';
+import { ResGql } from '@/shared/decorators/res-gql.decorator';
+import { ReqGql } from '@/shared/decorators/req-gql.decorator';
+import { UserIdGql } from '@/shared/decorators/user-id-gql.decorator';
 import { AuthService } from './auth.service';
 import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
 import { AuthLoginInput } from './dto/auth-login.input';
 import { AuthRegisterInput } from './dto/auth-register.input';
-import { AuthGuard } from '@/auth/guards/auth.guard';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
@@ -15,9 +18,6 @@ import { UserChangeEmailInput } from './dto/user-change-email.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { QrCode } from './models/qr-code';
-import { ResGql } from '@/shared/decorators/res-gql.decorator';
-import { ReqGql } from '@/shared/decorators/req-gql.decorator';
-import { UserIdGql } from '@/shared/decorators/user-id-gql.decorator';
 
 @Resolver()
 export class AuthResolver {

@@ -12,7 +12,7 @@ import { UserService } from '@/user/user.service';
 import { RedisService } from '@/redis/redis.service';
 import { sendEmail } from '@/shared/mail/sendEmail';
 import { createForgotPasswordUrl } from '@/shared/mail/create-forgot-password-url';
-import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url';
+import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url'
 import { generateQr } from '@/shared/two-factor/generateQr';
 import { twoFactorGenerateSecret } from '@/shared/two-factor/twoFactorGenerateSecret';
 import { twoFactorVerify } from '@/shared/two-factor/twoFactorVerify';
@@ -307,11 +307,7 @@ export class AuthService {
   }
 
   public async logout(res: Response, req: Request) {
-    // TODO: check destroying session
-    // await req.session.destroy((err) => {
-    //   throw new GraphQLError(err);
-    // });
-
+    req.session.destroy(null);
     res.clearCookie('qid');
 
     return true;
