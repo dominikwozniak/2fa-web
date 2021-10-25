@@ -26,7 +26,6 @@ import { UserToken } from './models/user-token';
 import { UserLogin } from './models/user-login';
 import { AuthRegisterInput } from './dto/auth-register.input';
 import { AuthHelper } from './auth.helper';
-import { JwtDto } from './dto/jwt.dto';
 import { AuthConfirmInput } from './dto/auth-confirm.input';
 import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
