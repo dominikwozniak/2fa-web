@@ -12,11 +12,11 @@ import { User } from '@/user/models/user.schema';
 import { UserService } from '@/user/user.service';
 import { RedisService } from '@/redis/redis.service';
 import { sendEmail } from '@/shared/mail/sendEmail';
+import { createForgotPasswordUrl } from '@/shared/mail/create-forgot-password-url';
+import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url';
 import { generateQr } from '@/shared/two-factor/generateQr';
 import { twoFactorGenerateSecret } from '@/shared/two-factor/twoFactorGenerateSecret';
 import { twoFactorVerify } from '@/shared/two-factor/twoFactorVerify';
-import { createForgotPasswordUrl } from '@/shared/mail/create-forgot-password-url';
-import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url';
 import {
   confirmUserPrefix,
   forgotPasswordPrefix,
@@ -339,9 +339,5 @@ export class AuthService {
     const payload: JwtDto = { userId: id };
 
     return this.jwtService.sign(payload);
-  }
-
-  public async validateUser(userId: number) {
-    return this.userService.findUserById(userId);
   }
 }
