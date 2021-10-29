@@ -1,7 +1,7 @@
 import React from 'react';
-import { withAuth } from '@/lib/withAuth';
-import withApollo from '@/lib/withApollo';
 import { compose } from 'recompose';
+import withAuth from '@/lib/withAuth';
+import withApollo from '@/lib/withApollo';
 
 const MyComponent = () => {
   return <div>test</div>;
