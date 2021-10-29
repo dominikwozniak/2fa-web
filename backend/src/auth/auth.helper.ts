@@ -16,12 +16,4 @@ export class AuthHelper {
   static hashPassword(password: string): Promise<string> {
     return hash(password, 10);
   }
-
-  static createConfirmUserUrl(token: string) {
-    return `http://localhost:3000/confirm-account/${token}`
-  }
-
-  static createForgotPasswordUrl(token: string) {
-    return `http://localhost:3000/forgot-password/${token}`
-  }
 }

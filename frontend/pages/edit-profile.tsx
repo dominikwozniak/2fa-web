@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
-import ProtectedRoute from '@/templates/ProtectedRoute';
+import { compose } from 'recompose';
+import withAuth from '@/lib/withAuth';
+import withApollo from '@/lib/withApollo';
 import MainTemplate from '@/templates/MainTemplate';
 import { ToastContainer } from 'react-toastify';
 import {
@@ -9,7 +11,6 @@ import {
   useUpdateProfileMutation,
   useWhoAmIQuery,
 } from '../generated';
-import withApollo from '@/lib/withApollo';
 import { popupNotification } from '@/utils/popup-notification';
 import img from '@/public/assets/avatar.svg';
 import ErrorInputIcon from '@/components/ErrorInputIcon';
@@ -89,86 +90,84 @@ const EditProfile: React.FC = () => {
   }, [data]);
 
   return (
-    <ProtectedRoute>
-      <MainTemplate title={'Edit profile'}>
-        <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center edit-profile">
-          <div className="edit-profile__image" onClick={handleRemoveImage}>
-            <Image
-              src={data?.WhoAmI.user.image || img}
-              alt={'Avatar'}
-              width={128}
-              height={128}
-              objectFit={'fill'}
-            />
-            {data?.WhoAmI.user.image && (
-              <div className="is-flex is-align-items-center is-justify-content-center edit-profile__image--overlay">
-                <span>Remove image</span>
-              </div>
-            )}
-          </div>
-          <form
-            className="columns py-4 is-flex is-flex-direction-column is-align-items-center edit-profile__content"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="p-0 mb-4 is-flex is-flex-direction-column is-align-items-center edit-profile__input">
-              <ChangePhotoButton />
+    <MainTemplate title={'Edit profile'}>
+      <div className="is-flex is-flex-direction-column is-justify-content-center is-align-items-center edit-profile">
+        <div className="edit-profile__image" onClick={handleRemoveImage}>
+          <Image
+            src={data?.WhoAmI.user.image || img}
+            alt={'Avatar'}
+            width={128}
+            height={128}
+            objectFit={'fill'}
+          />
+          {data?.WhoAmI.user.image && (
+            <div className="is-flex is-align-items-center is-justify-content-center edit-profile__image--overlay">
+              <span>Remove image</span>
             </div>
-            <div className="column p-0 is-flex is-flex-direction-column edit-profile__input">
-              {errors.firstName && <ErrorInputIcon />}
-              <span>First name</span>
-              <input
-                type="text"
-                aria-invalid={errors.firstName ? 'true' : 'false'}
-                placeholder="First name"
-                {...register('firstName', {
-                  required: true,
-                  minLength: 2,
-                })}
-              />
-            </div>
-            <div className="column p-0 is-flex is-flex-direction-column edit-profile__input">
-              {errors.lastName && <ErrorInputIcon />}
-              <span>Last name</span>
-              <input
-                type="text"
-                aria-invalid={errors.lastName ? 'true' : 'false'}
-                placeholder="Last name"
-                {...register('lastName', {
-                  required: true,
-                  minLength: 2,
-                })}
-              />
-            </div>
-            <div className="column p-0 edit-profile__input">
-              <Link href={'/dashboard'}>
-                <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
-                  Back to dashboard
-                </a>
-              </Link>
-            </div>
-            <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between edit-profile__input">
-              <button
-                type="button"
-                className="button is-primary"
-                onClick={handleChangeEmail}
-              >
-                Change e-mail
-              </button>
-              <button
-                className={`button is-primary ${loading ? 'is-loading' : ''}`}
-                type="submit"
-                disabled={loading}
-              >
-                Save profile!
-              </button>
-            </div>
-          </form>
-          <ChangeEmail active={active} setActive={setActive} />
-          <ToastContainer />
+          )}
         </div>
-      </MainTemplate>
-    </ProtectedRoute>
+        <form
+          className="columns py-4 is-flex is-flex-direction-column is-align-items-center edit-profile__content"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="p-0 mb-4 is-flex is-flex-direction-column is-align-items-center edit-profile__input">
+            <ChangePhotoButton />
+          </div>
+          <div className="column p-0 is-flex is-flex-direction-column edit-profile__input">
+            {errors.firstName && <ErrorInputIcon />}
+            <span>First name</span>
+            <input
+              type="text"
+              aria-invalid={errors.firstName ? 'true' : 'false'}
+              placeholder="First name"
+              {...register('firstName', {
+                required: true,
+                minLength: 2,
+              })}
+            />
+          </div>
+          <div className="column p-0 is-flex is-flex-direction-column edit-profile__input">
+            {errors.lastName && <ErrorInputIcon />}
+            <span>Last name</span>
+            <input
+              type="text"
+              aria-invalid={errors.lastName ? 'true' : 'false'}
+              placeholder="Last name"
+              {...register('lastName', {
+                required: true,
+                minLength: 2,
+              })}
+            />
+          </div>
+          <div className="column p-0 edit-profile__input">
+            <Link href={'/dashboard'}>
+              <a className="is-flex is-flex-direction-row is-justify-content-flex-end">
+                Back to dashboard
+              </a>
+            </Link>
+          </div>
+          <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between edit-profile__input">
+            <button
+              type="button"
+              className="button is-primary"
+              onClick={handleChangeEmail}
+            >
+              Change e-mail
+            </button>
+            <button
+              className={`button is-primary ${loading ? 'is-loading' : ''}`}
+              type="submit"
+              disabled={loading}
+            >
+              Save profile!
+            </button>
+          </div>
+        </form>
+        <ChangeEmail active={active} setActive={setActive} />
+        <ToastContainer />
+      </div>
+    </MainTemplate>
   );
 };
 
-export default withApollo(EditProfile);
+export default compose(withApollo, withAuth)(EditProfile);

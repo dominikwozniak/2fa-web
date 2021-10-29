@@ -1,6 +1,7 @@
 import React from 'react';
+import { compose } from 'recompose';
+import withAuth from '@/lib/withAuth';
 import withApollo from '@/lib/withApollo';
-import ProtectedRoute from '@/templates/ProtectedRoute';
 import MainTemplate from '@/templates/MainTemplate';
 import Header from '@/components/Header';
 import Bio from '@/components/Bio';
@@ -12,7 +13,6 @@ const Dashboard: React.FC = () => {
   const { data } = useWhoAmIQuery();
 
   return (
-    <ProtectedRoute>
       <MainTemplate title={'Dashboard'}>
         <div className=" is-flex is-flex-direction-column is-align-items-center dashboard">
           <div>
@@ -34,8 +34,7 @@ const Dashboard: React.FC = () => {
         </div>
         <ToastContainer />
       </MainTemplate>
-    </ProtectedRoute>
   );
 };
 
-export default withApollo(Dashboard);
+export default compose(withApollo, withAuth)(Dashboard);

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import img from '@/public/assets/synchronize.svg';
-import ProtectedRoute from '@/templates/ProtectedRoute';
-import MainTemplate from '@/templates/MainTemplate';
+import { compose } from 'recompose';
+import withAuth from '@/lib/withAuth';
 import withApollo from '@/lib/withApollo';
+import img from '@/public/assets/synchronize.svg';
+import MainTemplate from '@/templates/MainTemplate';
 import {
   namedOperations,
   useChangeAuthenticationDeviceMutation,
@@ -92,65 +93,63 @@ const TwoFactor: React.FC = () => {
   }, [data]);
 
   return (
-    <ProtectedRoute>
-      <MainTemplate title={'Two factor settings'}>
-        <div className="is-flex is-flex-direction-column is-align-items-center two-factor">
-          <div className="is-flex is-flex-direction-column is-align-items-center two-factor__header">
-            <Image
-              src={img}
-              alt={'Confirm account banner image'}
-              width={250}
-              height={250}
-            />
-            <h3>Two-factor settings</h3>
-          </div>
-          <form
-            className="columns p-4 mt-4 is-flex is-flex-direction-column is-align-items-left two-factor__content"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <div className="column p-0 mt-2 two-factor__checkbox">
-              <label className="checkbox is-flex is-align-items-center">
-                <input type="checkbox" {...register('twoFactorEnabled')} />
-                Enable two-factor authentication
-              </label>
-            </div>
-            <Link href={'/dashboard'}>
-              <a className="mt-4 is-flex is-flex-direction-row is-justify-content-flex-end">
-                Back to dashboard
-              </a>
-            </Link>
-            <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between two-factor__input">
-              <button
-                type="button"
-                className={`button is-primary ${
-                  changeAuthLoading ? 'is-loading' : ''
-                }`}
-                onClick={handleChangeDevice}
-                disabled={
-                  !data?.WhoAmI.user.twoFactorEnabled || changeAuthLoading
-                }
-              >
-                Change device
-              </button>
-              <button
-                className={`button is-primary ${loading ? 'is-loading' : ''}`}
-                type="submit"
-                disabled={loading}
-              >
-                Save!
-              </button>
-            </div>
-          </form>
+    <MainTemplate title={'Two factor settings'}>
+      <div className="is-flex is-flex-direction-column is-align-items-center two-factor">
+        <div className="is-flex is-flex-direction-column is-align-items-center two-factor__header">
+          <Image
+            src={img}
+            alt={'Confirm account banner image'}
+            width={250}
+            height={250}
+          />
+          <h3>Two-factor settings</h3>
         </div>
-        <QrModal
-          url={qrUrl}
-          active={activeQrModal}
-          setActive={setActiveQrModal}
-        />
-        <ToastContainer />
-      </MainTemplate>
-    </ProtectedRoute>
+        <form
+          className="columns p-4 mt-4 is-flex is-flex-direction-column is-align-items-left two-factor__content"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="column p-0 mt-2 two-factor__checkbox">
+            <label className="checkbox is-flex is-align-items-center">
+              <input type="checkbox" {...register('twoFactorEnabled')} />
+              Enable two-factor authentication
+            </label>
+          </div>
+          <Link href={'/dashboard'}>
+            <a className="mt-4 is-flex is-flex-direction-row is-justify-content-flex-end">
+              Back to dashboard
+            </a>
+          </Link>
+          <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-space-between two-factor__input">
+            <button
+              type="button"
+              className={`button is-primary ${
+                changeAuthLoading ? 'is-loading' : ''
+              }`}
+              onClick={handleChangeDevice}
+              disabled={
+                !data?.WhoAmI.user.twoFactorEnabled || changeAuthLoading
+              }
+            >
+              Change device
+            </button>
+            <button
+              className={`button is-primary ${loading ? 'is-loading' : ''}`}
+              type="submit"
+              disabled={loading}
+            >
+              Save!
+            </button>
+          </div>
+        </form>
+      </div>
+      <QrModal
+        url={qrUrl}
+        active={activeQrModal}
+        setActive={setActiveQrModal}
+      />
+      <ToastContainer />
+    </MainTemplate>
   );
 };
 
-export default withApollo(TwoFactor);
+export default compose(withApollo, withAuth)(TwoFactor);
