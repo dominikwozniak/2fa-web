@@ -1,9 +1,9 @@
-import { ComponentType } from 'react';
+import React, { ComponentType } from 'react';
 import { useWhoAmIQuery } from '../../generated';
 import Loader from '@/components/Loader';
 import Router from 'next/router';
 
-export default function withAuth<T>(Component: ComponentType<T>) {
+export default function withSignRoute<T>(Component: ComponentType<T>) {
   return (hocProps: T) => {
     const { loading, error } = useWhoAmIQuery({
       fetchPolicy: 'network-only',
@@ -13,12 +13,12 @@ export default function withAuth<T>(Component: ComponentType<T>) {
       return <Loader />;
     }
 
-    if (!loading && !error?.message) {
+    if (!loading && error?.message) {
       return <Component {...hocProps} />;
     }
 
-    if (!loading && error?.message) {
-      Router.push('/');
+    if (!loading && !error?.message) {
+      Router.push('/dashboard');
     }
 
     return <Loader />;
