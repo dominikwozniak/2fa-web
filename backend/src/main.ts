@@ -5,11 +5,15 @@ import { AppModule } from './app.module';
 import { createDocument } from './swagger/swagger';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
-// import * as Store from 'connect-redis';
-// import { redis } from './shared/session/redis';
+const MongoDBStore = require('connect-mongodb-session')(session);
 
 async function bootstrap() {
-  // const RedisStore = Store(session);
+  const store = new MongoDBStore({
+    uri: process.env.MONGO_URI,
+    collection: 'sessions',
+    expires: 1000 * 60 * 60,
+  });
+
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api');
 
@@ -25,10 +29,7 @@ async function bootstrap() {
 
   app.use(
     session({
-      // TODO: consider using other redis hosting
-      // store: new RedisStore({
-      //   client: redis as any,
-      // }),
+      store: store,
       name: 'qid',
       secret: process.env.SESSION_SECRET,
       resave: false,
@@ -36,7 +37,7 @@ async function bootstrap() {
       cookie: {
         httpOnly: true,
         secure: process.env.MODE === 'production',
-        maxAge: 1000 * 60 * 60,
+        maxAge: 1000 * 60 * 60, // 1 hour
       },
     }),
   );
