@@ -7,9 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Install backend modules
-        working-directory: ./backend
+      - name: Install frontend modules
+        working-directory: ./frontend
         run: npm install
-      - name: Build backend
-        working-directory: ./backend
+      - name: Codegen grahpql
+        working-directory: ./frontend
+        run: npm run codegen
+      - name: Build frontend
+        working-directory: ./frontend
         run: npm run build
