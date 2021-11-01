@@ -46,6 +46,7 @@ type Mutation {
   updateProfile(input: UserUpdateInput!): Boolean!
   changeEmail(input: UserChangeEmailInput!): Boolean!
   logout: Boolean!
+  removeProfile(input: UserRemoveInput!): Boolean!
 }
 
 input AuthLoginInput {
@@ -96,5 +97,9 @@ input UserUpdateInput {
 
 input UserChangeEmailInput {
   email: String!
+  password: String!
+}
+
+input UserRemoveInput {
   password: String!
 }
