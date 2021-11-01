@@ -18,9 +18,11 @@ import { ChangeNamePayload } from '@/types/change-name.types';
 import Link from 'next/link';
 import ChangePhotoButton from '@/components/ChangePhotoButton';
 import ChangeEmail from '@/components/ChangeEmail';
+import RemoveAccount from '@/components/RemoveAccount';
 
 const EditProfile: React.FC = () => {
-  const [active, setActive] = useState(false);
+  const [activeEmailChange, setActiveEmailChange] = useState(false);
+  const [activeRemoveAccount, setActiveRemoveAccount] = useState(false);
   const { data } = useWhoAmIQuery();
   const [updateProfileMutation, { loading }] = useUpdateProfileMutation({
     onCompleted({ updateProfile }) {
@@ -66,7 +68,12 @@ const EditProfile: React.FC = () => {
 
   const handleChangeEmail = (e: React.MouseEvent) => {
     e.preventDefault();
-    setActive((current) => !current);
+    setActiveEmailChange((current) => !current);
+  };
+
+  const handleRemoveAccount = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setActiveRemoveAccount((current) => !current);
   };
 
   const handleRemoveImage = async (e: React.MouseEvent) => {
@@ -155,6 +162,15 @@ const EditProfile: React.FC = () => {
               Change e-mail
             </button>
             <button
+              type="button"
+              className="button is-primary"
+              onClick={handleRemoveAccount}
+            >
+              Remove account
+            </button>
+          </div>
+          <div className="column p-0 mt-4 is-flex is-flex-direction-row is-justify-content-flex-end edit-profile__input">
+            <button
               className={`button is-primary ${loading ? 'is-loading' : ''}`}
               type="submit"
               disabled={loading}
@@ -163,7 +179,14 @@ const EditProfile: React.FC = () => {
             </button>
           </div>
         </form>
-        <ChangeEmail active={active} setActive={setActive} />
+        <ChangeEmail
+          active={activeEmailChange}
+          setActive={setActiveEmailChange}
+        />
+        <RemoveAccount
+          active={activeRemoveAccount}
+          setActive={setActiveRemoveAccount}
+        />
         <ToastContainer />
       </div>
     </MainTemplate>
