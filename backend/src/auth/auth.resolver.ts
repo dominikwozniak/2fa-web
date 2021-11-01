@@ -15,6 +15,7 @@ import { AuthForgotPasswordInput } from './dto/auth-forgot-password.input';
 import { AuthForgotChangePasswordInput } from './dto/auth-forgot-change-password.input';
 import { AuthVerifyInput } from './dto/auth-verify.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
+import { UserRemoveInput } from './dto/user-remove.input';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { QrCode } from './models/qr-code';
@@ -117,5 +118,16 @@ export class AuthResolver {
   @Mutation(() => Boolean)
   logout(@ResGql() res: Response, @ReqGql() req: Request) {
     return this.authService.logout(res, req);
+  }
+
+  @Mutation(() => Boolean)
+  removeProfile(
+    @ResGql() res: Response,
+    @ReqGql() req: Request,
+    @UserIdGql() userId: string,
+    @Args({ name: 'input', type: () => UserRemoveInput })
+    input: UserRemoveInput,
+  ) {
+    return this.authService.removeProfile(res, req, userId, input);
   }
 }

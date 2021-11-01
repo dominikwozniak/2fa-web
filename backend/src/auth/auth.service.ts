@@ -12,7 +12,7 @@ import { UserService } from '@/user/user.service';
 import { RedisService } from '@/redis/redis.service';
 import { sendEmail } from '@/shared/mail/sendEmail';
 import { createForgotPasswordUrl } from '@/shared/mail/create-forgot-password-url';
-import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url'
+import { createConfirmUserUrl } from '@/shared/mail/create-confirm-user-url';
 import { generateQr } from '@/shared/two-factor/generateQr';
 import { twoFactorGenerateSecret } from '@/shared/two-factor/twoFactorGenerateSecret';
 import { twoFactorVerify } from '@/shared/two-factor/twoFactorVerify';
@@ -34,6 +34,7 @@ import { QrCode } from './models/qr-code';
 import { UserUpdateInput } from './dto/user-update.input';
 import { UserChangePasswordInput } from './dto/user-change-password.input';
 import { UserChangeEmailInput } from './dto/user-change-email.input';
+import { UserRemoveInput } from '@/auth/dto/user-remove.input';
 
 @Injectable()
 export class AuthService {
@@ -112,10 +113,6 @@ export class AuthService {
     const user = await this.userService.findUserByEmail(input.email);
 
     if (!user) {
-      // TODO: remove
-      // throw new NotFoundException(
-      //   `User with email ${input.email} does not exist`,
-      // );
       throw new GraphQLError('User does not exist');
     }
 
@@ -309,6 +306,33 @@ export class AuthService {
   public async logout(res: Response, req: Request) {
     req.session.destroy(null);
     res.clearCookie('qid');
+
+    return true;
+  }
+
+  public async removeProfile(
+    res: Response,
+    req: Request,
+    userId: string,
+    input: UserRemoveInput,
+  ) {
+    const user = await this.userService.findUserById(userId);
+
+    if (!user) {
+      throw new GraphQLError('User does not exist');
+    }
+
+    const passwordValid = await AuthHelper.validatePassword(
+      input.password,
+      user.password,
+    );
+
+    if (!passwordValid) {
+      throw new UnauthorizedException('Invalid password');
+    }
+
+    await user.delete();
+    await this.logout(res, req);
 
     return true;
   }

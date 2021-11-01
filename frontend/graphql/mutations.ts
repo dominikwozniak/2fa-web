@@ -109,7 +109,13 @@ const CHANGE_AUTHENTICATION_DEVICE = gql`
 `;
 
 const LOGOUT = gql`
-    mutation logout {
-        logout
-    }
+  mutation logout {
+    logout
+  }
+`;
+
+const REMOVE_PROFILE = gql`
+  mutation deleteUser($password: String!) {
+    removeProfile(input: { password: $password })
+  }
 `;
