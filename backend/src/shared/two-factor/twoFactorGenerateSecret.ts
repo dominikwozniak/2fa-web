@@ -2,7 +2,7 @@ import * as speakeasy from 'speakeasy';
 
 export const twoFactorGenerateSecret = () => {
   const { otpauth_url, base32 } = speakeasy.generateSecret({
-    name: process.env.TFA_SECRET,
+    name: 'Secret key',
   });
 
   return {
