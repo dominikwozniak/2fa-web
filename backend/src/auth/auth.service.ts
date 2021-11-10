@@ -164,7 +164,7 @@ export class AuthService {
       const token = nanoid(32);
       const saveToken = confirmUserPrefix + token;
       const url = createConfirmUserUrl(token);
-      await sendEmail(created.email, url);
+      await sendEmail(created.email, url, 'Confirm account');
       await this.redisService.setValue(saveToken, created._id);
     }
 
@@ -199,7 +199,7 @@ export class AuthService {
     const token = nanoid(32);
     const saveToken = forgotPasswordPrefix + token;
     const url = createForgotPasswordUrl(token);
-    await sendEmail(user.email, url);
+    await sendEmail(user.email, url, 'Reset password');
     await this.redisService.setValue(saveToken, user._id);
 
     return true;
