@@ -1,27 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from './models/user.schema';
+import { User, UserDocument } from './schema/user.schema';
+import { Token, TokenDocument } from '@/user/schema/token.schema';
 import { AuthRegisterInput } from '@/auth/dto/auth-register.input';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    @InjectModel(Token.name) private readonly tokenModel: Model<TokenDocument>,
   ) {}
 
   public async findUserByEmail(email: string) {
     return this.userModel.findOne({ email });
   }
 
+  public async findUserByEmailWithToken(email: string) {
+    return this.userModel.findOne({ email }).populate('tokenId');
+  }
+
+  // TODO: remove id as number
   public async findUserById(id: number | string) {
     return this.userModel.findOne({ _id: id });
   }
 
+  public async findUserByIdWithToken(id: number | string) {
+    return this.userModel.findOne({ _id: id }).populate('tokenId');
+  }
+
   public async createUser(input: AuthRegisterInput, password: string) {
+    const token = await this.tokenModel.create({})
+
     return this.userModel.create({
       ...input,
       password,
+      tokenId: token._id
     });
+  }
+
+  public async findTokenById(id: string) {
+    return this.tokenModel.findOne({ _id: id });
   }
 }
