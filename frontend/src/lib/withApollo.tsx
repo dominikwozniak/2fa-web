@@ -6,9 +6,10 @@ import {
 } from '@apollo/client';
 import { useRouter } from 'next/router';
 import nextWithApollo from 'next-with-apollo';
+import { BACKEND_URL } from '@/consts/apollo.const';
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:4000/graphql',
+  uri: BACKEND_URL,
   credentials: 'include'
 });
 

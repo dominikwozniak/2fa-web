@@ -13,12 +13,13 @@ import { useChangePasswordMutation } from '../generated';
 import { useForm } from 'react-hook-form';
 import { ChangePasswordPayload } from '@/types/change-password.types';
 import { popupNotification } from '@/utils/popup-notification';
+import { ROUTE_DASHBOARD } from '@/consts/routes.const';
 
 const ChangePassword: React.FC = () => {
   const [changePasswordMutation, { loading }] = useChangePasswordMutation({
     onCompleted(changePasswordMutation) {
       if (changePasswordMutation) {
-        Router.push('/dashboard');
+        Router.push(ROUTE_DASHBOARD);
       } else {
         popupNotification('Error! Cannot change password.');
       }
