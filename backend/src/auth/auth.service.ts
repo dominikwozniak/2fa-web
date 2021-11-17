@@ -156,9 +156,7 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await AuthHelper.hashPassword(input.password);
-
-    const created = await this.userService.createUser(input, hashedPassword);
+    const created = await this.userService.createUser(input);
 
     if (created) {
       const token = nanoid(32);

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from './schema/user.schema';
 import { Token, TokenDocument } from '@/user/schema/token.schema';
 import { AuthRegisterInput } from '@/auth/dto/auth-register.input';
+import {AuthHelper} from "@/auth/auth.helper";
 
 @Injectable()
 export class UserService {
@@ -29,8 +30,17 @@ export class UserService {
     return this.userModel.findOne({ _id: id }).populate('tokenId');
   }
 
-  public async createUser(input: AuthRegisterInput, password: string) {
-    const token = await this.tokenModel.create({})
+  public async createUser(input: AuthRegisterInput) {
+    const validatePassword = AuthHelper.validateInputPassword(input.password);
+
+    if (!validatePassword) {
+      throw new BadRequestException(
+        `Incorrect password`,
+      );
+    }
+
+    const password = await AuthHelper.hashPassword(input.password);
+    const token = await this.tokenModel.create({});
 
     return this.userModel.create({
       ...input,

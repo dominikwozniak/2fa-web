@@ -37,7 +37,10 @@ export class User {
   @Field()
   image: string;
 
-  @Prop({ minlength: 5, required: [true, 'Password is required'] })
+  @Prop({
+    minlength: 7,
+    required: [true, 'Password is required'],
+  })
   password: string;
 
   @Prop({ required: true, default: false })
