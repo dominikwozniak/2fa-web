@@ -13,6 +13,7 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { useRegisterMutation } from '../generated';
 import { ToastContainer } from 'react-toastify';
 import { popupNotification } from '@/utils/popup-notification';
+import { ROUTE_HOME } from '@/consts/routes.const';
 
 const Signup: React.FC = () => {
   const [registerMutation, { data, loading }] = useRegisterMutation({
@@ -21,7 +22,7 @@ const Signup: React.FC = () => {
         popupNotification(
           'Successfully registered! Please check your email to confirm account',
         );
-        setTimeout(() => Router.push('/'), 4000);
+        setTimeout(() => Router.push(ROUTE_HOME), 4000);
       }
     },
     onError(err) {
@@ -125,6 +126,10 @@ const Signup: React.FC = () => {
                 required: true,
                 minLength: 7,
                 maxLength: 99,
+                pattern: {
+                  value: /^(?=.*[^a-zA-z0-9])(?=.{7})(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/g,
+                  message: 'invalid password'
+                }
               })}
             />
           </div>

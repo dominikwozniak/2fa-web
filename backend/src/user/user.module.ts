@@ -1,8 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserService } from './user.service';
-import { User, UserSchema } from './models/user.schema';
 import { AuthHelper } from '@/auth/auth.helper';
+import { User, UserSchema } from './schema/user.schema';
+import { Token, TokenSchema } from '@/user/schema/token.schema';
 
 @Module({
   imports: [
@@ -11,6 +12,10 @@ import { AuthHelper } from '@/auth/auth.helper';
         name: User.name,
         schema: UserSchema,
       },
+      {
+        name: Token.name,
+        schema: TokenSchema
+      }
     ]),
     AuthHelper,
   ],

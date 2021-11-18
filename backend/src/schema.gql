@@ -2,6 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Token {
+  _id: ID!
+  twoFactorToken: String!
+}
+
 type User {
   _id: ID!
   email: String!
@@ -12,6 +17,7 @@ type User {
   confirm: Boolean!
   twoFactorEnabled: Boolean!
   afterFirstLogin: Boolean!
+  tokenId: Token!
 }
 
 type UserToken {

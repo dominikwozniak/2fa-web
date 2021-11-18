@@ -9,6 +9,7 @@ import { useForgotChangePasswordMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
 import { ToastContainer } from 'react-toastify';
 import withApollo from '@/lib/withApollo';
+import { ROUTE_HOME } from '@/consts/routes.const';
 
 const ForgotPasswordToken: React.FC = () => {
   const router = useRouter();
@@ -17,7 +18,7 @@ const ForgotPasswordToken: React.FC = () => {
     useForgotChangePasswordMutation({
       onCompleted({ forgotPasswordChangePassword }) {
         if (forgotPasswordChangePassword) {
-          window.location.href = '/'
+          window.location.href = ROUTE_HOME
         } else {
           popupNotification('Cannot change password');
         }

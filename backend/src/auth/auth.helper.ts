@@ -6,6 +6,11 @@ export class AuthHelper {
     return re.test(email);
   }
 
+  static validateInputPassword(password: string) {
+    const re = /^(?=.*[^a-zA-z0-9])(?=.{7})(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/g;
+    return re.test(password);
+  }
+
   static validatePassword(
     password: string,
     hashedPassword: string,

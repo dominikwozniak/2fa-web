@@ -13,6 +13,7 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { popupNotification } from '@/utils/popup-notification';
 import { useLoginMutation, useVerifyLoginMutation } from '../generated';
 import QrModal from '@/components/QrModal';
+import { ROUTE_DASHBOARD } from '@/consts/routes.const';
 
 const Signin: React.FC = () => {
   const [activeQrModal, setActiveQrModal] = useState(false);
@@ -25,7 +26,7 @@ const Signin: React.FC = () => {
         !login?.authenticator &&
         login?.user?.email
       ) {
-        window.location.href = '/dashboard';
+        window.location.href = ROUTE_DASHBOARD;
       }
 
       if (
@@ -47,7 +48,7 @@ const Signin: React.FC = () => {
     useVerifyLoginMutation({
       onCompleted({ verifyLogin }) {
         if (verifyLogin.user.email) {
-          window.location.href = '/dashboard';
+          window.location.href = ROUTE_DASHBOARD;
         } else {
           popupNotification('Cannot authorize');
         }

@@ -1,6 +1,8 @@
 import { Field, ID, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import * as mongoose from 'mongoose';
 import { AuthHelper } from '@/auth/auth.helper';
+import { Token } from '@/user/schema/token.schema';
 
 @Schema({
   validateBeforeSave: true,
@@ -35,7 +37,10 @@ export class User {
   @Field()
   image: string;
 
-  @Prop({ minlength: 5, required: [true, 'Password is required'] })
+  @Prop({
+    minlength: 7,
+    required: [true, 'Password is required'],
+  })
   password: string;
 
   @Prop({ required: true, default: false })
@@ -50,8 +55,13 @@ export class User {
   @Field()
   afterFirstLogin: boolean;
 
-  @Prop({ required: false, default: '' })
-  twoFactorToken: string;
+  @Prop({
+    required: false,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Token',
+  })
+  @Field()
+  tokenId: Token;
 }
 
 export type UserDocument = User & Document;

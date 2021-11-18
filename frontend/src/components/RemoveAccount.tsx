@@ -4,6 +4,7 @@ import ErrorInputIcon from '@/components/ErrorInputIcon';
 import { namedOperations, useDeleteUserMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
 import { DeleteProfilePayload } from '@/types/delete-profile.types';
+import { ROUTE_HOME } from '@/consts/routes.const';
 
 interface Props {
   active: boolean;
@@ -14,7 +15,7 @@ const RemoveAccount: React.FC<Props> = ({ active, setActive }) => {
   const [deleteUser, { loading }] = useDeleteUserMutation({
     onCompleted({ removeProfile }) {
       if (removeProfile) {
-        window.location.href = '/';
+        window.location.href = ROUTE_HOME;
       } else {
         popupNotification('Cannot delete profile');
       }

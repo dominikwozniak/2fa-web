@@ -12,6 +12,7 @@ import img from '@/public/assets/authentication_fsn5.svg';
 import { useForgotPasswordMutation } from '../../generated';
 import { popupNotification } from '@/utils/popup-notification';
 import withApollo from '@/lib/withApollo';
+import { ROUTE_HOME } from '@/consts/routes.const';
 
 const ForgotPassword: React.FC = () => {
   const router = useRouter();
@@ -20,7 +21,7 @@ const ForgotPassword: React.FC = () => {
       onCompleted(forgotPasswordMutation) {
         if (forgotPasswordMutation) {
           popupNotification('Success! Email was sent');
-          setTimeout(() => router.push('/'), 2000);
+          setTimeout(() => router.push(ROUTE_HOME), 2000);
         } else {
           popupNotification('Error');
         }

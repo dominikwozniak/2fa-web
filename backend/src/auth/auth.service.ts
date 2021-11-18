@@ -7,7 +7,7 @@ import {
 import { Request, Response } from 'express';
 import { GraphQLError } from 'graphql';
 import { nanoid } from 'nanoid';
-import { User } from '@/user/models/user.schema';
+import { User } from '@/user/schema/user.schema';
 import { UserService } from '@/user/user.service';
 import { RedisService } from '@/redis/redis.service';
 import { sendEmail } from '@/shared/mail/sendEmail';
@@ -44,7 +44,7 @@ export class AuthService {
   ) {}
 
   public async login(input: AuthLoginInput, req: Request): Promise<UserLogin> {
-    const found = await this.userService.findUserByEmail(input.email);
+    const found = await this.userService.findUserByEmailWithToken(input.email);
 
     if (!found) {
       throw new NotFoundException(
@@ -68,9 +68,10 @@ export class AuthService {
     if (found.twoFactorEnabled) {
       const { otpauth_url, base32 } = twoFactorGenerateSecret();
 
-      if (!found.twoFactorToken || !found.afterFirstLogin) {
-        found.twoFactorToken = base32;
-        await found.save();
+      if (!found.tokenId.twoFactorToken || !found.afterFirstLogin) {
+        const token = await this.userService.findTokenById(found.tokenId._id)
+        token.twoFactorToken = base32;
+        await token.save();
 
         return {
           qrUrl: await generateQr(otpauth_url),
@@ -110,17 +111,17 @@ export class AuthService {
     input: AuthVerifyInput,
     req: Request,
   ): Promise<UserToken> {
-    const user = await this.userService.findUserByEmail(input.email);
+    const user = await this.userService.findUserByEmailWithToken(input.email);
 
     if (!user) {
       throw new GraphQLError('User does not exist');
     }
 
-    if (!user.twoFactorToken) {
+    if (!user.tokenId.twoFactorToken) {
       throw new BadRequestException('Base token is not valid');
     }
 
-    const verified = twoFactorVerify(user.twoFactorToken, input.token);
+    const verified = twoFactorVerify(user.tokenId.twoFactorToken, input.token);
 
     if (!verified) {
       throw new BadRequestException('User is not verified');
@@ -145,15 +146,13 @@ export class AuthService {
       );
     }
 
-    const hashedPassword = await AuthHelper.hashPassword(input.password);
-
-    const created = await this.userService.createUser(input, hashedPassword);
+    const created = await this.userService.createUser(input);
 
     if (created) {
       const token = nanoid(32);
       const saveToken = confirmUserPrefix + token;
       const url = createConfirmUserUrl(token);
-      await sendEmail(created.email, url);
+      await sendEmail(created.email, url, 'Confirm account');
       await this.redisService.setValue(saveToken, created._id);
     }
 
@@ -188,7 +187,7 @@ export class AuthService {
     const token = nanoid(32);
     const saveToken = forgotPasswordPrefix + token;
     const url = createForgotPasswordUrl(token);
-    await sendEmail(user.email, url);
+    await sendEmail(user.email, url, 'Reset password');
     await this.redisService.setValue(saveToken, user._id);
 
     return true;
@@ -220,7 +219,7 @@ export class AuthService {
   }
 
   public async changeAuthenticationDevice(userId: string): Promise<QrCode> {
-    const user = await this.userService.findUserById(userId);
+    const user = await this.userService.findUserByIdWithToken(userId);
 
     if (!user) {
       throw new GraphQLError('Cannot find user with provided credentials');
@@ -233,8 +232,14 @@ export class AuthService {
     }
 
     const { otpauth_url, base32 } = twoFactorGenerateSecret();
-    user.twoFactorToken = base32;
+
+    user.tokenId.twoFactorToken = base32;
     await user.save();
+
+    const token = await this.userService.findTokenById(user.tokenId._id)
+    token.twoFactorToken = base32;
+    await token.save();
+
 
     return {
       qrUrl: await generateQr(otpauth_url),
@@ -263,7 +268,7 @@ export class AuthService {
   }
 
   public async updateUserProfile(userId: string, input: UserUpdateInput) {
-    const user = await this.userService.findUserById(userId);
+    const user = await this.userService.findUserByIdWithToken(userId);
     let twoFactorUpdateInput = {} as User;
 
     if (!user) {
@@ -271,8 +276,10 @@ export class AuthService {
     }
 
     if (user.twoFactorEnabled && input.twoFactorEnabled === false) {
-      twoFactorUpdateInput.twoFactorToken = '';
+      const token = await this.userService.findTokenById(user.tokenId._id);
       twoFactorUpdateInput.afterFirstLogin = false;
+      token.twoFactorToken = '';
+      await token.save();
     }
 
     await user.updateOne({ ...input, ...twoFactorUpdateInput });

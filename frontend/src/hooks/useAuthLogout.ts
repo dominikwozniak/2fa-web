@@ -1,5 +1,6 @@
 import { useApolloClient } from '@apollo/client';
 import { useLogoutMutation } from '../../generated';
+import { ROUTE_HOME } from '@/consts/routes.const';
 
 export const useAuthLogout = () => {
   const [logoutMutation] = useLogoutMutation();
@@ -8,6 +9,6 @@ export const useAuthLogout = () => {
   return async () => {
     await logoutMutation();
     await apolloClient.clearStore();
-    window.location.href = '/';
+    window.location.href = ROUTE_HOME;
   };
 };
