@@ -7,7 +7,7 @@ export class AuthHelper {
   }
 
   static validateInputPassword(password: string) {
-    const re = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{12,16}$/;
+    const re = /^(?=.*[^a-zA-z0-9])(?=.{7})(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/g;
     return re.test(password);
   }
 

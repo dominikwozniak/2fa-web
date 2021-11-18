@@ -126,6 +126,10 @@ const Signup: React.FC = () => {
                 required: true,
                 minLength: 7,
                 maxLength: 99,
+                pattern: {
+                  value: /^(?=.*[^a-zA-z0-9])(?=.{7})(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/g,
+                  message: 'invalid password'
+                }
               })}
             />
           </div>
