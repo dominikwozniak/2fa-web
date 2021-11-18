@@ -12,7 +12,7 @@ The technological stack of the system was selected taking into account skills, k
 
 * Backend:
   * `Nest.js`
-  * `Typescript
+  * `Typescript`
   * `Apollo Server`
   * `Mongoose`
   * `MongoDB`
