@@ -10,3 +10,39 @@ Additionally, when creating an account, an e-mail will be sent with a request to
 ### Used technologies
 The technological stack of the system was selected taking into account skills, knowledge of programming environments and design requirements.
 
+* Backend:
+  * `Nest.js`
+  * `Typescript
+  * `Apollo Server`
+  * `Mongoose`
+  * `MongoDB`
+  * `Redis`
+* Frontend:
+  * `Next.js`
+  * `Typescript
+  * `Apollo Client`
+  * `GraphQL Code Generator`
+  * `SASS`
+  * `Bulma`
+* Cloud:
+  * `AWS S3`
+  * `Code Pipeline`
+  * `EC2`
+
+### Build and setup
+
+Frontend:
+```
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+Backend:
+```
+cd backend
+cp .env.example .env
+npm install
+npm run start:dev
+```
