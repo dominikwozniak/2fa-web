@@ -46,10 +46,6 @@ export class AuthService {
   public async login(input: AuthLoginInput, req: Request): Promise<UserLogin> {
     const found = await this.userService.findUserByEmailWithToken(input.email);
 
-    // TODO: ask michal
-    // found.tokenId.twoFactorToken = '';
-    // await found.save();
-
     if (!found) {
       throw new NotFoundException(
         `User with email ${input.email} does not exist`,
@@ -73,12 +69,6 @@ export class AuthService {
       const { otpauth_url, base32 } = twoFactorGenerateSecret();
 
       if (!found.tokenId.twoFactorToken || !found.afterFirstLogin) {
-        // found.twoFactorToken = base32;
-        // TODO: ask michal
-        // found.tokenId.twoFactorToken = base32;
-        // await found.save();
-
-        // TODO: ask michal
         const token = await this.userService.findTokenById(found.tokenId._id)
         token.twoFactorToken = base32;
         await token.save();
@@ -243,7 +233,6 @@ export class AuthService {
 
     const { otpauth_url, base32 } = twoFactorGenerateSecret();
 
-    // TODO: ask michal
     user.tokenId.twoFactorToken = base32;
     await user.save();
 

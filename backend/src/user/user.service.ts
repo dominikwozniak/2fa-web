@@ -21,12 +21,11 @@ export class UserService {
     return this.userModel.findOne({ email }).populate('tokenId');
   }
 
-  // TODO: remove id as number
-  public async findUserById(id: number | string) {
+  public async findUserById(id: string) {
     return this.userModel.findOne({ _id: id });
   }
 
-  public async findUserByIdWithToken(id: number | string) {
+  public async findUserByIdWithToken(id: string) {
     return this.userModel.findOne({ _id: id }).populate('tokenId');
   }
 
