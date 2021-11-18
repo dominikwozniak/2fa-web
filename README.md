@@ -19,7 +19,7 @@ The technological stack of the system was selected taking into account skills, k
   * `Redis`
 * Frontend:
   * `Next.js`
-  * `Typescript
+  * `Typescript`
   * `Apollo Client`
   * `GraphQL Code Generator`
   * `SASS`
@@ -31,7 +31,10 @@ The technological stack of the system was selected taking into account skills, k
 
 ### Build and setup
 
-Frontend:
+Frontend
+
+* development:
+
 ```
 cd frontend
 cp .env.example .env
@@ -39,10 +42,45 @@ npm install
 npm run dev
 ```
 
+* build:
+
+```
+cd frontend
+npm ci
+npm run build
+npm run start
+```
+
 Backend:
+
+* development:
+
 ```
 cd backend
 cp .env.example .env
 npm install
 npm run start:dev
 ```
+
+* build:
+
+```
+cd backend
+npm ci
+npm run build
+npm run start
+```
+
+### Application architecture
+
+Frontend architecture :
+
+![frontend](./docs/screenshots/frontend-architecture.png)
+
+Backend architecture :
+
+![backend](./docs/screenshots/backend-architecture.png)
+
+### PWA
+
+To disable PWA replace `process.env.NODE_ENV` to `development`.
