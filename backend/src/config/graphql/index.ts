@@ -7,7 +7,10 @@ export class GraphqlOptions implements GqlOptionsFactory {
     return {
       context: ({ req, res }) => ({ req, res }),
       autoSchemaFile: 'src/schema.gql',
-      cors: false,
+      cors: {
+        origin: ['http://localhost:3000'],
+        credentials: true,
+      },
       debug: true,
       introspection: true,
       playground: true,
