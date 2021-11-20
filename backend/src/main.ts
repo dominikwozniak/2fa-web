@@ -19,13 +19,10 @@ async function bootstrap() {
 
   SwaggerModule.setup('api/', app, createDocument(app));
 
-  app.use(cookieParser());
+  // TODO: move after global prefix
+  // app.enableCors();
 
-  app.enableCors({
-    credentials: true,
-    origin: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-  });
+  app.use(cookieParser());
 
   app.use(
     session({
