@@ -21,6 +21,8 @@ const withApollo = nextWithApollo(
       headers: {
         ...(headers as Record<string, string>),
         'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Headers': 'Content-Type, *',
         Cookie: headers?.cookie ?? ''
       },
       cache: new InMemoryCache().restore(initialState || {}),
