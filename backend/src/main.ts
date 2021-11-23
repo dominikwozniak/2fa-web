@@ -19,9 +19,6 @@ async function bootstrap() {
 
   SwaggerModule.setup('api/', app, createDocument(app));
 
-  // TODO: move after global prefix
-  // app.enableCors();
-
   app.use(cookieParser());
 
   app.use(
@@ -35,6 +32,7 @@ async function bootstrap() {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60, // 1 hour
+        sameSite: true,
       },
     }),
   );
