@@ -12,7 +12,7 @@ The technological stack of the system was selected taking into account skills, k
 
 * Backend:
   * `Nest.js`
-  * `Typescript
+  * `Typescript`
   * `Apollo Server`
   * `Mongoose`
   * `MongoDB`
@@ -28,6 +28,8 @@ The technological stack of the system was selected taking into account skills, k
   * `AWS S3`
   * `Code Pipeline`
   * `EC2`
+* E2E:
+  * `Nightwatch`
 
 ### Build and setup
 
@@ -84,3 +86,18 @@ Backend architecture :
 ### PWA
 
 To disable PWA replace `process.env.NODE_ENV` to `development`.
+
+### E2E testing
+
+`tests` directory contains implemented test scenarios. To run tests please run application as described above.
+
+```
+cd e2e
+npm i
+npm test
+```
+
+run only the specified test:
+```
+nightwatch tests/<scenario-name>.js
+```
