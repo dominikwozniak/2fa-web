@@ -5,6 +5,10 @@
       "password": "Test@123",
       "firstName": "Automation",
       "lastName": "Test"
+    },
+    "changed": {
+      "firstName": "Automation123",
+      "lastName": "Test123"
     }
   },
   "browsers": {

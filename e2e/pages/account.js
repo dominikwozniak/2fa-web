@@ -11,6 +11,15 @@ const accountCommands = {
 
     this.assert.containsText('@username', `${firstName} ${lastName}`)
     this.assert.containsText('@email', email)
+  },
+
+  assertChangedAccount() {
+    const firstName = customer.changed.firstName
+    const lastName = customer.changed.lastName
+
+    this.waitForElementVisible('@username')
+
+    this.assert.containsText('@username', `${firstName} ${lastName}`)
   }
 }
 
