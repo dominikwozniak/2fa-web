@@ -1,0 +1,24 @@
+{
+  "name": "dtc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "nightwatch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "chromedriver": "^96.0.0",
+    "geckodriver": "^2.0.4",
+    "nightwatch": "^1.7.12"
+  },
+  "dependencies": {
+    "config": "^3.3.6",
+    "dayjs": "^1.10.7",
+    "faker": "^5.5.3",
+    "pino": "^7.4.0",
+    "pino-pretty": "^7.2.0"
+  }
+}

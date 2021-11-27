@@ -1,0 +1,70 @@
+{
+  "customer": {
+    "existing": {
+      "email": "eehaccrqeiwtjawtvp@mrvpm.net",
+      "password": "Test@123",
+      "firstName": "Automation",
+      "lastName": "Test"
+    }
+  },
+  "browsers": {
+    "lambda-safari": {
+      "browserName": "Safari",
+      "platform": "MacOS Catalina",
+      "deviceName": "",
+      "version": "13.0"
+    },
+    "lambda-safari-mobile": {
+      "browserName": "Safari",
+      "platform": "iOS",
+      "deviceName": "iPhone XS",
+      "version": "12.1"
+    },
+    "lambda-edge": {
+      "browserName": "MicrosoftEdge",
+      "platform": "Windows 10",
+      "deviceName": "",
+      "version": "88.0"
+    },
+    "lambda-chrome": {
+      "browserName": "Chrome",
+      "platform": "MacOS Catalina",
+      "deviceName": "",
+      "version": "88.0"
+    },
+    "lambda-chrome-mobile": {
+      "browserName": "Chrome",
+      "platform": "Android",
+      "deviceName": "Galaxy S20",
+      "version": "10"
+    },
+    "chrome": {
+      "browserName": "Chrome",
+      "chromeOptions": {
+        "args": [
+          "headless",
+          "window-size=1280,800",
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-dev-shm-usage"
+        ]
+      }
+    },
+    "chrome-mobile": {
+      "browserName": "Chrome",
+      "chromeOptions": {
+        "args": [
+          "headless",
+          "window-size=1280,800",
+          "--disable-gpu",
+          "--no-sandbox",
+          "--disable-dev-shm-usage"
+        ],
+        "mobileEmulation": {
+          "deviceName": "iPhone X"
+        }
+      }
+    }
+  },
+  "safariEnvs": ["lambda-safari", "lambda-safari-mobile"]
+}
