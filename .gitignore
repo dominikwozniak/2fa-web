@@ -185,3 +185,6 @@ output
 screenshot.png
 /sample
 /screens
+
+### docker ###
+/dockervolume
