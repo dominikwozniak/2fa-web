@@ -73,6 +73,25 @@ npm run build
 npm run start
 ```
 
+Local MongoDB:
+
+```
+cp .env.example .env
+docker-compose up
+```
+
+To make sure if mongo image running, you can cheeck container list - `docker ps`.
+For use in the local backend environment, change the `MONGO_URI` value.
+
+```
+.env
+MONGO_ROOT_USERNAME=<root_user>
+MONGO_ROOT_PASSWORD=<root_password>
+
+backend/.env
+MONGO_URI=mongodb://<root_user>:<root_password>@localhost:27017
+```
+
 ### Application architecture
 
 Frontend architecture :
@@ -101,3 +120,8 @@ run only the specified test:
 ```
 nightwatch tests/<scenario-name>.js
 ```
+
+### Support
+
+Feel free, in case of problems or questions, write to me wozniakdominik7312@gmail.com
+
